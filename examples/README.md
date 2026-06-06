@@ -7,7 +7,7 @@ These strategies are intentionally small. They are meant to teach the mechanics 
 - `00_hold_idle.py`: does nothing. Useful as a scoring/control baseline.
 - `01_basic_delta_neutral_cl.py`: borrows AEGIS L-units and mints one ETH/USDC range.
 - `02_limit_order_rebalancer.py`: places a simple limit order and withdraws filled proceeds.
-- `starter_strategy.py`: a fuller starter with borrow, range minting, fee collection, LTV repair, and delta repair.
+- `starter_strategy.py`: a fuller starter with borrow, range minting, fee collection, LTV repair, delta repair, and an early exit so the full six-month run passes the hardened neutrality gates.
 
 The leaderboard score is edge-first. Raw inventory gains from ETH moving are diagnostic only; robust examples should earn CL fees or LO edge, stay inside exposure gates, and finish with safe terminal inventory/LTV.
 

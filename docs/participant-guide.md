@@ -80,7 +80,7 @@ Start simple:
 2. Mint a wide ETH/USDC range around the current tick.
 3. Collect fees on a cadence.
 4. Burn or reduce the range when delta drifts.
-5. Repay if LTV approaches the repair band.
+5. Exit, repay, and flatten before unresolved inventory/debt can dominate the final score.
 6. Add limit orders only after the basic CL strategy stays stable.
 
 ## What To Watch In The UI
