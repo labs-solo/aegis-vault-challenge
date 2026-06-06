@@ -1,0 +1,8 @@
+{
+  "checked": [
+    "reports/golden/foundry-uniswap-v4-reference.json",
+    "reports/golden/foundry-aegis-vault-reference.json"
+  ],
+  "errors": [],
+  "status": "pass"
+}

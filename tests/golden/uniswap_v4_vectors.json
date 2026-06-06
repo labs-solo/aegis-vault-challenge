@@ -1,0 +1,156 @@
+{
+  "fixture_version": "aegis-vault-challenge-v1",
+  "generator": {
+    "aegis_engine_commit": "08d389e8b7c53cac1cc9ba05a85dfee596672465",
+    "rounding_policy": "local-python-v4-reference-subset",
+    "v4_core_commit": "59d3ecf53afa9264a16bba0e38f4c5d2231f80bc",
+    "v4_periphery_commit": "60cd93803ac2b7fa65fd6cd351fd5fd4cc8c9db5"
+  },
+  "vectors": [
+    {
+      "expected": {
+        "sqrt_price_x96": [
+          "4295128739",
+          "79228162514264337593543950336",
+          "1461446703485210103287273052203988822378723970342"
+        ]
+      },
+      "id": "UV4-TICK-000",
+      "input": {
+        "ticks": [
+          -887272,
+          0,
+          887272
+        ]
+      },
+      "source": "v4-core TickMath"
+    },
+    {
+      "expected": {
+        "active_liquidity_after": "1000000",
+        "amount0_in": "1000",
+        "amount1_out": "999",
+        "final_tick": -20,
+        "sqrt_price_x96_after": "79149013500763574019524425911"
+      },
+      "id": "UV4-SWAP-001",
+      "input": {
+        "active_liquidity": "1000000",
+        "amount_in": "1000",
+        "current_tick": 0,
+        "fee_pips": 0,
+        "next_initialized_tick": -120,
+        "sqrt_price_x96": "79228162514264337593543950336",
+        "tick_spacing": 60,
+        "token_in": "token0"
+      },
+      "source": "v4-core SwapMath"
+    },
+    {
+      "expected": {
+        "active_liquidity_after": "1000000",
+        "amount0_out": "999",
+        "amount1_in": "1000",
+        "final_tick": 19,
+        "sqrt_price_x96_after": "79307390676778601931137494286"
+      },
+      "id": "UV4-SWAP-002",
+      "input": {
+        "active_liquidity": "1000000",
+        "amount_in": "1000",
+        "current_tick": 0,
+        "fee_pips": 0,
+        "next_initialized_tick": 120,
+        "sqrt_price_x96": "79228162514264337593543950336",
+        "tick_spacing": 60,
+        "token_in": "token1"
+      },
+      "source": "v4-core SwapMath"
+    },
+    {
+      "expected": {
+        "active_liquidity_after_cross": "750000",
+        "amount_in_consumed": "3005",
+        "amount_out": "2995",
+        "crossed_tick": 60,
+        "current_tick_after_cross": 60,
+        "fee_growth_outside0_x128_after": "0",
+        "fee_growth_outside1_x128_after": "0",
+        "sqrt_price_x96_after": "79466191966197645195421774833"
+      },
+      "id": "UV4-TICK-001",
+      "input": {
+        "active_liquidity_before": "1000000",
+        "amount_in": "3005",
+        "current_tick": 0,
+        "initialized_tick": 60,
+        "liquidity_net": "-250000",
+        "token_in": "token1"
+      },
+      "source": "v4-core Pool.swap tick crossing upper"
+    },
+    {
+      "expected": {
+        "active_liquidity_after_cross": "750000",
+        "amount_in_consumed": "3005",
+        "amount_out": "2995",
+        "crossed_tick": -60,
+        "current_tick_after_cross": -61,
+        "fee_growth_outside0_x128_after": "0",
+        "fee_growth_outside1_x128_after": "0",
+        "sqrt_price_x96_after": "78990846045029531151608375686"
+      },
+      "id": "UV4-TICK-002",
+      "input": {
+        "active_liquidity_before": "1000000",
+        "amount_in": "3005",
+        "current_tick": 0,
+        "initialized_tick": -60,
+        "liquidity_net": "250000",
+        "token_in": "token0"
+      },
+      "source": "v4-core Pool.swap tick crossing lower"
+    },
+    {
+      "expected": {
+        "collect_idle0_delta": "14",
+        "fee_growth_global0_delta_x128": "10208471007628153903901238222953046",
+        "lp_fee_amount0": "30",
+        "position_owed0": "14",
+        "protocol_fee_amount0": "0",
+        "total_fee_amount0": "30"
+      },
+      "id": "UV4-FEE-001",
+      "input": {
+        "active_liquidity_before_position": "500000",
+        "amount_in": "10000",
+        "fee_pips": 3000,
+        "position_liquidity": "500000",
+        "position_range": [
+          -1200,
+          1200
+        ],
+        "token_in": "token0"
+      },
+      "source": "v4-core SwapMath fee growth subset"
+    },
+    {
+      "expected": {
+        "fee_growth_global0_delta_x128": "10208471007628153903901238222953046",
+        "lp_fee_amount": "30",
+        "pool_swap_fee_pips": 4000,
+        "protocol_fee_amount": "10",
+        "total_pool_fee_amount": "40"
+      },
+      "id": "UV4-FEE-002",
+      "input": {
+        "active_liquidity": "1000000",
+        "amount_in": "10000",
+        "lp_fee_pips": 3000,
+        "protocol_fee_pips": 1000,
+        "token_in": "token0"
+      },
+      "source": "v4-core SwapMath protocol-fee split subset"
+    }
+  ]
+}

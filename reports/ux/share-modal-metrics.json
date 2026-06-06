@@ -1,0 +1,18 @@
+{
+  "status": "pass",
+  "base_url": "http://127.0.0.1:50656/web/index.html",
+  "modal_visible_after_publish": true,
+  "copy_is_clean": true,
+  "intent_uses_text_plus_url": true,
+  "card_nonblank": true,
+  "copy_button_works": true,
+  "download_button_works": true,
+  "dismissible": true,
+  "mobile_no_overflow": true,
+  "screenshots": [
+    "reports/ux/share-modal-desktop.png",
+    "reports/ux/share-modal-mobile.png"
+  ],
+  "failures": [],
+  "console_messages": []
+}

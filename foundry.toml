@@ -1,0 +1,23 @@
+[profile.default]
+src = "."
+test = "test/foundry"
+out = "out"
+cache_path = "cache_forge"
+libs = ["/Users/page/Page/repos/aegis-engine/dependencies"]
+evm_version = "cancun"
+bytecode_hash = "none"
+
+remappings = [
+  "forge-std=/Users/page/Page/repos/aegis-engine/dependencies/forge-std-1.10.0/src",
+  "@uniswap/v4-core=/Users/page/Page/repos/aegis-engine/dependencies/v4-core-main",
+  "@uniswap/v4-periphery=/Users/page/Page/repos/aegis-engine/dependencies/v4-periphery-main",
+  "contracts=/Users/page/Page/repos/aegis-engine/contracts",
+  "solmate=/Users/page/Page/repos/aegis-engine/dependencies/v4-core-main/lib/solmate",
+  "@openzeppelin/contracts=/Users/page/Page/repos/aegis-engine/dependencies/@openzeppelin-contracts-5.1.0",
+  "permit2=/Users/page/Page/repos/aegis-engine/dependencies/v4-periphery-main/lib/permit2"
+]
+
+fs_permissions = [
+  { access = "read", path = "tests/golden" },
+  { access = "read-write", path = "reports/golden" }
+]

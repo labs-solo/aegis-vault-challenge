@@ -1,0 +1,528 @@
+{
+  "blockers": [],
+  "engine_version": "0.2.0-v2",
+  "hard_gates": [
+    {
+      "blocker": "",
+      "evidence_paths": [
+        "reports/benchmarks/v2/01_directional_long_eth/80755bbb8649dc4c/calibration.json",
+        "reports/benchmarks/v2/01_directional_long_eth/a9f736ccdc043c98/calibration.json",
+        "reports/benchmarks/v2/01_directional_long_eth/5f40917882315cc8/calibration.json",
+        "reports/benchmarks/v2/04_passive_narrow_lp/fe00f958dbb07240/calibration.json",
+        "reports/benchmarks/v2/04_passive_narrow_lp/1f867d1636ed0f1f/calibration.json",
+        "reports/benchmarks/v2/04_passive_narrow_lp/d17c486114e3e175/calibration.json",
+        "reports/benchmarks/v2/02_directional_short_eth/d6816565d222e19d/calibration.json",
+        "reports/benchmarks/v2/02_directional_short_eth/42af71bdc3eb55ea/calibration.json",
+        "reports/benchmarks/v2/02_directional_short_eth/c5cae80a6bbbd92c/calibration.json",
+        "reports/benchmarks/v2/06_borrow_heavy/fa138bbcc002e987/calibration.json",
+        "reports/benchmarks/v2/06_borrow_heavy/293d6e0b93d1ae6f/calibration.json",
+        "reports/benchmarks/v2/06_borrow_heavy/18d7254458baa7e6/calibration.json",
+        "reports/benchmarks/v2/07_delta_neutral_heuristic/dddcc21bd0ec36e4/calibration.json",
+        "reports/benchmarks/v2/07_delta_neutral_heuristic/5bee16eaa4b9b773/calibration.json",
+        "reports/benchmarks/v2/07_delta_neutral_heuristic/5f6183d0ce6816d8/calibration.json",
+        "reports/benchmarks/v2/00_noop/696934b029fca95a/calibration.json",
+        "reports/benchmarks/v2/00_noop/7260f6e3238beee3/calibration.json",
+        "reports/benchmarks/v2/00_noop/d54cf5fc949c5168/calibration.json",
+        "reports/benchmarks/v2/03_passive_wide_lp/73542edca91daadc/calibration.json",
+        "reports/benchmarks/v2/03_passive_wide_lp/3756a4981d74ac80/calibration.json",
+        "reports/benchmarks/v2/03_passive_wide_lp/802e837f7f183aa2/calibration.json",
+        "reports/benchmarks/v2/starter_strategy/dba53c6c7d427caa/calibration.json",
+        "reports/benchmarks/v2/starter_strategy/b3f4faedd5f3bf2f/calibration.json",
+        "reports/benchmarks/v2/starter_strategy/8a7711c8f5cf0ab1/calibration.json",
+        "reports/benchmarks/v2/05_lo_only_rebalancer/ff96716b1f9d8911/calibration.json",
+        "reports/benchmarks/v2/05_lo_only_rebalancer/b020f8d51ea73c7c/calibration.json",
+        "reports/benchmarks/v2/05_lo_only_rebalancer/7227abf44eea9333/calibration.json",
+        "reports/scenarios/v2/public_train-1.json",
+        "reports/scenarios/v2/public_train-7.json",
+        "reports/scenarios/v2/public_train-11.json",
+        "reports/scenarios/v2/public_train-13.json",
+        "reports/scenarios/v2/public_train-15.json",
+        "reports/scenarios/v2/public_train-18.json",
+        "reports/scenarios/v2/stress_train-101.json",
+        "reports/scenarios/v2/stress_train-103.json",
+        "reports/scenarios/v2/stress_train-105.json",
+        "reports/scenarios/v2/stress_train-107.json",
+        "reports/scenarios/v2/hidden_ranked-96.json",
+        "reports/scenarios/v2/hidden_ranked-97.json",
+        "reports/scenarios/v2/hidden_ranked-98.json",
+        "reports/scenarios/v2/hidden_ranked-99.json",
+        "reports/scenarios/v2/hidden_ranked-100.json",
+        "reports/scenarios/v2/hidden_ranked-101.json",
+        "reports/scenarios/v2/hidden_ranked-102.json",
+        "reports/scenarios/v2/hidden_ranked-103.json"
+      ],
+      "name": "canonical_real_market",
+      "status": "pass"
+    },
+    {
+      "blocker": "",
+      "evidence_paths": [
+        "reports/protocol-release.json"
+      ],
+      "name": "uniswap_v4_parity",
+      "status": "pass"
+    },
+    {
+      "blocker": "",
+      "evidence_paths": [
+        "reports/protocol-release.json"
+      ],
+      "name": "aegis_vault_parity",
+      "status": "pass"
+    },
+    {
+      "blocker": "",
+      "evidence_paths": [
+        "reports/benchmarks/v2/01_directional_long_eth/80755bbb8649dc4c/calibration.json",
+        "reports/benchmarks/v2/01_directional_long_eth/a9f736ccdc043c98/calibration.json",
+        "reports/benchmarks/v2/01_directional_long_eth/5f40917882315cc8/calibration.json",
+        "reports/benchmarks/v2/04_passive_narrow_lp/fe00f958dbb07240/calibration.json",
+        "reports/benchmarks/v2/04_passive_narrow_lp/1f867d1636ed0f1f/calibration.json",
+        "reports/benchmarks/v2/04_passive_narrow_lp/d17c486114e3e175/calibration.json",
+        "reports/benchmarks/v2/02_directional_short_eth/d6816565d222e19d/calibration.json",
+        "reports/benchmarks/v2/02_directional_short_eth/42af71bdc3eb55ea/calibration.json",
+        "reports/benchmarks/v2/02_directional_short_eth/c5cae80a6bbbd92c/calibration.json",
+        "reports/benchmarks/v2/06_borrow_heavy/fa138bbcc002e987/calibration.json",
+        "reports/benchmarks/v2/06_borrow_heavy/293d6e0b93d1ae6f/calibration.json",
+        "reports/benchmarks/v2/06_borrow_heavy/18d7254458baa7e6/calibration.json",
+        "reports/benchmarks/v2/07_delta_neutral_heuristic/dddcc21bd0ec36e4/calibration.json",
+        "reports/benchmarks/v2/07_delta_neutral_heuristic/5bee16eaa4b9b773/calibration.json",
+        "reports/benchmarks/v2/07_delta_neutral_heuristic/5f6183d0ce6816d8/calibration.json",
+        "reports/benchmarks/v2/00_noop/696934b029fca95a/calibration.json",
+        "reports/benchmarks/v2/00_noop/7260f6e3238beee3/calibration.json",
+        "reports/benchmarks/v2/00_noop/d54cf5fc949c5168/calibration.json",
+        "reports/benchmarks/v2/03_passive_wide_lp/73542edca91daadc/calibration.json",
+        "reports/benchmarks/v2/03_passive_wide_lp/3756a4981d74ac80/calibration.json",
+        "reports/benchmarks/v2/03_passive_wide_lp/802e837f7f183aa2/calibration.json",
+        "reports/benchmarks/v2/starter_strategy/dba53c6c7d427caa/calibration.json",
+        "reports/benchmarks/v2/starter_strategy/b3f4faedd5f3bf2f/calibration.json",
+        "reports/benchmarks/v2/starter_strategy/8a7711c8f5cf0ab1/calibration.json",
+        "reports/benchmarks/v2/05_lo_only_rebalancer/ff96716b1f9d8911/calibration.json",
+        "reports/benchmarks/v2/05_lo_only_rebalancer/b020f8d51ea73c7c/calibration.json",
+        "reports/benchmarks/v2/05_lo_only_rebalancer/7227abf44eea9333/calibration.json",
+        "reports/scenarios/v2/public_train-1.json",
+        "reports/scenarios/v2/public_train-7.json",
+        "reports/scenarios/v2/public_train-11.json",
+        "reports/scenarios/v2/public_train-13.json",
+        "reports/scenarios/v2/public_train-15.json",
+        "reports/scenarios/v2/public_train-18.json",
+        "reports/scenarios/v2/stress_train-101.json",
+        "reports/scenarios/v2/stress_train-103.json",
+        "reports/scenarios/v2/stress_train-105.json",
+        "reports/scenarios/v2/stress_train-107.json",
+        "reports/scenarios/v2/hidden_ranked-96.json",
+        "reports/scenarios/v2/hidden_ranked-97.json",
+        "reports/scenarios/v2/hidden_ranked-98.json",
+        "reports/scenarios/v2/hidden_ranked-99.json",
+        "reports/scenarios/v2/hidden_ranked-100.json",
+        "reports/scenarios/v2/hidden_ranked-101.json",
+        "reports/scenarios/v2/hidden_ranked-102.json",
+        "reports/scenarios/v2/hidden_ranked-103.json"
+      ],
+      "name": "full_scenario_engine",
+      "status": "pass"
+    },
+    {
+      "blocker": "",
+      "evidence_paths": [
+        "reports/benchmarks/v2/01_directional_long_eth/80755bbb8649dc4c/public_replay.jsonl",
+        "reports/benchmarks/v2/01_directional_long_eth/a9f736ccdc043c98/public_replay.jsonl",
+        "reports/benchmarks/v2/01_directional_long_eth/5f40917882315cc8/public_replay.jsonl",
+        "reports/benchmarks/v2/04_passive_narrow_lp/fe00f958dbb07240/public_replay.jsonl",
+        "reports/benchmarks/v2/04_passive_narrow_lp/1f867d1636ed0f1f/public_replay.jsonl",
+        "reports/benchmarks/v2/04_passive_narrow_lp/d17c486114e3e175/public_replay.jsonl",
+        "reports/benchmarks/v2/02_directional_short_eth/d6816565d222e19d/public_replay.jsonl",
+        "reports/benchmarks/v2/02_directional_short_eth/42af71bdc3eb55ea/public_replay.jsonl",
+        "reports/benchmarks/v2/02_directional_short_eth/c5cae80a6bbbd92c/public_replay.jsonl",
+        "reports/benchmarks/v2/06_borrow_heavy/fa138bbcc002e987/public_replay.jsonl",
+        "reports/benchmarks/v2/06_borrow_heavy/293d6e0b93d1ae6f/public_replay.jsonl",
+        "reports/benchmarks/v2/06_borrow_heavy/18d7254458baa7e6/public_replay.jsonl",
+        "reports/benchmarks/v2/07_delta_neutral_heuristic/dddcc21bd0ec36e4/public_replay.jsonl",
+        "reports/benchmarks/v2/07_delta_neutral_heuristic/5bee16eaa4b9b773/public_replay.jsonl",
+        "reports/benchmarks/v2/07_delta_neutral_heuristic/5f6183d0ce6816d8/public_replay.jsonl",
+        "reports/benchmarks/v2/00_noop/696934b029fca95a/public_replay.jsonl",
+        "reports/benchmarks/v2/00_noop/7260f6e3238beee3/public_replay.jsonl",
+        "reports/benchmarks/v2/00_noop/d54cf5fc949c5168/public_replay.jsonl",
+        "reports/benchmarks/v2/03_passive_wide_lp/73542edca91daadc/public_replay.jsonl",
+        "reports/benchmarks/v2/03_passive_wide_lp/3756a4981d74ac80/public_replay.jsonl",
+        "reports/benchmarks/v2/03_passive_wide_lp/802e837f7f183aa2/public_replay.jsonl",
+        "reports/benchmarks/v2/starter_strategy/dba53c6c7d427caa/public_replay.jsonl",
+        "reports/benchmarks/v2/starter_strategy/b3f4faedd5f3bf2f/public_replay.jsonl",
+        "reports/benchmarks/v2/starter_strategy/8a7711c8f5cf0ab1/public_replay.jsonl",
+        "reports/benchmarks/v2/05_lo_only_rebalancer/ff96716b1f9d8911/public_replay.jsonl",
+        "reports/benchmarks/v2/05_lo_only_rebalancer/b020f8d51ea73c7c/public_replay.jsonl",
+        "reports/benchmarks/v2/05_lo_only_rebalancer/7227abf44eea9333/public_replay.jsonl"
+      ],
+      "name": "replay_determinism_and_independent_scoring",
+      "status": "pass"
+    },
+    {
+      "blocker": "",
+      "evidence_paths": [
+        "reports/benchmarks/v2/01_directional_long_eth/80755bbb8649dc4c/public_replay.jsonl",
+        "reports/benchmarks/v2/01_directional_long_eth/a9f736ccdc043c98/public_replay.jsonl",
+        "reports/benchmarks/v2/01_directional_long_eth/5f40917882315cc8/public_replay.jsonl",
+        "reports/benchmarks/v2/04_passive_narrow_lp/fe00f958dbb07240/public_replay.jsonl",
+        "reports/benchmarks/v2/04_passive_narrow_lp/1f867d1636ed0f1f/public_replay.jsonl",
+        "reports/benchmarks/v2/04_passive_narrow_lp/d17c486114e3e175/public_replay.jsonl",
+        "reports/benchmarks/v2/02_directional_short_eth/d6816565d222e19d/public_replay.jsonl",
+        "reports/benchmarks/v2/02_directional_short_eth/42af71bdc3eb55ea/public_replay.jsonl",
+        "reports/benchmarks/v2/02_directional_short_eth/c5cae80a6bbbd92c/public_replay.jsonl",
+        "reports/benchmarks/v2/06_borrow_heavy/fa138bbcc002e987/public_replay.jsonl",
+        "reports/benchmarks/v2/06_borrow_heavy/293d6e0b93d1ae6f/public_replay.jsonl",
+        "reports/benchmarks/v2/06_borrow_heavy/18d7254458baa7e6/public_replay.jsonl",
+        "reports/benchmarks/v2/07_delta_neutral_heuristic/dddcc21bd0ec36e4/public_replay.jsonl",
+        "reports/benchmarks/v2/07_delta_neutral_heuristic/5bee16eaa4b9b773/public_replay.jsonl",
+        "reports/benchmarks/v2/07_delta_neutral_heuristic/5f6183d0ce6816d8/public_replay.jsonl",
+        "reports/benchmarks/v2/00_noop/696934b029fca95a/public_replay.jsonl",
+        "reports/benchmarks/v2/00_noop/7260f6e3238beee3/public_replay.jsonl",
+        "reports/benchmarks/v2/00_noop/d54cf5fc949c5168/public_replay.jsonl",
+        "reports/benchmarks/v2/03_passive_wide_lp/73542edca91daadc/public_replay.jsonl",
+        "reports/benchmarks/v2/03_passive_wide_lp/3756a4981d74ac80/public_replay.jsonl",
+        "reports/benchmarks/v2/03_passive_wide_lp/802e837f7f183aa2/public_replay.jsonl",
+        "reports/benchmarks/v2/starter_strategy/dba53c6c7d427caa/public_replay.jsonl",
+        "reports/benchmarks/v2/starter_strategy/b3f4faedd5f3bf2f/public_replay.jsonl",
+        "reports/benchmarks/v2/starter_strategy/8a7711c8f5cf0ab1/public_replay.jsonl",
+        "reports/benchmarks/v2/05_lo_only_rebalancer/ff96716b1f9d8911/public_replay.jsonl",
+        "reports/benchmarks/v2/05_lo_only_rebalancer/b020f8d51ea73c7c/public_replay.jsonl",
+        "reports/benchmarks/v2/05_lo_only_rebalancer/7227abf44eea9333/public_replay.jsonl"
+      ],
+      "name": "hidden_info_isolation",
+      "status": "pass"
+    },
+    {
+      "blocker": "",
+      "evidence_paths": [
+        "reports/ci/pytest.xml"
+      ],
+      "name": "sandbox",
+      "status": "pass"
+    },
+    {
+      "blocker": "",
+      "evidence_paths": [
+        "reports/ux/participant-trial.md",
+        "reports/ux/accessibility-audit.md"
+      ],
+      "name": "ux_critical_path",
+      "status": "pass"
+    },
+    {
+      "blocker": "",
+      "evidence_paths": [
+        "reports/leaderboard/server-parity.json"
+      ],
+      "name": "leaderboard_parity",
+      "status": "pass"
+    }
+  ],
+  "metric_groups": [
+    {
+      "blocker": "",
+      "detail": {},
+      "minimum_score": 80,
+      "name": "protocol_correctness",
+      "score": 100
+    },
+    {
+      "blocker": "",
+      "detail": {},
+      "minimum_score": 80,
+      "name": "aegis_vault_correctness",
+      "score": 100
+    },
+    {
+      "blocker": "",
+      "detail": {},
+      "minimum_score": 80,
+      "name": "market_realism_and_scenario_completeness",
+      "score": 100
+    },
+    {
+      "blocker": "",
+      "detail": {
+        "directional_penalized": true,
+        "neutral_delta_ok": true,
+        "rows": [
+          {
+            "bundle": "public_train",
+            "final_score": "-1485490.06684469497822294894610909178157486274836856037418074",
+            "max_delta": "0.801329268064214255559836365438069525990456097836558301787015",
+            "mean_delta": "0.800152790336675466595287982180452357531462109342387791913451",
+            "price_beta": "-535724.634622017381461914362298291825351172452619752687241216",
+            "strategy": "01_directional_long_eth.py",
+            "time_above_soft": 1440
+          },
+          {
+            "bundle": "hidden_ranked",
+            "final_score": "-1503154.66542312666396921136978822902970356475732647147091337",
+            "max_delta": "0.806245172716758739607774661738265479008446022452095336161757",
+            "mean_delta": "0.802837041777936096179973644289609269521407942337404221848882",
+            "price_beta": "-530070.710286217942714669270600275983508453412000283097932634",
+            "strategy": "01_directional_long_eth.py",
+            "time_above_soft": 2880
+          },
+          {
+            "bundle": "smoke",
+            "final_score": "-1481766.12155376547869589504598025894250281516782583829100056",
+            "max_delta": "0.799878676562046843874637365430971279673993551176951960586926",
+            "mean_delta": "0.79976720198400278022857824141276496671997561666847882254191",
+            "price_beta": "-536474.231989534314596380955903938244251257342573411028866444",
+            "strategy": "01_directional_long_eth.py",
+            "time_above_soft": 60
+          },
+          {
+            "bundle": "hidden_ranked",
+            "final_score": "-353.78268040962338045165631414528642872903184094423626511641",
+            "max_delta": "0.0505313193017066851699188914289111007897734656375007452020215",
+            "mean_delta": "0.0228234073231106769449589969551127363590262293333062521343856",
+            "price_beta": "-11991.1838508569282038161800413800459901902798188304428762393",
+            "strategy": "04_passive_narrow_lp.py",
+            "time_above_soft": 5
+          },
+          {
+            "bundle": "smoke",
+            "final_score": "-88.295759948892338957464752985363872437658380457675890892",
+            "max_delta": "0.000763746473347982098164668027131348516981043747329372946847603",
+            "mean_delta": "0.000331299508213493942646738031221423157893911349055931980565485",
+            "price_beta": "12759.5607361117528880694901107327584986686359603295282321082",
+            "strategy": "04_passive_narrow_lp.py",
+            "time_above_soft": 0
+          },
+          {
+            "bundle": "public_train",
+            "final_score": "-47.071316935702489985759694095561040963678335780689862267",
+            "max_delta": "0.00918521931368569149742090558204886073242723701352724541748131",
+            "mean_delta": "0.00287329022478499762458509516344373472174415728776113878442856",
+            "price_beta": "592.425246456955504295855822371174650651570430120848067486317",
+            "strategy": "04_passive_narrow_lp.py",
+            "time_above_soft": 0
+          },
+          {
+            "bundle": "public_train",
+            "final_score": "-562093.827593921775894548758985900213394630100956599007689556",
+            "max_delta": "0.504695343175335547136026846196250438056021641863232197948124",
+            "mean_delta": "0.502394427472078246750055805042356869790394011956795125765256",
+            "price_beta": "-744742.944634259082291004488046430385996029162796130722907920",
+            "strategy": "02_directional_short_eth.py",
+            "time_above_soft": 1440
+          },
+          {
+            "bundle": "smoke",
+            "final_score": "-556845.456119878046381550139326700925774185292530681865372761",
+            "max_delta": "0.501941636418801995196619343989211564968483689944111708498642",
+            "mean_delta": "0.501642010427981055997379170552372349818295986707644594289498",
+            "price_beta": "-438368.275825486064924135101691741006753930416572766731683612",
+            "strategy": "02_directional_short_eth.py",
+            "time_above_soft": 60
+          },
+          {
+            "bundle": "hidden_ranked",
+            "final_score": "-593123.170478048463604729878309837090405440560889006266137437",
+            "max_delta": "0.516014978867132671298846588029711193244689168669561691813212",
+            "mean_delta": "0.509290043692667106847715375966458076707249289321574830069188",
+            "price_beta": "-785450.166007147112922455189378061225177101421560883472515778",
+            "strategy": "02_directional_short_eth.py",
+            "time_above_soft": 2880
+          },
+          {
+            "bundle": "smoke",
+            "final_score": "-84.625538103849948036156643798293004176252614656091233360",
+            "max_delta": "0.00322289091216670972377466183521912780617581434297660392094901",
+            "mean_delta": "0.00159026172195064232542828057707911711041929025840767748333678",
+            "price_beta": "12935.2907265546753717806225522154238148791741250912675577036",
+            "strategy": "06_borrow_heavy.py",
+            "time_above_soft": 0
+          },
+          {
+            "bundle": "hidden_ranked",
+            "final_score": "-24310.7344557495827059895876580037243337770379896272965869264",
+            "max_delta": "0.132831741113515520769588798335838932861407603978269786413782",
+            "mean_delta": "0.0662862591820951260477703932719319652907336884470745480372562",
+            "price_beta": "-541522.205857005082139725161149519260425265987995635186307464",
+            "strategy": "06_borrow_heavy.py",
+            "time_above_soft": 2033
+          },
+          {
+            "bundle": "public_train",
+            "final_score": "81.066538236845617781364251832122678760505502543951928820",
+            "max_delta": "0.0283475061061210039494455488798379090116205290567185192509845",
+            "mean_delta": "0.00913242875857450615361784674566156683508758931252764262982979",
+            "price_beta": "1182.90626576925819231555194050886887988815071963522678883649",
+            "strategy": "06_borrow_heavy.py",
+            "time_above_soft": 0
+          },
+          {
+            "bundle": "hidden_ranked",
+            "final_score": "1583.073885105088610072320384614853620511549532722360630730",
+            "max_delta": "0.0342106584114029004166034065147823724195440620257376986579677",
+            "mean_delta": "0.0116534497840913625616988342626580124946072951703413976383934",
+            "price_beta": "808.339638915186914231640437489593090590360084964512683991894",
+            "strategy": "07_delta_neutral_heuristic.py",
+            "time_above_soft": 0
+          },
+          {
+            "bundle": "smoke",
+            "final_score": "-85.243578916550720415056736735507506714081005119452743940",
+            "max_delta": "0.00306711431140797332289132435455574434068948547710278289422665",
+            "mean_delta": "0.00143226056159869016742270357139507730526148222477096341467132",
+            "price_beta": "12913.9622213558576633367902254159007950356665738948356136579",
+            "strategy": "07_delta_neutral_heuristic.py",
+            "time_above_soft": 0
+          },
+          {
+            "bundle": "public_train",
+            "final_score": "59.831455562460376806295574832126789420481784016034673800",
+            "max_delta": "0.0260658336805360305463031150316527395659885896061318983717065",
+            "mean_delta": "0.00833689743921752744919949110958736591663927528465294556054778",
+            "price_beta": "1106.93452266489662912087525454872702809273729184703393409050",
+            "strategy": "07_delta_neutral_heuristic.py",
+            "time_above_soft": 0
+          },
+          {
+            "bundle": "public_train",
+            "final_score": "0E-54",
+            "max_delta": "0E+4",
+            "mean_delta": "0",
+            "price_beta": "0E-55",
+            "strategy": "00_noop.py",
+            "time_above_soft": 0
+          },
+          {
+            "bundle": "hidden_ranked",
+            "final_score": "0E-54",
+            "max_delta": "0E+4",
+            "mean_delta": "0",
+            "price_beta": "0E-56",
+            "strategy": "00_noop.py",
+            "time_above_soft": 0
+          },
+          {
+            "bundle": "smoke",
+            "final_score": "0E-54",
+            "max_delta": "0E+4",
+            "mean_delta": "0",
+            "price_beta": "0E-53",
+            "strategy": "00_noop.py",
+            "time_above_soft": 0
+          },
+          {
+            "bundle": "smoke",
+            "final_score": "-88.295759948892338957464752985363872437658380457675890892",
+            "max_delta": "0.000765984548245507563442837186982294570070298453189323428810535",
+            "mean_delta": "0.000339371536465130164982088006243633154084290313219499003649422",
+            "price_beta": "12760.2129515012823136345312536701750291948511837795989451421",
+            "strategy": "03_passive_wide_lp.py",
+            "time_above_soft": 0
+          },
+          {
+            "bundle": "hidden_ranked",
+            "final_score": "62.647382163951242146457563050076670401748635778687161055491",
+            "max_delta": "0.0429157563772725169067206034086822439546485835598733161035407",
+            "mean_delta": "0.0216673249165164386375910696487997728261909748500256539356464",
+            "price_beta": "-3156.52672138610997046443744131789738191124704680669154197668",
+            "strategy": "03_passive_wide_lp.py",
+            "time_above_soft": 0
+          },
+          {
+            "bundle": "public_train",
+            "final_score": "-47.071317935702489985759694095561040963678335780689862268",
+            "max_delta": "0.00918516928970565518045140250559814526548029915611989601379915",
+            "mean_delta": "0.00287482373791022335915267538985398118253839909991243677081744",
+            "price_beta": "592.588033506962717208493775148649553089701372292400864845490",
+            "strategy": "03_passive_wide_lp.py",
+            "time_above_soft": 0
+          },
+          {
+            "bundle": "hidden_ranked",
+            "final_score": "1140.117980236118948673239890674661541999786779613127763410",
+            "max_delta": "0.0358898205989630838427192885790496094873241329446578702155100",
+            "mean_delta": "0.0128323799194418288708670860961298209045226588403584221888694",
+            "price_beta": "565.800698244661885869959842691154241319803245678565634559802",
+            "strategy": "starter_strategy.py",
+            "time_above_soft": 0
+          },
+          {
+            "bundle": "public_train",
+            "final_score": "16.183772108744136862283615621700862461331056489555649560",
+            "max_delta": "0.0165762668124799569049123709345009800553113333769251614560210",
+            "mean_delta": "0.00524889805729982766058621602167615978746638640207800975824672",
+            "price_beta": "821.235721576678038669277611485754422357874852989548959507958",
+            "strategy": "starter_strategy.py",
+            "time_above_soft": 0
+          },
+          {
+            "bundle": "smoke",
+            "final_score": "-86.490093843524646262837217076867435540573001904311820350",
+            "max_delta": "0.00173918445513265529830164000208117613570510865587441240406819",
+            "mean_delta": "0.00079892627282322302689464294246297225551256591976066169555188",
+            "price_beta": "12835.8712000726918410092510279862908701287291741604999545002",
+            "strategy": "starter_strategy.py",
+            "time_above_soft": 0
+          },
+          {
+            "bundle": "public_train",
+            "final_score": "-86.811985512093569076264678928402229051211865535530422685",
+            "max_delta": "0.00902420712306854809010591304502619176175347434370870933638256",
+            "mean_delta": "0.00279941319860946154536947516541239538399586754805511891527360",
+            "price_beta": "572.249392861263332851346179064977128471711288257429786241654",
+            "strategy": "05_lo_only_rebalancer.py",
+            "time_above_soft": 0
+          },
+          {
+            "bundle": "hidden_ranked",
+            "final_score": "-293.230542353644760132313350982984067453489070766552241164222",
+            "max_delta": "0.0408599340652805985298655207053213436629871077668564926496114",
+            "mean_delta": "0.0205710271944993995469930225340959979070411531543520699524781",
+            "price_beta": "-1276.88491384101870028240065555705154335296126647171051874253",
+            "strategy": "05_lo_only_rebalancer.py",
+            "time_above_soft": 0
+          },
+          {
+            "bundle": "smoke",
+            "final_score": "-89.448564642639425241622312916059477909805981514461901234",
+            "max_delta": "0.000852969687282983461552786183907880996888197515864576187768516",
+            "mean_delta": "0.000343635483000359543438997901988548302543909508541336832168267",
+            "price_beta": "12740.7812492748094932725685651943456026590441985168742230746",
+            "strategy": "05_lo_only_rebalancer.py",
+            "time_above_soft": 0
+          }
+        ],
+        "score": 100
+      },
+      "minimum_score": 80,
+      "name": "delta_neutral_strategy_validity",
+      "score": 100
+    },
+    {
+      "blocker": "",
+      "detail": {},
+      "minimum_score": 80,
+      "name": "scoring_replay_and_leaderboard_integrity",
+      "score": 100
+    },
+    {
+      "blocker": "",
+      "detail": {},
+      "minimum_score": 80,
+      "name": "contestant_workflow_and_ux",
+      "score": 100
+    },
+    {
+      "blocker": "",
+      "detail": {},
+      "minimum_score": 80,
+      "name": "security_privacy_and_abuse_resistance",
+      "score": 100
+    }
+  ],
+  "metrics_version": "v2",
+  "non_blocking_risks": [],
+  "scenario_bundle_version": "v2-real-market",
+  "score": 100.0,
+  "source_reports": [
+    "reports/metrics-v2.json",
+    "reports/independent-metrics-review.json"
+  ],
+  "status": "world_class_ready"
+}

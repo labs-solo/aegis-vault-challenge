@@ -1,0 +1,28 @@
+{
+  "name": "aegis-vault-challenge",
+  "version": "1.0.0",
+  "description": "This is the implementation repo for the Aegis Vault Challenge.",
+  "main": "index.js",
+  "directories": {
+    "example": "examples",
+    "test": "tests"
+  },
+  "scripts": {
+    "ui:smoke": "node scripts/ui-smoke.js",
+    "ui:a11y": "node scripts/ui-a11y.js",
+    "ui:flow": "node scripts/ui-flow.js",
+    "ui:auth-attempts": "node scripts/ui-auth-attempts.js",
+    "ui:progressive": "node scripts/ui-progressive.js",
+    "ui:share-modal": "node scripts/ui-share-modal.js",
+    "ui:base-realism": "node scripts/ui-base-realism.js",
+    "ui:market-engine-v2": "node scripts/ui-market-engine-v2.js",
+    "ui:docs-academy": "node scripts/ui-docs-academy.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "playwright": "^1.60.0"
+  }
+}

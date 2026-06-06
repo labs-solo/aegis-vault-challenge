@@ -1,0 +1,6 @@
+{
+  "bundle": "smoke",
+  "seed": 1,
+  "steps": 60,
+  "regime": "calm"
+}

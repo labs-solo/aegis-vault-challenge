@@ -1,0 +1,22 @@
+{
+  "fixture_version": "aegis-vault-challenge-v1-foundry-snapshot",
+  "source": "foundry v4-core reference libraries",
+  "values": {
+    "tick_min_sqrt_price_x96": "4295128739",
+    "tick_zero_sqrt_price_x96": "79228162514264337593543950336",
+    "tick_max_sqrt_price_x96": "1461446703485210103287273052203988822378723970342",
+    "swap0_sqrt_price_x96_after": "79149013500763574019524425911",
+    "swap0_amount0_in": "1000",
+    "swap0_amount1_out": "999",
+    "swap0_fee_amount": "0",
+    "swap0_final_tick": "-20",
+    "swap1_sqrt_price_x96_after": "79307390676778601931137494286",
+    "swap1_amount1_in": "1000",
+    "swap1_amount0_out": "999",
+    "swap1_fee_amount": "0",
+    "swap1_final_tick": "19",
+    "tick_up_amount_in_consumed": "3005",
+    "tick_down_amount_in_consumed": "3005",
+    "fee_growth_global0_delta_x128": "10208471007628153903901238222953046"
+  }
+}

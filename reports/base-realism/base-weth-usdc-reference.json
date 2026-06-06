@@ -1,0 +1,77 @@
+{
+  "retrieved_at_unix": 1780692509,
+  "rows": [
+    {
+      "id": "base_0x6c561b446416e1a00e8e93e221854d6ea4171372",
+      "name": "WETH / USDC 0.3%",
+      "price_change_percentage_h24": "-9.7",
+      "reserve_usd": "92120438.891",
+      "transactions_h24_buys": 5728,
+      "transactions_h24_sells": 7815,
+      "transactions_h24_total": 13543,
+      "volume_usd_h24": "283296773.300052"
+    },
+    {
+      "id": "base_0xb2cc224c1c9fee385f8ad6a55b4d94e92359dc59",
+      "name": "WETH / USDC 0.05%",
+      "price_change_percentage_h24": "-11.87",
+      "reserve_usd": "8257736.3338",
+      "transactions_h24_buys": 23345,
+      "transactions_h24_sells": 25041,
+      "transactions_h24_total": 48386,
+      "volume_usd_h24": "207340876.013234"
+    },
+    {
+      "id": "base_0xd0b53d9277642d899df5c87a3966a349a798f224",
+      "name": "USDC / WETH 0.05%",
+      "price_change_percentage_h24": "-9.67",
+      "reserve_usd": "8706797.2941",
+      "transactions_h24_buys": 25918,
+      "transactions_h24_sells": 26776,
+      "transactions_h24_total": 52694,
+      "volume_usd_h24": "66455535.3512941"
+    },
+    {
+      "id": "base_0x72ab388e2e2f6facef59e3c3fa2c4e29011c2d38",
+      "name": "WETH / USDC 0.01%",
+      "price_change_percentage_h24": "-9.66",
+      "reserve_usd": "3336055.8535",
+      "transactions_h24_buys": 89652,
+      "transactions_h24_sells": 90265,
+      "transactions_h24_total": 179917,
+      "volume_usd_h24": "72949303.3857093"
+    },
+    {
+      "id": "base_0x3fe04a59ebd38cf06080a6f60a98d124eb59392a",
+      "name": "WETH / USDC 0.05%",
+      "price_change_percentage_h24": "-9.65",
+      "reserve_usd": "1897535.8808",
+      "transactions_h24_buys": 10126,
+      "transactions_h24_sells": 10675,
+      "transactions_h24_total": 20801,
+      "volume_usd_h24": "28241585.451703"
+    },
+    {
+      "id": "base_0xb775272e537cc670c65dc852908ad47015244eaf",
+      "name": "WETH / USDC 0.05%",
+      "price_change_percentage_h24": "-9.67",
+      "reserve_usd": "1270017.239",
+      "transactions_h24_buys": 7716,
+      "transactions_h24_sells": 8563,
+      "transactions_h24_total": 16279,
+      "volume_usd_h24": "4829012.13539864"
+    },
+    {
+      "id": "base_0x82dbe18346a8656dbb5e76f74bf3ae279cc16b29",
+      "name": "WETH / USDC 0.05%",
+      "price_change_percentage_h24": "-9.67",
+      "reserve_usd": "535739.454",
+      "transactions_h24_buys": 16308,
+      "transactions_h24_sells": 16671,
+      "transactions_h24_total": 32979,
+      "volume_usd_h24": "9185289.50301275"
+    }
+  ],
+  "source_url": "https://api.geckoterminal.com/api/v2/networks/base/tokens/0x4200000000000000000000000000000000000006/pools?include=dex,base_token,quote_token&page=1",
+  "token": "Base WETH"
+}

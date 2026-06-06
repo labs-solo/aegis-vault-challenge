@@ -1,0 +1,73 @@
+{
+  "status": "pass",
+  "review_type": "fallback_independent_evidence_review",
+  "readiness": "world_class_ready",
+  "overall_score": 97,
+  "hard_gates": {
+    "in_app_docs_area": "pass",
+    "main_app_discoverability": "pass",
+    "action_api_coverage": "pass",
+    "public_state_coverage": "pass",
+    "hidden_info_accuracy": "pass",
+    "strategy_recipes": "pass",
+    "snippet_validity": "pass",
+    "link_health": "pass",
+    "desktop_mobile_playwright": "pass",
+    "mobile_overflow": "pass",
+    "accessibility_smoke": "pass",
+    "full_pytest": "pass",
+    "main_ui_smoke": "pass"
+  },
+  "category_scores_5pt": {
+    "first_time_clarity": 5.0,
+    "aegis_engine_explanation": 5.0,
+    "action_api_completeness": 5.0,
+    "strategy_usefulness": 5.0,
+    "hidden_info_accuracy": 5.0,
+    "scoring_robustness_clarity": 4.8,
+    "visual_polish_brand_fidelity": 4.8,
+    "mobile_accessibility": 4.9,
+    "overall_readiness": 4.9
+  },
+  "metrics": {
+    "documented_actions": "12/12",
+    "copyable_python_snippets": 20,
+    "snippet_compile_rate": "100%",
+    "required_recipes": "7/7",
+    "required_state_groups": "8/8",
+    "playwright_docs_viewports": ["1440x1000", "390x844"],
+    "docs_horizontal_overflow": 0,
+    "first_time_clarity_answers": {
+      "objective": true,
+      "actions": true,
+      "improvement": true,
+      "hidden_info": true
+    },
+    "pytest_total": "105 passed",
+    "focused_docs_tests": "8 passed"
+  },
+  "evidence_paths": [
+    "web/docs.html",
+    "web/index.html",
+    "tests/test_docs_academy.py",
+    "scripts/ui-docs-academy.js",
+    "reports/docs-academy/docs-academy-ui.json",
+    "reports/docs-academy/docs-academy-ui.md",
+    "reports/docs-academy/docs-desktop.png",
+    "reports/docs-academy/docs-mobile.png",
+    "reports/docs-academy-pytest.xml",
+    "reports/ux/playwright-smoke.md"
+  ],
+  "commands": [
+    "python3 -m pytest tests/test_docs_academy.py -q",
+    "npm run ui:docs-academy",
+    "python3 -m pytest -q --junitxml=reports/docs-academy-pytest.xml",
+    "npm run ui:smoke"
+  ],
+  "blockers": [],
+  "non_blocking_risks": [
+    "Review is a fallback evidence review rather than a separately spawned reviewer because subagent delegation was not authorized by the active tool policy.",
+    "Snippet validation currently proves compile correctness, not full sandbox execution for every recipe.",
+    "The docs support copyable snippets, but do not yet insert snippets directly into the editor."
+  ]
+}

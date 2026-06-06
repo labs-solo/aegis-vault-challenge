@@ -1,0 +1,94 @@
+{
+  "status": "world_class_ready",
+  "score": 96.5,
+  "review_date": "2026-06-05",
+  "hard_gates": {
+    "aegis_debt_and_vault_accounting_exported": "pass",
+    "dfm_basehook_affects_lp_cl_fees": "pass",
+    "dfm_cl_fee_lift_exported_and_recomputed": "pass",
+    "dfm_surge_visible_in_ui": "pass",
+    "displayed_numbers_follow_selected_replay_step": "pass",
+    "graph_ends_on_day_180": "pass",
+    "raw_data_zip_download": "pass",
+    "independent_full_export_recomputation": "pass",
+    "base_market_realism_reference_checked": "pass"
+  },
+  "evidence_paths": [
+    "reports/base-realism/full-run/1c9a94d52abd5b62",
+    "reports/base-realism/full-run-verification.json",
+    "reports/base-realism/ui-base-realism.json",
+    "reports/base-realism/ui-base-realism.md",
+    "reports/base-realism/ui-base-realism.png",
+    "reports/base-realism/base-weth-usdc-reference.json",
+    "tests/test_runner.py",
+    "scripts/ui-base-realism.js"
+  ],
+  "full_run_metrics": {
+    "run_id": "1c9a94d52abd5b62",
+    "replay_steps": 17280,
+    "horizon_days": 180,
+    "execution_swap_rows": 136401,
+    "child_trade_count": 1995887,
+    "child_trades_per_day": 11088,
+    "volume_usd": "722569061.525085019461007847107936347629016984784281715644364",
+    "volume_usd_per_day": "4014272.563472694552561154706155202",
+    "lp_cl_fees_usd": "3200271.29973064609731761750524235153994841923416626279920532",
+    "base_lp_cl_fees_usd": "2166797.42399533475867658947370471631320911446666054922742459",
+    "dfm_lp_cl_fee_lift_usd": "1033473.87573531133864102803153763522673930476750571357178125",
+    "dfm_hook_fees_usd": "320223.160230995694779559321488250125465026084518839363454230",
+    "average_price_impact_pct": "0.0116522825618869437022805835567971357572310740194297078034808",
+    "dfm_surge_steps": 15360,
+    "executed_strategy_actions": 726,
+    "rejected_strategy_actions": 0
+  },
+  "base_reference": {
+    "source": "GeckoTerminal public Onchain DEX API",
+    "source_url": "https://api.geckoterminal.com/api/v2/networks/base/tokens/0x4200000000000000000000000000000000000006/pools?include=dex,base_token,quote_token&page=1",
+    "evidence_path": "reports/base-realism/base-weth-usdc-reference.json",
+    "comparison": "Simulator volume/day and child trades/day are plausible for smaller high-turnover Base WETH/USDC pools, not top-3 Base pools."
+  },
+  "thresholds": {
+    "final_simulated_horizon_days": {
+      "target": "180",
+      "observed": "180",
+      "status": "pass"
+    },
+    "export_recomputation_failures": {
+      "target": "0",
+      "observed": "0",
+      "status": "pass"
+    },
+    "replay_period_debt_row_parity": {
+      "target": "every step",
+      "observed": "17280",
+      "status": "pass"
+    },
+    "dfm_lp_cl_fee_split": {
+      "target": "base_lp_fees_usd + dfm_lp_fee_lift_usd == lp_fees_usd",
+      "observed": "2166797.42399533475867658947370471631320911446666054922742459 + 1033473.87573531133864102803153763522673930476750571357178125 == 3200271.29973064609731761750524235153994841923416626279920532",
+      "status": "pass"
+    },
+    "base_trade_count_realism": {
+      "target": "thousands of child trades per day for comparable high-turnover Base ETH/USDC pool",
+      "observed": "11088 per day",
+      "status": "pass"
+    }
+  },
+  "mismatches": [],
+  "dfm_behavior": {
+    "lp_fee_effect": "dfm_lp_fee_pips is applied to pool.lp_fee_pips before swap execution and therefore drives concentrated-liquidity fee growth",
+    "cl_fee_lift": "exports and verifier split LP/CL revenue into base_lp_fees_usd and dfm_lp_fee_lift_usd; base plus lift must equal total LP/CL fees",
+    "hook_fee_effect": "dfm_hook_fee_ppm charges a separate BaseHook fee on swap input and is exported separately from LP revenue",
+    "ui": "fee pill and market panel switch to DFM fee surge on selected surge periods and show DFM lift in the LP/CL fee row",
+    "local_references_checked": [
+      "aegis-engine/contracts/AegisHook.sol",
+      "aegis-engine/contracts/interfaces/dfm/IDynamicFeeManager.sol"
+    ]
+  },
+  "residual_risks": [
+    "Exact live per-pool AEGIS DFM policy parameters for the target Base competition pool were not available, so surge sizing/cadence remains a documented deterministic approximation even though the hook mechanics are matched.",
+    "Retail child trades are exported as deterministic child counts on execution-swap rows rather than individual child rows.",
+    "Base reference data is a point-in-time GeckoTerminal public API snapshot, not a formal Uniswap v4 Base subgraph calibration set."
+  ],
+  "readiness": "world_class_ready"
+}

@@ -1,0 +1,57 @@
+{
+  "status": "pass",
+  "audits": [
+    {
+      "name": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "failures": [],
+      "notes": [
+        "23 visible interactive controls have accessible names.",
+        "3 tabs use role=tab with a single selected tab.",
+        "first Tab focus: a#.active (3px solid rgb(25, 211, 197))"
+      ]
+    },
+    {
+      "name": "laptop",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "failures": [],
+      "notes": [
+        "23 visible interactive controls have accessible names.",
+        "3 tabs use role=tab with a single selected tab.",
+        "first Tab focus: a#.active (3px solid rgb(25, 211, 197))"
+      ]
+    },
+    {
+      "name": "tablet",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "failures": [],
+      "notes": [
+        "23 visible interactive controls have accessible names.",
+        "3 tabs use role=tab with a single selected tab.",
+        "first Tab focus: a#.active (3px solid rgb(25, 211, 197))"
+      ]
+    },
+    {
+      "name": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "failures": [],
+      "notes": [
+        "23 visible interactive controls have accessible names.",
+        "3 tabs use role=tab with a single selected tab.",
+        "first Tab focus: a#.active (3px solid rgb(25, 211, 197))"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,153 @@
+{
+  "review_date": "2026-06-05",
+  "hard_gate_status": "pass",
+  "score": 95,
+  "readiness": "world_class_ready",
+  "world_class_ready": true,
+  "blockers": [],
+  "hard_gates": [
+    {
+      "id": 1,
+      "name": "DFM active fee changes pool LP/CL fee growth, not only separate hook fees",
+      "status": "pass",
+      "evidence_paths": [
+        "aegis_challenge/dfm.py",
+        "aegis_challenge/pool.py",
+        "tests/test_runner.py",
+        "/Users/page/Page/repos/aegis-engine/contracts/AegisHook.sol",
+        "/Users/page/Page/repos/aegis-engine/contracts/interfaces/dfm/IDynamicFeeManager.sol"
+      ],
+      "finding": "apply_dfm_fee_state writes the DFM pool swap fee into pool.lp_fee_pips; Pool.swap_exact_in uses that fee in compute_swap_step and adds LP fee deltas to fee_growth_global{0,1}_x128. The runner settles those fee-growth deltas into CL positions."
+    },
+    {
+      "id": 2,
+      "name": "Hook fees are exported separately and not counted as CL revenue",
+      "status": "pass",
+      "evidence_paths": [
+        "aegis_challenge/pool.py",
+        "aegis_challenge/runner.py",
+        "aegis_challenge/export_verifier.py"
+      ],
+      "finding": "SwapEvent carries lp_fee_paid and hook_fee_paid separately. Exports map lp_fee_paid to LP/CL fee fields and hook_fee_paid to dfm_hook_fee_usd / dfm_hook_fees_usd."
+    },
+    {
+      "id": 3,
+      "name": "Raw exports split CL fees into base LP fees and DFM LP fee lift, and verifier requires base + lift = total",
+      "status": "pass",
+      "evidence_paths": [
+        "aegis_challenge/runner.py",
+        "aegis_challenge/export_verifier.py",
+        "reports/base-realism/full-run-verification.json"
+      ],
+      "finding": "period_stats and trades export base_lp_fees_usd/base_lp_fee_usd plus dfm_lp_fee_lift_usd. verify_run_export checks base LP fees, DFM lift, hook fees, and base plus lift equals total LP fees."
+    },
+    {
+      "id": 4,
+      "name": "UI highlights DFM surge and shows DFM lift in CL fee row",
+      "status": "pass",
+      "evidence_paths": [
+        "web/index.html",
+        "scripts/ui-base-realism.js",
+        "reports/base-realism/ui-base-realism.json",
+        "reports/base-realism/ui-base-realism.png"
+      ],
+      "finding": "UI text switches to DFM fee surge and the LP/CL fee row appends DFM lift. Existing Playwright evidence reports dfm_surge_highlight=true."
+    },
+    {
+      "id": 5,
+      "name": "Full 180-day export recomputation passes with no mismatch",
+      "status": "pass",
+      "evidence_paths": [
+        "reports/base-realism/full-run/1c9a94d52abd5b62",
+        "reports/base-realism/full-run-verification.json"
+      ],
+      "finding": "Read-only verify_run_export rerun returned status=pass with failures=[]."
+    },
+    {
+      "id": 6,
+      "name": "Tests and Playwright evidence support the claims",
+      "status": "pass",
+      "evidence_paths": [
+        "tests/test_runner.py",
+        "reports/base-realism/ui-base-realism.json",
+        "scripts/ui-base-realism.js"
+      ],
+      "finding": "tests/test_runner.py passed 8/8, the full pytest suite passed 90/90, and existing Playwright evidence status is pass.",
+      "verification_scope_note": "Playwright was not rerun during this review because the script overwrites UI evidence files outside the allowed artifact list."
+    },
+    {
+      "id": 7,
+      "name": "Residual risks are accurately stated, especially exact live per-pool DFM policy calibration",
+      "status": "pass",
+      "evidence_paths": [
+        "reports/base-realism-hardening.md",
+        "reports/base-realism-independent-review.md"
+      ],
+      "finding": "The prior report states exact live per-pool policy calibration is unavailable. This independent review agrees and keeps that as the primary residual risk."
+    }
+  ],
+  "full_run_metrics": {
+    "run_dir": "reports/base-realism/full-run/1c9a94d52abd5b62",
+    "status": "pass",
+    "failures": [],
+    "replay_steps": 17280,
+    "simulated_horizon_days": "180.0000",
+    "trade_rows": 136401,
+    "child_trade_count": 1995887,
+    "volume_usd": "722569061.525085019461007847107936347629016984784281715644364",
+    "lp_cl_fees_usd": "3200271.29973064609731761750524235153994841923416626279920532",
+    "base_lp_cl_fees_usd": "2166797.42399533475867658947370471631320911446666054922742459",
+    "dfm_lp_cl_fee_lift_usd": "1033473.87573531133864102803153763522673930476750571357178125",
+    "base_plus_lift_minus_total": "5.2E-52",
+    "dfm_hook_fees_usd": "320223.160230995694779559321488250125465026084518839363454230",
+    "dfm_surge_steps": 15360,
+    "executed_strategy_actions": 726,
+    "rejected_strategy_actions": 0,
+    "raw_export_zip_valid": true
+  },
+  "test_results": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider tests/test_runner.py",
+      "status": "pass",
+      "summary": "8 passed"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider",
+      "status": "pass",
+      "summary": "90 passed"
+    },
+    {
+      "command": "read-only verify_run_export(reports/base-realism/full-run/1c9a94d52abd5b62)",
+      "status": "pass",
+      "summary": "failures=[]"
+    }
+  ],
+  "non_blocking_risks": [
+    "Exact live per-pool DFM policy parameters were not available in the reviewed materials; surge sizing/cadence remains deterministic calibration.",
+    "Playwright was not rerun during this review to avoid overwriting existing UI evidence outside the allowed artifact list.",
+    "Base market comparison relies on a point-in-time GeckoTerminal reference file, not a formal Uniswap v4 Base subgraph calibration set.",
+    "Retail child trades are exported as deterministic counts on execution swap rows, not as one row per child trade."
+  ],
+  "not_verified": [
+    "Exact live target-pool DFM policy calibration.",
+    "Fresh Playwright rerun output generated during this independent review."
+  ],
+  "evidence_paths": [
+    "reports/base-realism-hardening.md",
+    "reports/base-realism-hardening.json",
+    "reports/base-realism/full-run-verification.json",
+    "reports/base-realism/ui-base-realism.json",
+    "reports/base-realism/ui-base-realism.png",
+    "reports/base-realism/base-weth-usdc-reference.json",
+    "reports/base-realism/full-run/1c9a94d52abd5b62",
+    "aegis_challenge/dfm.py",
+    "aegis_challenge/pool.py",
+    "aegis_challenge/runner.py",
+    "aegis_challenge/export_verifier.py",
+    "tests/test_runner.py",
+    "scripts/ui-base-realism.js",
+    "web/index.html",
+    "/Users/page/Page/repos/aegis-engine/contracts/AegisHook.sol",
+    "/Users/page/Page/repos/aegis-engine/contracts/interfaces/dfm/IDynamicFeeManager.sol"
+  ]
+}

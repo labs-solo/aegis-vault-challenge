@@ -1,0 +1,24 @@
+.pytest_cache/
+__pycache__/
+*.pyc
+.DS_Store
+
+node_modules/
+
+cache_forge/
+out/
+
+# Local simulator output and web session state. These can contain strategy
+# source snapshots, session/auth state, hidden ranked-path output, and very
+# large raw replay artifacts. Generate them locally instead of committing them.
+runs/
+
+# Keep lightweight review metadata, but never commit raw generated payloads.
+reports/**/*.zip
+reports/**/*.jsonl
+reports/**/*.csv
+reports/**/*.png
+reports/base-realism/full-run/
+reports/benchmarks/
+reports/leaderboard/server-fixture/
+reports/scenarios/

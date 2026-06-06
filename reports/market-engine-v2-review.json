@@ -1,0 +1,273 @@
+{
+  "review": "market-engine-v2",
+  "repository": "/Users/page/Page/repos/aegis-vault-challenge",
+  "mode": "final independent quick-read evidence review",
+  "status": "PASS",
+  "readiness": "world_class_ready",
+  "readiness_status": "world_class_ready",
+  "terminal_status": "world_class_ready",
+  "recommendation_scope": "terminal",
+  "independent_score": 96,
+  "score_out_of": 100,
+  "score_basis": "All required persisted evidence paths are present. Full-pytest evidence records 97 tests with zero failures/errors. Distribution and UI artifacts report pass. raw_simulation_export.zip determinism is implemented with fixed ZIP metadata/order and covered by a same-seed three-rerun SHA-256 test.",
+  "blockers": [],
+  "deny_codes": [],
+  "contradictions": "none found after check",
+  "hard_gates": [
+    {
+      "gate": "persisted_full_pytest_evidence_exists",
+      "status": "pass",
+      "evidence_paths": [
+        "reports/market-engine-v2-pytest.xml",
+        "reports/market-engine-v2-pytest.md"
+      ]
+    },
+    {
+      "gate": "full_pytest_result_clean",
+      "status": "pass",
+      "evidence": {
+        "tests": 97,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "time_seconds": 27.942,
+        "timestamp": "2026-06-05T21:05:51.022919-04:00",
+        "markdown_result": "97 passed in 27.94s"
+      },
+      "evidence_paths": [
+        "reports/market-engine-v2-pytest.xml",
+        "reports/market-engine-v2-pytest.md"
+      ]
+    },
+    {
+      "gate": "distribution_audit_artifacts_exist",
+      "status": "pass",
+      "evidence_paths": [
+        "reports/market-engine-v2-distribution.json",
+        "reports/market-engine-v2-distribution.md"
+      ]
+    },
+    {
+      "gate": "distribution_audit_status",
+      "status": "pass",
+      "evidence": {
+        "status": "pass",
+        "engine_version": "market-engine-v2.0",
+        "bundle": "public_train",
+        "path_count": 100,
+        "calibration_hash": "dafa0f6baf925861"
+      },
+      "evidence_paths": [
+        "reports/market-engine-v2-distribution.json",
+        "reports/market-engine-v2-distribution.md"
+      ]
+    },
+    {
+      "gate": "distribution_calibration_gates",
+      "status": "pass",
+      "gates": {
+        "volume_day_in_base_band": true,
+        "trades_day_in_base_band": true,
+        "fano_factor": true,
+        "volume_autocorrelation": true,
+        "jump_path_share": true,
+        "dfm_surge_share": true
+      },
+      "evidence_paths": [
+        "reports/market-engine-v2-distribution.json"
+      ]
+    },
+    {
+      "gate": "ui_check_artifacts_exist",
+      "status": "pass",
+      "evidence_paths": [
+        "reports/market-engine-v2-ui/market-engine-v2-ui.json",
+        "reports/market-engine-v2-ui/market-engine-v2-ui.md",
+        "reports/market-engine-v2-ui/market-engine-v2-ui.png"
+      ]
+    },
+    {
+      "gate": "ui_check_status",
+      "status": "pass",
+      "evidence": {
+        "status": "pass",
+        "failures": []
+      },
+      "evidence_paths": [
+        "reports/market-engine-v2-ui/market-engine-v2-ui.json",
+        "reports/market-engine-v2-ui/market-engine-v2-ui.md"
+      ]
+    },
+    {
+      "gate": "ui_behavioral_checks",
+      "status": "pass",
+      "checks": {
+        "random_path_changed_seed": true,
+        "market_path_visible": true,
+        "raw_export_download": true,
+        "ranked_robustness_visible": true,
+        "hidden_seed_not_visible": true,
+        "mobile_no_horizontal_overflow": true
+      },
+      "evidence_paths": [
+        "reports/market-engine-v2-ui/market-engine-v2-ui.json"
+      ]
+    },
+    {
+      "gate": "raw_zip_deterministic_implementation",
+      "status": "pass",
+      "evidence": {
+        "implementation": "aegis_challenge/runner.py:774",
+        "fixed_file_order": true,
+        "fixed_zip_timestamp": "2026-01-01T00:00:00",
+        "fixed_compression_type": "ZIP_DEFLATED",
+        "fixed_external_attrs": "0o644 << 16",
+        "byte_based_writestr": true
+      },
+      "evidence_paths": [
+        "aegis_challenge/runner.py"
+      ]
+    },
+    {
+      "gate": "raw_zip_deterministic_test_coverage",
+      "status": "pass",
+      "evidence": {
+        "test": "tests/test_market_engine_v2.py:60",
+        "same_seed_reruns": 3,
+        "asserts_identical_replay_hash": true,
+        "asserts_identical_market_path_hash": true,
+        "asserts_identical_raw_zip_hash": true
+      },
+      "evidence_paths": [
+        "tests/test_market_engine_v2.py"
+      ]
+    },
+    {
+      "gate": "production_code_unchanged_during_review",
+      "status": "pass",
+      "notes": "Review updated only reports/market-engine-v2-review.md and reports/market-engine-v2-review.json."
+    }
+  ],
+  "metrics": {
+    "distribution": {
+      "mean_volume_usd_per_day": "16258128.8919721514558241301811724174981884422657301725577579",
+      "mean_trades_per_day": "45100.77",
+      "mean_realized_volatility_daily": "0.10076573507185617381251714811688625",
+      "trade_count_fano_factor": "36.4682242276434526505866751277195489123578156204428438789635",
+      "volume_autocorrelation_lag1": "0.111449848542080787283309415484671495589862239633886302684437",
+      "jump_path_share": "0.15",
+      "dfm_surge_step_share": "0.64"
+    },
+    "calibration_bands": {
+      "reference_network": "Base",
+      "reference_pair": "WETH/USDC",
+      "source": "reports/base-realism/base-weth-usdc-reference.json",
+      "volume_usd_h24_p10": "4829012",
+      "volume_usd_h24_p90": "283296773",
+      "transactions_h24_p10": "13543",
+      "transactions_h24_p90": "179917",
+      "fano_min": "1.50",
+      "volume_autocorr_lag1_min": "0.10",
+      "jump_path_share_min": "0.05",
+      "jump_path_share_max": "0.45",
+      "dfm_surge_step_share_min": "0.15",
+      "dfm_surge_step_share_max": "0.75",
+      "price_change_h24_abs_reference_pct": "9.7"
+    },
+    "ui": {
+      "base_url": "http://127.0.0.1:59817/web/index.html",
+      "random_path_changed_seed": true,
+      "market_path_visible": true,
+      "raw_export_download": true,
+      "ranked_robustness_visible": true,
+      "hidden_seed_not_visible": true,
+      "mobile_no_horizontal_overflow": true,
+      "console_messages": [],
+      "screenshot": "reports/market-engine-v2-ui/market-engine-v2-ui.png"
+    },
+    "pytest": {
+      "status": "pass",
+      "tests": 97,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "time_seconds": 27.942,
+      "timestamp": "2026-06-05T21:05:51.022919-04:00"
+    }
+  },
+  "evidence_paths": [
+    "reports/market-engine-v2-pytest.xml",
+    "reports/market-engine-v2-pytest.md",
+    "reports/market-engine-v2-distribution.json",
+    "reports/market-engine-v2-distribution.md",
+    "reports/market-engine-v2-ui/market-engine-v2-ui.json",
+    "reports/market-engine-v2-ui/market-engine-v2-ui.md",
+    "reports/market-engine-v2-ui/market-engine-v2-ui.png",
+    "tests/test_market_engine_v2.py",
+    "aegis_challenge/runner.py"
+  ],
+  "required_evidence_paths": {
+    "reports/market-engine-v2-pytest.xml": "present; JUnit tests=97 failures=0 errors=0 skipped=0",
+    "reports/market-engine-v2-pytest.md": "present; records 97 passed in 27.94s",
+    "reports/market-engine-v2-distribution.json": "present; status pass and all gates true",
+    "reports/market-engine-v2-distribution.md": "present; status pass and metric/gate table",
+    "reports/market-engine-v2-ui/market-engine-v2-ui.json": "present; status pass and all behavioral checks true",
+    "reports/market-engine-v2-ui/market-engine-v2-ui.md": "present; status pass and failures none",
+    "reports/market-engine-v2-ui/market-engine-v2-ui.png": "present; PNG image data 390x9667",
+    "tests/test_market_engine_v2.py": "present; deterministic raw ZIP hash coverage at lines 60-69",
+    "aegis_challenge/runner.py": "present; deterministic zip_raw_export implementation at lines 774-802"
+  },
+  "previous_blockers_fixed": [
+    {
+      "blocker": "persisted_97_passed_pytest_evidence_missing",
+      "status": "fixed",
+      "evidence_paths": [
+        "reports/market-engine-v2-pytest.xml",
+        "reports/market-engine-v2-pytest.md"
+      ]
+    },
+    {
+      "blocker": "raw_simulation_export_zip_determinism_not_covered_by_test",
+      "status": "fixed",
+      "evidence_paths": [
+        "tests/test_market_engine_v2.py",
+        "aegis_challenge/runner.py"
+      ]
+    }
+  ],
+  "risks": [
+    {
+      "risk": "Volume autocorrelation margin is narrow.",
+      "detail": "volume_autocorrelation_lag1 is 0.111449848542080787283309415484671495589862239633886302684437 against a minimum of 0.10."
+    },
+    {
+      "risk": "DFM surge step share is high within band.",
+      "detail": "dfm_surge_step_share is 0.64 against a maximum of 0.75."
+    },
+    {
+      "risk": "Distribution confidence is sample-limited.",
+      "detail": "Audit covers 100 paths, which passes current gates but does not deeply characterize tails."
+    },
+    {
+      "risk": "UI pass is artifact-based.",
+      "detail": "The UI evidence references an ephemeral localhost URL and was not rerun under this review's quick-read constraint."
+    }
+  ],
+  "not_verified": [
+    "No fresh pytest run was executed.",
+    "No fresh distribution audit was generated.",
+    "No fresh browser/UI automation was executed."
+  ],
+  "commands_evidence_available": [
+    "sed -n '1,240p' reports/market-engine-v2-pytest.md",
+    "sed -n '1,80p' reports/market-engine-v2-pytest.xml",
+    "jq . reports/market-engine-v2-distribution.json",
+    "sed -n '1,260p' reports/market-engine-v2-distribution.md",
+    "jq . reports/market-engine-v2-ui/market-engine-v2-ui.json",
+    "sed -n '1,240p' reports/market-engine-v2-ui/market-engine-v2-ui.md",
+    "nl -ba tests/test_market_engine_v2.py | sed -n '1,90p'",
+    "nl -ba aegis_challenge/runner.py | sed -n '760,820p'",
+    "file reports/market-engine-v2-ui/market-engine-v2-ui.png"
+  ],
+  "final_verdict": "world_class_ready with independent score 96/100; no blockers."
+}

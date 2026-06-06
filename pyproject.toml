@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aegis-vault-challenge"
+version = "0.1.0"
+description = "Deterministic AEGIS Vault Challenge simulator and contestant runner"
+requires-python = ">=3.9"
+dependencies = []
+
+[project.scripts]
+aegis-vault = "aegis_challenge.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

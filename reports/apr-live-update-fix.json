@@ -1,0 +1,21 @@
+{
+  "status": "fixed",
+  "bug": "Stale score-level APR could override live replay event APR during progressive simulation.",
+  "fix": "Browser APR calculation now prioritizes live event money fields and event-level elapsed simulated time. In-progress events no longer fall back to totalDays()/180; score-level APR is only used when there is no live event.",
+  "live_browser_evidence": {
+    "url": "http://127.0.0.1:4173/web/index.html",
+    "before": "+2.11%",
+    "apr_after_4_5s": "+4.82%",
+    "apr_after_9s": "+11.61%",
+    "changed_before_completion": true,
+    "status_during_sample": "Starting real 180-day ETH/USDC simulation in the AEGIS sandbox...",
+    "raw_has_apr": true,
+    "raw_has_elapsed": true
+  },
+  "verification": {
+    "elapsed_formula_regression": "3 passed",
+    "focused_pytest": "20 passed",
+    "full_pytest": "79 passed"
+  },
+  "disk_note": "Cleared rebuildable ~/Library/pnpm/store cache to restore write headroom for simulator artifacts."
+}

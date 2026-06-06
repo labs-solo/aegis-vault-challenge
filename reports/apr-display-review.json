@@ -1,0 +1,45 @@
+{
+  "status": "world_class_ready",
+  "reviewer_mode": "fallback_independent_rubric_pass",
+  "spawned_subagent": false,
+  "subagent_reason": "Sub-agent tool rules allow spawning only when the user explicitly asks for delegation.",
+  "final_score": 98,
+  "hard_gates": {
+    "participant_facing_apr_not_return": "pass",
+    "annualized_formula_over_elapsed_days": "pass",
+    "replay_exposes_apr_pct_and_elapsed_days": "pass",
+    "score_exposes_apr_pct_and_elapsed_days": "pass",
+    "leaderboard_displays_apr": "pass",
+    "day_zero_building_behavior": "pass",
+    "negative_profit_negative_apr": "pass",
+    "pytest_passes": "pass",
+    "playwright_flow_passes": "pass"
+  },
+  "category_scores": {
+    "apr_math_correctness": 25,
+    "replay_score_api_field_integrity": 20,
+    "participant_facing_ux_language": 20,
+    "progressive_browser_evidence": 15,
+    "regression_coverage_and_compatibility": 18
+  },
+  "verification": {
+    "pytest": "77 passed",
+    "playwright_flow": "pass",
+    "source_scan": "No participant-facing Return label; only regression guard assertion remains."
+  },
+  "evidence_paths": [
+    "aegis_challenge/runner.py",
+    "aegis_challenge/api.py",
+    "aegis_challenge/leaderboard.py",
+    "aegis_challenge/web_app.py",
+    "web/index.html",
+    "tests/test_web_app.py",
+    "tests/test_web.py",
+    "scripts/ui-flow.js",
+    "reports/ux/flow-metrics.json",
+    "reports/ux/flow-metrics.md"
+  ],
+  "non_blocking_risks": [
+    "Older local leaderboard rows may still contain return_pct, but the UI treats that only as a backward-compatible fallback and labels the displayed value as APR."
+  ]
+}

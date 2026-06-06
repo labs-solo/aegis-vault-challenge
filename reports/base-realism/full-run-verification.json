@@ -1,0 +1,21 @@
+{
+  "failures": [],
+  "metrics": {
+    "average_price_impact_pct": "0.0116522825618869437022805835567971357572310740194297078034808",
+    "base_lp_fees_usd": "2166797.42399533475867658947370471631320911446666054922742459",
+    "child_trade_count": 1995887,
+    "dfm_hook_fees_usd": "320223.160230995694779559321488250125465026084518839363454230",
+    "dfm_lp_fee_lift_usd": "1033473.87573531133864102803153763522673930476750571357178125",
+    "dfm_surge_steps": 15360,
+    "executed_strategy_actions": 726,
+    "lp_fees_usd": "3200271.29973064609731761750524235153994841923416626279920532",
+    "period_trade_count": 1995887,
+    "rejected_strategy_actions": 0,
+    "replay_steps": 17280,
+    "trade_rows": 136401,
+    "volume_usd": "722569061.525085019461007847107936347629016984784281715644364",
+    "zip_ok": true
+  },
+  "run_dir": "reports/base-realism/full-run/1c9a94d52abd5b62",
+  "status": "pass"
+}

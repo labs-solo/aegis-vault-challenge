@@ -1,0 +1,42 @@
+{
+  "fixture": {
+    "hidden_scores": [
+      "100",
+      "80",
+      "60",
+      "-100"
+    ],
+    "median": "70.0",
+    "percentile_05": "-76.00",
+    "percentile_25": "20.00",
+    "ranked_score": "28.3000"
+  },
+  "formula": "0.55*median + 0.25*percentile_25 + 0.20*percentile_05",
+  "privacy": {
+    "hidden_raw_scores_in_public_row": false,
+    "private_seed_fields_in_public_row": false
+  },
+  "public_row": {
+    "action_cost": "0.5",
+    "attempts": 1,
+    "disqualified": false,
+    "liquidation_count": 0,
+    "max_delta": "0.02",
+    "median_score": "70.0",
+    "percentile_05": "-76.00",
+    "percentile_25": "20.00",
+    "public_score": "80.0",
+    "rank": 1,
+    "ranked_score": "28.3000",
+    "risk_badges": [
+      "delta-safe",
+      "no-liquidation",
+      "low-churn"
+    ],
+    "run_id": "golden-robust-aggregation",
+    "score_variance": "6275",
+    "strategy": "fixture_strategy.py",
+    "valid_run_count": 4
+  },
+  "status": "pass"
+}

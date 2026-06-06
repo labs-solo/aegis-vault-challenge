@@ -1,0 +1,13 @@
+{
+  "status": "pass",
+  "base_url": "http://127.0.0.1:59817/web/index.html",
+  "failures": [],
+  "random_path_changed_seed": true,
+  "market_path_visible": true,
+  "raw_export_download": true,
+  "ranked_robustness_visible": true,
+  "hidden_seed_not_visible": true,
+  "mobile_no_horizontal_overflow": true,
+  "console_messages": [],
+  "screenshot": "reports/market-engine-v2-ui/market-engine-v2-ui.png"
+}

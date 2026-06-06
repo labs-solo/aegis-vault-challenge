@@ -1,0 +1,25 @@
+No files changed, compilation skipped
+2026-06-05T03:40:17.038082Z  WARN evm::traces::external: etherscan config not found
+
+Ran 5 tests for test/foundry/golden/UniswapV4GoldenVectors.t.sol:UniswapV4GoldenVectorsTest
+[PASS] test_FeeGrowthFixtureMatchesReferenceArithmetic() (gas: 46332)
+[PASS] test_SwapMathToken0ExactInWithinOneTickMatchesFixture() (gas: 31027)
+[PASS] test_SwapMathToken1ExactInWithinOneTickMatchesFixture() (gas: 30962)
+[PASS] test_TickCrossingInputAmountsMatchFixture() (gas: 39097)
+[PASS] test_TickMathReferenceConstantsMatchFixture() (gas: 24169)
+Suite result: ok. 5 passed; 0 failed; 0 skipped; finished in 841.21µs (2.64ms CPU time)
+
+Ran 5 tests for test/foundry/golden/AegisVaultGoldenVectors.t.sol:AegisVaultGoldenVectorsTest
+[PASS] test_ActionLifecycleFixtureSentinels() (gas: 191700)
+[PASS] test_ActualFullRangeTicksAndAmountsMatchFixture() (gas: 35238)
+[PASS] test_DebtMarkFixtureMatchesReferenceBridge() (gas: 50272)
+[PASS] test_LUnitBorrowAndRepayFixtureMatchesReferenceMath() (gas: 45531)
+[PASS] test_LtvAndInterestFixturesMatchReferenceArithmetic() (gas: 71069)
+Suite result: ok. 5 passed; 0 failed; 0 skipped; finished in 2.25ms (4.69ms CPU time)
+
+Ran 2 tests for test/foundry/golden/FoundryReferenceSnapshots.t.sol:FoundryReferenceSnapshotsTest
+[PASS] test_WriteAegisReferenceSnapshot() (gas: 164912)
+[PASS] test_WriteUniswapV4ReferenceSnapshot() (gas: 82750)
+Suite result: ok. 2 passed; 0 failed; 0 skipped; finished in 3.08ms (4.73ms CPU time)
+
+Ran 3 test suites in 97.74ms (6.18ms CPU time): 12 tests passed, 0 failed, 0 skipped (12 total tests)

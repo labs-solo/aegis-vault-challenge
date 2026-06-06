@@ -1,0 +1,385 @@
+{
+  "fixture_version": "aegis-vault-challenge-v1",
+  "generator": {
+    "aegis_engine_commit": "08d389e8b7c53cac1cc9ba05a85dfee596672465",
+    "rounding_policy": "local-python-aegis-reference-subset",
+    "v4_core_commit": "59d3ecf53afa9264a16bba0e38f4c5d2231f80bc",
+    "v4_periphery_commit": "60cd93803ac2b7fa65fd6cd351fd5fd4cc8c9db5"
+  },
+  "vectors": [
+    {
+      "expected": {
+        "idle0_delta": "1000",
+        "idle1_delta": "1000",
+        "liquidity_removed": "1000",
+        "market_total_rL_after": "1000",
+        "vault_rL_after": "1000"
+      },
+      "id": "AE-BORROW-001",
+      "input": {
+        "borrow_amount_l": "1000",
+        "borrow_index_wad": "1000000000000000000",
+        "price": "1",
+        "vault_idle0_before": "0",
+        "vault_idle1_before": "100000",
+        "vault_rL_before": "0"
+      },
+      "source": "Aegis Vault.borrow L-unit accounting subset"
+    },
+    {
+      "expected": {
+        "actual_repaid_l": "500",
+        "geometric_mean": "525",
+        "idle0_consumed": "525",
+        "idle1_consumed": "525",
+        "target_liquidity": "525",
+        "vault_rL_after": "500"
+      },
+      "id": "AE-REPAY-001",
+      "input": {
+        "borrow_index_wad": "1050000000000000000",
+        "idle0": "1000",
+        "idle1": "1000",
+        "requested_repay_l": "500",
+        "vault_rL_before": "1000"
+      },
+      "source": "Aegis Vault.repay conservative bridge subset"
+    },
+    {
+      "expected": {
+        "collateral_floor_l": "200",
+        "debt_l_wad": "100000000000000000000",
+        "ltv_pips": "500000"
+      },
+      "id": "AE-LTV-001",
+      "input": {
+        "borrow_index_wad": "1000000000000000000",
+        "idle0": "100",
+        "idle1": "400",
+        "rL": "100"
+      },
+      "source": "Aegis Vault.computeLtvPips idle-only subset"
+    },
+    {
+      "expected": {
+        "collateral_floor_l": "0",
+        "lock_error": "ERR_MAX_LTV",
+        "ltv_pips": "1000000"
+      },
+      "id": "AE-LTV-002",
+      "input": {
+        "attached_positions": 0,
+        "borrow_index_wad": "1000000000000000000",
+        "idle0": "100",
+        "idle1": "0",
+        "rL": "1"
+      },
+      "source": "Aegis Vault.computeLtvPips one-sided idle subset"
+    },
+    {
+      "expected": {
+        "lock_error": "ERR_MAX_LTV",
+        "ltv_pips": "901000"
+      },
+      "id": "AE-LOCK-001",
+      "input": {
+        "borrow_index_wad": "1000000000000000000",
+        "collateral_floor_l": "1000",
+        "max_ltv_pips": 900000,
+        "rL": "901"
+      },
+      "source": "Aegis Engine lockVault max-LTV rejection subset"
+    },
+    {
+      "expected": {
+        "borrow_index_wad_after": "1000000060000000000",
+        "delta_borrow_index_wad": "60000000000",
+        "interest_accrued_wad": "6000000000000000"
+      },
+      "id": "AE-INTEREST-001",
+      "input": {
+        "borrow_index_wad": "1000000000000000000",
+        "dt": "60",
+        "rate_per_second_wad": "1000000000",
+        "total_rL_borrowed": "100000"
+      },
+      "source": "Aegis Market.accrue subset"
+    },
+    {
+      "expected": {
+        "cancel_idle0_delta": "0",
+        "cancel_idle1_delta": "4",
+        "claimable0": "0",
+        "claimable1": "4",
+        "fill_event_index": 1,
+        "order_status_after_cross": "filled",
+        "swap_event_index": 1,
+        "tick_lower_liquidity_net_after_fill": "0",
+        "tick_lower_liquidity_net_after_place": "1000",
+        "tick_upper_liquidity_net_after_fill": "0",
+        "tick_upper_liquidity_net_after_place": "-1000",
+        "withdraw_idle0_delta": "0",
+        "withdraw_idle1_delta": "4"
+      },
+      "id": "AE-LO-001",
+      "input": {
+        "current_tick": 0,
+        "liquidity": "1000",
+        "side": "sell0",
+        "swap_token_in": "token1",
+        "tick": 60,
+        "tick_spacing": 60
+      },
+      "source": "Aegis LimitOrderManager fill/cancel/withdraw local subset"
+    },
+    {
+      "expected": {
+        "market_event_0_filled_order_ids": [
+          1
+        ],
+        "market_event_1_actor": "arbitrage",
+        "market_event_1_observed_claimable1": "4",
+        "market_event_1_pre_tick": 492,
+        "order_open_before_market_event_1": 0
+      },
+      "id": "AE-LO-002",
+      "input": {
+        "market_event_0": "retail token1 exact-in crosses LO",
+        "market_event_1": "same-step arbitrage",
+        "priority_model": "baseline_batch"
+      },
+      "source": "Aegis same-step afterSwap limit-order fill local subset"
+    },
+    {
+      "expected": {
+        "dynamic_fee_state_after": {
+          "lp_fee_pips": 3000,
+          "pending_hook_fees0": "1",
+          "tick": -199
+        },
+        "dynamic_fee_state_before": {
+          "lp_fee_pips": 3000,
+          "pending_hook_fees0": "0",
+          "tick": 0
+        },
+        "hook_fee_token0": "1",
+        "lp_fee_amount": "30",
+        "pending_hook_fee_delta": "1",
+        "pool_input_after_hook_fee": "9999",
+        "post_swap_tick": -199,
+        "protocol_fee_amount": "10"
+      },
+      "id": "AE-HOOK-FEE-001",
+      "input": {
+        "amount_in": "10000",
+        "fee_model": "aegis_dynamic",
+        "hook_fee_ppm": 1000,
+        "pre_swap_tick": 0,
+        "token_in": "token0"
+      },
+      "source": "Aegis hook fee lifecycle local subset"
+    },
+    {
+      "expected": {
+        "active_liquidity_after": "1001200",
+        "current_swap_hook_fee_token0": "20",
+        "last_reinvest_step": "100",
+        "pending_hook_fees0_after": "20",
+        "pending_hook_fees1_after": "300",
+        "reinvested0": "1200",
+        "reinvested1": "1200",
+        "reinvested_liquidity": "1200"
+      },
+      "id": "AE-HOOK-REINVEST-001",
+      "input": {
+        "amount_in": "10000",
+        "fee_model": "aegis_dynamic",
+        "hook_fee_ppm": 500000,
+        "pre_active_liquidity": "1000000",
+        "pre_pending_hook_fees0": "1200",
+        "pre_pending_hook_fees1": "1500",
+        "step": 100,
+        "token_in": "token0"
+      },
+      "source": "AegisHook deferred pending-fee reinvest lifecycle local subset"
+    },
+    {
+      "expected": {
+        "attached_nft_count_after": 4,
+        "batch_reverted": true,
+        "error": "ERR_MAX_NFTS_EXCEEDED"
+      },
+      "id": "AE-NFT-CAP-001",
+      "input": {
+        "action": "MintRange",
+        "attached_nft_count_before": 4,
+        "liquidity": "100",
+        "lower_tick": -360,
+        "upper_tick": 360
+      },
+      "source": "Aegis vault attached NFT cap local subset"
+    },
+    {
+      "expected": {
+        "debt_repayment_value": "2100",
+        "iterations": [
+          {
+            "bridge_liquidity": "1050",
+            "geometric_mean": "1050",
+            "liability0": "1050",
+            "liability1": "1050",
+            "repaid_l": "1000",
+            "residual_l": "0",
+            "target_liquidity": "1050"
+          }
+        ],
+        "liability0": "1050",
+        "liability1": "1050",
+        "residual_l": "0"
+      },
+      "id": "AE-DEBT-MARK-001",
+      "input": {
+        "borrow_index_wad": "1050000000000000000",
+        "full_range_max_tick": 887220,
+        "full_range_min_tick": -887220,
+        "price": "1",
+        "tick_spacing": 60,
+        "vault_rL": "1000"
+      },
+      "source": "Aegis repay-path debt liability local subset"
+    },
+    {
+      "expected": {
+        "debt_l_after": "860804",
+        "event_kind": "micro_liquidation",
+        "idle0_after": "866361",
+        "idle0_consumed": "133196",
+        "idle1_after": "866361",
+        "idle1_consumed": "133196",
+        "initial_ltv_pips": "994000",
+        "keeper_fee0": "443",
+        "keeper_fee1": "443",
+        "keeper_fee_pips": "3333",
+        "ltv_pips_after": "993585",
+        "market_total_rL_after": "860804",
+        "principal_repaid_l": "133196",
+        "repay_fraction_pips": "134000"
+      },
+      "id": "AE-REPAIR-001",
+      "input": {
+        "borrow_index_wad": "1000000000000000000",
+        "hard_ltv_pips": 996000,
+        "idle0": "1000000",
+        "idle1": "1000000",
+        "max_ltv_pips": 993000,
+        "rL": "994000",
+        "step": 7
+      },
+      "source": "Aegis peelOrMicroLiquidate idle-only micro-liquidation local subset"
+    },
+    {
+      "expected": {
+        "active_liquidity_after": "10000000",
+        "debt_l_after": "994000",
+        "event_kind": "peel",
+        "idle0_after": "1000000",
+        "idle0_credited": "30",
+        "idle1_after": "1000000",
+        "idle1_credited": "30",
+        "initial_ltv_pips": "994000",
+        "keeper_fee0": "0",
+        "keeper_fee1": "0",
+        "ltv_pips_after": "994000",
+        "peel_bounty_pips": "100",
+        "peeled_id": "1",
+        "peeled_kind": "CL",
+        "peeled_liquidity": "10000",
+        "position_count_after": "0",
+        "principal_repaid_l": "0",
+        "repay_fraction_pips": "134000"
+      },
+      "id": "AE-PEEL-001",
+      "input": {
+        "hard_ltv_pips": 996000,
+        "idle0_before_mint": "1000000",
+        "idle1_before_mint": "1000000",
+        "initial_collateral_floor_l": "1000000",
+        "max_ltv_pips": 993000,
+        "position_kind": "CL",
+        "position_liquidity": "10000",
+        "position_range": [
+          -60,
+          60
+        ],
+        "rL": "994000"
+      },
+      "source": "Aegis peelOrMicroLiquidate CL peel local subset"
+    },
+    {
+      "expected": {
+        "debt_l_after": "860804",
+        "deficit_exact_out": "33196",
+        "deficit_zero_for_one": true,
+        "event_kind": "micro_liquidation",
+        "idle0_after": "9832574",
+        "idle0_consumed": "133640",
+        "idle1_after": "0",
+        "idle1_consumed": "132754",
+        "initial_ltv_pips": "994000",
+        "keeper_fee0": "445",
+        "keeper_fee1": "442",
+        "keeper_fee_pips": "3333",
+        "ltv_pips_after": "1000000",
+        "pool_event_index_after": "1",
+        "principal_repaid_l": "133196",
+        "repay_fraction_pips": "134000",
+        "swap_amount_in": "33341",
+        "swap_amount_out": "33196",
+        "swap_token_in": "token0"
+      },
+      "id": "AE-REPAIR-SWAP-001",
+      "input": {
+        "amount0_required": "133196",
+        "amount1_required": "133196",
+        "borrow_index_wad": "1000000000000000000",
+        "hard_ltv_pips": 996000,
+        "idle0": "10000000",
+        "idle1": "100000",
+        "max_ltv_pips": 993000,
+        "pool_active_liquidity": "10000000",
+        "pool_lp_fee_pips": 1000,
+        "rL": "994000",
+        "step": 9
+      },
+      "source": "Aegis peelOrMicroLiquidate swap-assisted micro-liquidation local subset"
+    },
+    {
+      "expected": {
+        "fill_count": 2,
+        "order_1_claimable1": "3",
+        "order_1_deposited0": "3",
+        "order_1_status": "filled",
+        "order_2_claimable1": "7",
+        "order_2_deposited0": "6",
+        "order_2_status": "filled",
+        "tick_lower_liquidity_net_after_fill": "0",
+        "tick_upper_liquidity_net_after_fill": "0",
+        "total_claimable1": "10"
+      },
+      "id": "AE-LO-EPOCH-001",
+      "input": {
+        "liquidity_by_order": [
+          "1000",
+          "2000"
+        ],
+        "pool_lp_fee_pips": 0,
+        "side": "sell0",
+        "swap_amount_in": "250000",
+        "swap_token_in": "token1",
+        "tick": 60,
+        "tick_spacing": 60
+      },
+      "source": "Aegis LimitOrderManager epoch payout proportional-with-residual local subset"
+    }
+  ]
+}

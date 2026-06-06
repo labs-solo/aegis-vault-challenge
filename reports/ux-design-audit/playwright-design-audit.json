@@ -1,0 +1,564 @@
+{
+  "status": "ready_for_participant_testing",
+  "generated_at": "2026-06-05T13:01:49.517Z",
+  "url": "file:///Users/page/Page/repos/aegis-vault-challenge/web/index.html",
+  "scorecard": {
+    "first_time_clarity": "improved",
+    "concept_density": "reduced",
+    "metric_interpretability": "improved",
+    "replay_chart_quality": "improved",
+    "automated_accessibility": "pass",
+    "automated_responsive_smoke": "pass",
+    "participant_validation": "not_yet_run"
+  },
+  "blockers": [],
+  "results": [
+    {
+      "name": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "screenshots": {
+        "initial": "reports/ux-design-audit/desktop-initial.png",
+        "after_interactions": "reports/ux-design-audit/desktop-after-interactions.png"
+      },
+      "overflow": [],
+      "links": [
+        {
+          "text": "Start",
+          "href": "#workspace"
+        },
+        {
+          "text": "Engine",
+          "href": "#engine"
+        },
+        {
+          "text": "Positions",
+          "href": "#positions"
+        },
+        {
+          "text": "Leaderboard",
+          "href": "#leaderboard"
+        },
+        {
+          "text": "Docs",
+          "href": "../README.md"
+        },
+        {
+          "text": "Checks",
+          "href": "#audits"
+        },
+        {
+          "text": "Legal",
+          "href": "#legal"
+        }
+      ],
+      "first_view_text": "AEGIS\nStart\nEngine\nPositions\nLeaderboard\nDocs\nChecks\nLegal\nAEGIS - Programmable Infrastructure for Uniswap v4 Pools\nAEGIS ENGINE\nAegis Vault Challenge\nPaste one Python strategy. Earn CL/LO edge. Keep vault equity delta near zero while AEGIS borrow/repay manages debt.\nLoad replay\nLoad score\nLoad board\nCopy run command\nCopy submit\nObjective\nMaximize final score from liquidity placement, same-swap limit-order fills, and fees after costs, interest, and penalties.\nNeutrality rule\nDelta is equity sensitivity to price. Good strategies keep normalized delta inside the safe band instead of winning through beta.\nVault rule\nBorrow L-units, repay when needed, respect LTV and collateral floors, and repair before the vault locks you out.\n1\nPaste strategy\nUse one Python file with AEGIS vault actions.\n2\nRun locally\nCopy the command and generate replay plus score files.\n3\nInspect replay\nScrub price, delta, LTV, swaps, fills, and errors.\n4\nImprove and submit\nCompare leaderboard score, then submit the strategy.\nReady: paste a strategy, copy a run command, then load replay and score outputs.\nRun score\n0.095803\n|Delta| norm\n0.015001\nLTV pips\n297796\nDebt rL\n3000\nStep fees\n1\nStrategy Lab\nPractice smoke\nPublic training\nRanked submission\nSeed 1\nSeed 2\nSeed 11\nReset\nVisual Replay\nreplay-deterministic\ndelta-safe\nLTV-safe\nDFM static fee\nprice\ndelta\nLTV\n59\nRisk Panel\nlocked\nCollateral floor\t10074\nDebt principal rL\t3000\nBorrow index\t1000000001062000000\nDebt liability\t3,000.000003186\nHard LTV\t996000\nPublic run\td6b0fef507e87283\nScore Waterfall\nScore\nRisk\nFees\nRaw PnL\n0.108203\nCL fees\n0\nLO edge\n0\nBorrow in",
+      "linkChecks": [
+        {
+          "text": "Start",
+          "href": "#workspace",
+          "kind": "anchor",
+          "ok": true
+        },
+        {
+          "text": "Engine",
+          "href": "#engine",
+          "kind": "anchor",
+          "ok": true
+        },
+        {
+          "text": "Positions",
+          "href": "#positions",
+          "kind": "anchor",
+          "ok": true
+        },
+        {
+          "text": "Leaderboard",
+          "href": "#leaderboard",
+          "kind": "anchor",
+          "ok": true
+        },
+        {
+          "text": "Docs",
+          "href": "../README.md",
+          "kind": "file",
+          "target": "README.md",
+          "ok": true
+        },
+        {
+          "text": "Checks",
+          "href": "#audits",
+          "kind": "anchor",
+          "ok": true
+        },
+        {
+          "text": "Legal",
+          "href": "#legal",
+          "kind": "anchor",
+          "ok": true
+        }
+      ],
+      "firstFocus": {
+        "selector": "a#.active",
+        "outline": "3px solid rgb(25, 211, 197)"
+      },
+      "clickChecks": [
+        {
+          "action": "reset",
+          "selector": "#resetButton",
+          "expected": "starter example",
+          "ok": true
+        },
+        {
+          "action": "risk tab",
+          "selector": "[data-tab=\"risk\"]",
+          "expected": "LTV headroom",
+          "ok": true
+        },
+        {
+          "action": "fees tab",
+          "selector": "[data-tab=\"fees\"]",
+          "expected": "Step fees",
+          "ok": true
+        },
+        {
+          "action": "score tab",
+          "selector": "[data-tab=\"score\"]",
+          "expected": "Final score",
+          "ok": true
+        },
+        {
+          "action": "run command",
+          "selector": "#runButton",
+          "expected": "Copied run command",
+          "ok": true
+        },
+        {
+          "action": "submit command",
+          "selector": "#submitButton",
+          "expected": "Copied submit command",
+          "ok": true
+        }
+      ],
+      "stepBox": "25",
+      "editorValueLength": 105,
+      "consoleMessages": []
+    },
+    {
+      "name": "laptop",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "screenshots": {
+        "initial": "reports/ux-design-audit/laptop-initial.png",
+        "after_interactions": "reports/ux-design-audit/laptop-after-interactions.png"
+      },
+      "overflow": [],
+      "links": [
+        {
+          "text": "Start",
+          "href": "#workspace"
+        },
+        {
+          "text": "Engine",
+          "href": "#engine"
+        },
+        {
+          "text": "Positions",
+          "href": "#positions"
+        },
+        {
+          "text": "Leaderboard",
+          "href": "#leaderboard"
+        },
+        {
+          "text": "Docs",
+          "href": "../README.md"
+        },
+        {
+          "text": "Checks",
+          "href": "#audits"
+        },
+        {
+          "text": "Legal",
+          "href": "#legal"
+        }
+      ],
+      "first_view_text": "AEGIS\nStart\nEngine\nPositions\nLeaderboard\nDocs\nChecks\nLegal\nAEGIS - Programmable Infrastructure for Uniswap v4 Pools\nAEGIS ENGINE\nAegis Vault Challenge\nPaste one Python strategy. Earn CL/LO edge. Keep vault equity delta near zero while AEGIS borrow/repay manages debt.\nLoad replay\nLoad score\nLoad board\nCopy run command\nCopy submit\nObjective\nMaximize final score from liquidity placement, same-swap limit-order fills, and fees after costs, interest, and penalties.\nNeutrality rule\nDelta is equity sensitivity to price. Good strategies keep normalized delta inside the safe band instead of winning through beta.\nVault rule\nBorrow L-units, repay when needed, respect LTV and collateral floors, and repair before the vault locks you out.\n1\nPaste strategy\nUse one Python file with AEGIS vault actions.\n2\nRun locally\nCopy the command and generate replay plus score files.\n3\nInspect replay\nScrub price, delta, LTV, swaps, fills, and errors.\n4\nImprove and submit\nCompare leaderboard score, then submit the strategy.\nReady: paste a strategy, copy a run command, then load replay and score outputs.\nRun score\n0.095803\n|Delta| norm\n0.015001\nLTV pips\n297796\nDebt rL\n3000\nStep fees\n1\nStrategy Lab\nPractice smoke\nPublic training\nRanked submission\nSeed 1\nSeed 2\nSeed 11\nReset\nVisual Replay\nreplay-deterministic\ndelta-safe\nLTV-safe\nDFM static fee\nprice\ndelta\nLTV\n59\nRisk Panel\nlocked\nCollateral floor\t10074\nDebt principal rL\t3000\nBorrow index\t1000000001062000000\nDebt liability\t3,000.000003186\nHard LTV\t996000\nPublic run\td6b0fef507e87283\nScore Waterfall\nScore\nRisk\nFees\nRaw PnL\n0.108203\nCL fees\n0\nLO edge\n0\nBorrow in",
+      "linkChecks": [
+        {
+          "text": "Start",
+          "href": "#workspace",
+          "kind": "anchor",
+          "ok": true
+        },
+        {
+          "text": "Engine",
+          "href": "#engine",
+          "kind": "anchor",
+          "ok": true
+        },
+        {
+          "text": "Positions",
+          "href": "#positions",
+          "kind": "anchor",
+          "ok": true
+        },
+        {
+          "text": "Leaderboard",
+          "href": "#leaderboard",
+          "kind": "anchor",
+          "ok": true
+        },
+        {
+          "text": "Docs",
+          "href": "../README.md",
+          "kind": "file",
+          "target": "README.md",
+          "ok": true
+        },
+        {
+          "text": "Checks",
+          "href": "#audits",
+          "kind": "anchor",
+          "ok": true
+        },
+        {
+          "text": "Legal",
+          "href": "#legal",
+          "kind": "anchor",
+          "ok": true
+        }
+      ],
+      "firstFocus": {
+        "selector": "a#.active",
+        "outline": "3px solid rgb(25, 211, 197)"
+      },
+      "clickChecks": [
+        {
+          "action": "reset",
+          "selector": "#resetButton",
+          "expected": "starter example",
+          "ok": true
+        },
+        {
+          "action": "risk tab",
+          "selector": "[data-tab=\"risk\"]",
+          "expected": "LTV headroom",
+          "ok": true
+        },
+        {
+          "action": "fees tab",
+          "selector": "[data-tab=\"fees\"]",
+          "expected": "Step fees",
+          "ok": true
+        },
+        {
+          "action": "score tab",
+          "selector": "[data-tab=\"score\"]",
+          "expected": "Final score",
+          "ok": true
+        },
+        {
+          "action": "run command",
+          "selector": "#runButton",
+          "expected": "Copied run command",
+          "ok": true
+        },
+        {
+          "action": "submit command",
+          "selector": "#submitButton",
+          "expected": "Copied submit command",
+          "ok": true
+        }
+      ],
+      "stepBox": "25",
+      "editorValueLength": 105,
+      "consoleMessages": []
+    },
+    {
+      "name": "tablet",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "screenshots": {
+        "initial": "reports/ux-design-audit/tablet-initial.png",
+        "after_interactions": "reports/ux-design-audit/tablet-after-interactions.png"
+      },
+      "overflow": [],
+      "links": [
+        {
+          "text": "Start",
+          "href": "#workspace"
+        },
+        {
+          "text": "Engine",
+          "href": "#engine"
+        },
+        {
+          "text": "Positions",
+          "href": "#positions"
+        },
+        {
+          "text": "Leaderboard",
+          "href": "#leaderboard"
+        },
+        {
+          "text": "Docs",
+          "href": "../README.md"
+        },
+        {
+          "text": "Checks",
+          "href": "#audits"
+        },
+        {
+          "text": "Legal",
+          "href": "#legal"
+        }
+      ],
+      "first_view_text": "AEGIS ENGINE\nAegis Vault Challenge\nPaste one Python strategy. Earn CL/LO edge. Keep vault equity delta near zero while AEGIS borrow/repay manages debt.\nLoad replay\nLoad score\nLoad board\nCopy run command\nCopy submit\nObjective\nMaximize final score from liquidity placement, same-swap limit-order fills, and fees after costs, interest, and penalties.\nNeutrality rule\nDelta is equity sensitivity to price. Good strategies keep normalized delta inside the safe band instead of winning through beta.\nVault rule\nBorrow L-units, repay when needed, respect LTV and collateral floors, and repair before the vault locks you out.\n1\nPaste strategy\nUse one Python file with AEGIS vault actions.\n2\nRun locally\nCopy the command and generate replay plus score files.\n3\nInspect replay\nScrub price, delta, LTV, swaps, fills, and errors.\n4\nImprove and submit\nCompare leaderboard score, then submit the strategy.\nReady: paste a strategy, copy a run command, then load replay and score outputs.\nRun score\n0.095803\n|Delta| norm\n0.015001\nLTV pips\n297796\nDebt rL\n3000\nStep fees\n1\nStrategy Lab\nPractice smoke\nPublic training\nRanked submission\nSeed 1\nSeed 2\nSeed 11\nReset\nVisual Replay\nreplay-deterministic\ndelta-safe\nLTV-safe\nDFM static fee\nprice\ndelta\nLTV\n59\nRisk Panel\nlocked\nCollateral floor\t10074\nDebt principal rL\t3000\nBorrow index\t1000000001062000000\nDebt liability\t3,000.000003186\nHard LTV\t996000\nPublic run\td6b0fef507e87283\nScore Waterfall\nScore\nRisk\nFees\nRaw PnL\n0.108203\nCL fees\n0\nLO edge\n0\nBorrow interest\n-0.000003\nAction costs\n-0.0124\nDelta penalty\n0\nFinal score\n0.095803\nMechanics Cheatsheet\nEngine\nCL placement\n",
+      "linkChecks": [
+        {
+          "text": "Start",
+          "href": "#workspace",
+          "kind": "anchor",
+          "ok": true
+        },
+        {
+          "text": "Engine",
+          "href": "#engine",
+          "kind": "anchor",
+          "ok": true
+        },
+        {
+          "text": "Positions",
+          "href": "#positions",
+          "kind": "anchor",
+          "ok": true
+        },
+        {
+          "text": "Leaderboard",
+          "href": "#leaderboard",
+          "kind": "anchor",
+          "ok": true
+        },
+        {
+          "text": "Docs",
+          "href": "../README.md",
+          "kind": "file",
+          "target": "README.md",
+          "ok": true
+        },
+        {
+          "text": "Checks",
+          "href": "#audits",
+          "kind": "anchor",
+          "ok": true
+        },
+        {
+          "text": "Legal",
+          "href": "#legal",
+          "kind": "anchor",
+          "ok": true
+        }
+      ],
+      "firstFocus": {
+        "selector": "a#.active",
+        "outline": "3px solid rgb(25, 211, 197)"
+      },
+      "clickChecks": [
+        {
+          "action": "reset",
+          "selector": "#resetButton",
+          "expected": "starter example",
+          "ok": true
+        },
+        {
+          "action": "risk tab",
+          "selector": "[data-tab=\"risk\"]",
+          "expected": "LTV headroom",
+          "ok": true
+        },
+        {
+          "action": "fees tab",
+          "selector": "[data-tab=\"fees\"]",
+          "expected": "Step fees",
+          "ok": true
+        },
+        {
+          "action": "score tab",
+          "selector": "[data-tab=\"score\"]",
+          "expected": "Final score",
+          "ok": true
+        },
+        {
+          "action": "run command",
+          "selector": "#runButton",
+          "expected": "Copied run command",
+          "ok": true
+        },
+        {
+          "action": "submit command",
+          "selector": "#submitButton",
+          "expected": "Copied submit command",
+          "ok": true
+        }
+      ],
+      "stepBox": "25",
+      "editorValueLength": 105,
+      "consoleMessages": []
+    },
+    {
+      "name": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "screenshots": {
+        "initial": "reports/ux-design-audit/mobile-initial.png",
+        "after_interactions": "reports/ux-design-audit/mobile-after-interactions.png"
+      },
+      "overflow": [],
+      "links": [
+        {
+          "text": "Start",
+          "href": "#workspace"
+        },
+        {
+          "text": "Engine",
+          "href": "#engine"
+        },
+        {
+          "text": "Positions",
+          "href": "#positions"
+        },
+        {
+          "text": "Leaderboard",
+          "href": "#leaderboard"
+        },
+        {
+          "text": "Docs",
+          "href": "../README.md"
+        },
+        {
+          "text": "Checks",
+          "href": "#audits"
+        },
+        {
+          "text": "Legal",
+          "href": "#legal"
+        }
+      ],
+      "first_view_text": "AEGIS\nStart\nEngine\nPositions\nLeaderboard\nDocs\nChecks\nLegal\nAEGIS ENGINE\nAegis Vault Challenge\nPaste one Python strategy. Earn CL/LO edge. Keep vault equity delta near zero while AEGIS borrow/repay manages debt.\nLoad replay\nLoad score\nLoad board\nCopy run command\nCopy submit\nObjective\nMaximize final score from liquidity placement, same-swap limit-order fills, and fees after costs, interest, and penalties.\nNeutrality rule\nDelta is equity sensitivity to price. Good strategies keep normalized delta inside the safe band instead of winning through beta.\nVault rule\nBorrow L-units, repay when needed, respect LTV and collateral floors, and repair before the vault locks you out.\n1\nPaste strategy\nUse one Python file with AEGIS vault actions.\n2\nRun locally\nCopy the command and generate replay plus score files.\n3\nInspect replay\nScrub price, delta, LTV, swaps, fills, and errors.\n4\nImprove and submit\nCompare leaderboard score, then submit the strategy.\nReady: paste a strategy, copy a run command, then load replay and score outputs.\nRun score\n0.095803\n|Delta| norm\n0.015001\nLTV pips\n297796\nDebt rL\n3000\nStep fees\n1\nStrategy Lab\nPractice smoke\nPublic training\nRanked submission\nSeed 1\nSeed 2\nSeed 11\nReset\nVisual Replay\nreplay-deterministic\ndelta-safe\nLTV-safe\nDFM static fee\nprice\ndelta\nLTV\n59\nRisk Panel\nlocked\nCollateral floor\t10074\nDebt principal rL\t3000\nBorrow index\t1000000001062000000\nDebt liability\t3,000.000003186\nHard LTV\t996000\nPublic run\td6b0fef507e87283\nScore Waterfall\nScore\nRisk\nFees\nRaw PnL\n0.108203\nCL fees\n0\nLO edge\n0\nBorrow interest\n-0.000003\nAction costs\n-0.0124\nDelta penalty\n0\nFin",
+      "linkChecks": [
+        {
+          "text": "Start",
+          "href": "#workspace",
+          "kind": "anchor",
+          "ok": true
+        },
+        {
+          "text": "Engine",
+          "href": "#engine",
+          "kind": "anchor",
+          "ok": true
+        },
+        {
+          "text": "Positions",
+          "href": "#positions",
+          "kind": "anchor",
+          "ok": true
+        },
+        {
+          "text": "Leaderboard",
+          "href": "#leaderboard",
+          "kind": "anchor",
+          "ok": true
+        },
+        {
+          "text": "Docs",
+          "href": "../README.md",
+          "kind": "file",
+          "target": "README.md",
+          "ok": true
+        },
+        {
+          "text": "Checks",
+          "href": "#audits",
+          "kind": "anchor",
+          "ok": true
+        },
+        {
+          "text": "Legal",
+          "href": "#legal",
+          "kind": "anchor",
+          "ok": true
+        }
+      ],
+      "firstFocus": {
+        "selector": "a#.active",
+        "outline": "3px solid rgb(25, 211, 197)"
+      },
+      "clickChecks": [
+        {
+          "action": "reset",
+          "selector": "#resetButton",
+          "expected": "starter example",
+          "ok": true
+        },
+        {
+          "action": "risk tab",
+          "selector": "[data-tab=\"risk\"]",
+          "expected": "LTV headroom",
+          "ok": true
+        },
+        {
+          "action": "fees tab",
+          "selector": "[data-tab=\"fees\"]",
+          "expected": "Step fees",
+          "ok": true
+        },
+        {
+          "action": "score tab",
+          "selector": "[data-tab=\"score\"]",
+          "expected": "Final score",
+          "ok": true
+        },
+        {
+          "action": "run command",
+          "selector": "#runButton",
+          "expected": "Copied run command",
+          "ok": true
+        },
+        {
+          "action": "submit command",
+          "selector": "#submitButton",
+          "expected": "Copied submit command",
+          "ok": true
+        }
+      ],
+      "stepBox": "25",
+      "editorValueLength": 105,
+      "consoleMessages": []
+    }
+  ],
+  "remaining_risk": "Do not call this world-class until representative contestants can explain the challenge, delta-neutral constraint, run flow, and replay in a short usability test.",
+  "measured_flow": {
+    "status": "pass",
+    "base_url": "http://127.0.0.1:51138/web/index.html",
+    "happy_path_actions_after_load": 2,
+    "first_run_ms": 233,
+    "submit_ms": 39,
+    "repeated_run_count": 10,
+    "normal_path_cli_commands": 0,
+    "normal_path_file_pickers": 0,
+    "normal_path_manual_artifact_loads": 0,
+    "failures": [],
+    "console_messages": [],
+    "screenshot": "reports/ux/flow-final.png"
+  }
+}

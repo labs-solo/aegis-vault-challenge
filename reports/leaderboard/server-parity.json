@@ -1,0 +1,35 @@
+{
+  "privacy": {
+    "private_contains_hidden_scores": true,
+    "private_contains_rank_seed_fields": false,
+    "public_contains_hidden_scores": false,
+    "public_contains_private_path": false,
+    "public_contains_rank_seed_fields": false
+  },
+  "private_path": "reports/leaderboard/server-fixture/server-private-submissions.json",
+  "public_matches_private_recompute": true,
+  "public_path": "reports/leaderboard/server-fixture/server-public-leaderboard.json",
+  "public_row": {
+    "action_cost": "0",
+    "attempts": 1,
+    "disqualified": false,
+    "liquidation_count": 0,
+    "max_delta": "0",
+    "median_score": "0E-55",
+    "percentile_05": "0E-56",
+    "percentile_25": "0E-56",
+    "public_score": "0E-55",
+    "rank": 1,
+    "ranked_score": "0E-58",
+    "risk_badges": [
+      "delta-safe",
+      "no-liquidation",
+      "low-churn"
+    ],
+    "run_id": "bb6b8525ef7f3f79",
+    "score_variance": "0E-108",
+    "strategy": "00_hold_idle.py",
+    "valid_run_count": 3
+  },
+  "status": "pass"
+}

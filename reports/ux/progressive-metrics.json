@@ -1,0 +1,22 @@
+{
+  "status": "pass",
+  "base_url": "http://127.0.0.1:50566/web/index.html",
+  "horizon_days": 180,
+  "step_length_seconds": 900,
+  "run_duration_ms": 51644,
+  "progress_update_count": 51,
+  "publish_share_verified": true,
+  "share_modal_visible": true,
+  "share_card_nonblank": true,
+  "anonymous_second_run_blocked": true,
+  "failures": [],
+  "console_messages": [],
+  "apr_updates_before_completion": [
+    "+2.11%",
+    "+0.06%"
+  ],
+  "apr_update_count": 51,
+  "final_progress_label": "DAY 180.0 OF 180",
+  "final_progress_width": "338px",
+  "screenshot": "reports/ux/progressive-final.png"
+}

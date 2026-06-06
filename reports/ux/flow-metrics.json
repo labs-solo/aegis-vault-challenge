@@ -1,0 +1,30 @@
+{
+  "status": "pass",
+  "base_url": "http://127.0.0.1:50545/web/index.html",
+  "happy_path_actions_after_load": 5,
+  "first_run_ms": 1323,
+  "login_required_preserved_strategy": true,
+  "anonymous_blocked": true,
+  "mock_login_visible": true,
+  "cooldown_visible": true,
+  "useful_actions_enabled_during_cooldown": 5,
+  "publish_ms": 38,
+  "share_intent_present": true,
+  "share_modal_visible": true,
+  "share_card_nonblank": true,
+  "share_intent_url_clean": true,
+  "leaderboard_identity_present": true,
+  "normal_path_cli_commands": 0,
+  "normal_path_file_pickers": 0,
+  "normal_path_manual_artifact_loads": 0,
+  "failures": [],
+  "console_messages": [],
+  "second_run_ms": 1310,
+  "api_snapshot": {
+    "authenticated": true,
+    "attempts": 11,
+    "leaderboard": 13,
+    "block_reason": "cooldown_active"
+  },
+  "screenshot": "reports/ux/flow-final.png"
+}

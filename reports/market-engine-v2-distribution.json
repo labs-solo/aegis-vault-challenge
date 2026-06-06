@@ -1,0 +1,40 @@
+{
+  "bundle": "public_train",
+  "calibration_bands": {
+    "dfm_surge_step_share_max": "0.75",
+    "dfm_surge_step_share_min": "0.15",
+    "fano_min": "1.50",
+    "jump_path_share_max": "0.45",
+    "jump_path_share_min": "0.05",
+    "price_change_h24_abs_reference_pct": "9.7",
+    "reference_network": "Base",
+    "reference_pair": "WETH/USDC",
+    "source": "reports/base-realism/base-weth-usdc-reference.json",
+    "transactions_h24_p10": "13543",
+    "transactions_h24_p90": "179917",
+    "volume_autocorr_lag1_min": "0.10",
+    "volume_usd_h24_p10": "4829012",
+    "volume_usd_h24_p90": "283296773"
+  },
+  "calibration_hash": "dafa0f6baf925861",
+  "engine_version": "market-engine-v2.0",
+  "gates": {
+    "dfm_surge_share": true,
+    "fano_factor": true,
+    "jump_path_share": true,
+    "trades_day_in_base_band": true,
+    "volume_autocorrelation": true,
+    "volume_day_in_base_band": true
+  },
+  "metrics": {
+    "dfm_surge_step_share": "0.64",
+    "jump_path_share": "0.15",
+    "mean_realized_volatility_daily": "0.10076573507185617381251714811688625",
+    "mean_trades_per_day": "45100.77",
+    "mean_volume_usd_per_day": "16258128.8919721514558241301811724174981884422657301725577579",
+    "trade_count_fano_factor": "36.4682242276434526505866751277195489123578156204428438789635",
+    "volume_autocorrelation_lag1": "0.111449848542080787283309415484671495589862239633886302684437"
+  },
+  "path_count": 100,
+  "status": "pass"
+}

@@ -1,0 +1,61 @@
+{
+  "checks": [
+    {
+      "errors": [],
+      "evidence_paths": [
+        "tests/golden/uniswap_v4_vectors.json"
+      ],
+      "extra_vectors": [],
+      "fixture_version": "aegis-vault-challenge-v1",
+      "name": "uniswap_v4_vectors.json",
+      "required_vector_count": 7,
+      "status": "pass",
+      "vector_count": 7
+    },
+    {
+      "errors": [],
+      "evidence_paths": [
+        "tests/golden/aegis_vault_vectors.json"
+      ],
+      "extra_vectors": [],
+      "fixture_version": "aegis-vault-challenge-v1",
+      "name": "aegis_vault_vectors.json",
+      "required_vector_count": 16,
+      "status": "pass",
+      "vector_count": 16
+    },
+    {
+      "errors": [],
+      "evidence_paths": [
+        "tests/golden/scoring_vectors.json"
+      ],
+      "extra_vectors": [],
+      "fixture_version": "aegis-vault-challenge-v1",
+      "name": "scoring_vectors.json",
+      "required_vector_count": 6,
+      "status": "pass",
+      "vector_count": 6
+    },
+    {
+      "errors": [],
+      "evidence_paths": [
+        "tests/golden/uniswap_v4_vectors.json",
+        "tests/golden/aegis_vault_vectors.json",
+        "tests/golden/scoring_vectors.json"
+      ],
+      "name": "golden_regeneration",
+      "status": "pass"
+    },
+    {
+      "errors": [],
+      "evidence_paths": [
+        "reports/golden/foundry-uniswap-v4-reference.json",
+        "reports/golden/foundry-aegis-vault-reference.json"
+      ],
+      "name": "foundry_snapshot_parity",
+      "status": "pass"
+    }
+  ],
+  "fixture_version": "aegis-vault-challenge-v1",
+  "status": "pass"
+}

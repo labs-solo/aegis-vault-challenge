@@ -1,0 +1,26 @@
+{
+  "bundle": "smoke",
+  "disqualified": false,
+  "errors": [],
+  "public_seed": 1,
+  "run_id": "8a7711c8f5cf0ab1",
+  "score_breakdown": {
+    "action_costs": "0.01780000",
+    "borrow_interest_attribution": "0.00007965",
+    "cl_fee_pnl": "0E-59",
+    "delta_penalty": "0",
+    "disqualification_reason": null,
+    "disqualified": false,
+    "invalid_action_penalty": "0",
+    "inventory_mark_pnl": "99996.9999278986489963288645041158979258293896104493445675076",
+    "liquidation_penalty": "0",
+    "lo_edge_pnl": "0",
+    "loss_explanations": [
+      "action costs reduced score",
+      "borrow interest increased debt liability"
+    ],
+    "raw_pnl": "-3.0000721013510036711354958841020741706103895506554324924",
+    "scenario_score": "-3.0178721013510036711354958841020741706103895506554324924"
+  },
+  "strategy": "starter_strategy.py"
+}

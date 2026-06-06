@@ -1,0 +1,44 @@
+{
+  "status": "pass",
+  "checks": [
+    {
+      "name": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "screenshot": "reports/docs-academy/docs-desktop.png",
+      "answerEvidence": {
+        "objective": true,
+        "actions": true,
+        "improvement": true,
+        "hiddenInfo": true
+      }
+    },
+    {
+      "name": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "screenshot": "reports/docs-academy/docs-mobile.png",
+      "answerEvidence": {
+        "objective": true,
+        "actions": true,
+        "improvement": true,
+        "hiddenInfo": true
+      }
+    }
+  ],
+  "gates": {
+    "main_app_entry": "pass",
+    "desktop_docs_render": "pass",
+    "mobile_docs_render": "pass",
+    "action_search_filter": "pass",
+    "copyable_snippets": "pass",
+    "accessibility_smoke": "pass",
+    "link_health": "pass",
+    "horizontal_overflow": "pass",
+    "first_time_clarity_evidence": "pass"
+  }
+}

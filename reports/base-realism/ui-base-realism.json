@@ -1,0 +1,12 @@
+{
+  "status": "pass",
+  "base_url": "http://127.0.0.1:50681/web/index.html",
+  "failures": [],
+  "console_messages": [],
+  "dfm_surge_highlight": true,
+  "market_stats_visible": true,
+  "raw_download_zip": true,
+  "final_day_180": true,
+  "selected_surge_step": 1923,
+  "screenshot": "reports/base-realism/ui-base-realism.png"
+}

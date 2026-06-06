@@ -1,0 +1,1790 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Aegis Vault Challenge - USDC/ETH Delta-Neutral Vault Competition</title>
+    <link rel="icon" type="image/svg+xml" href="assets/aegis-logo.svg">
+    <meta name="description" content="Aegis Vault Challenge: start with 100,000 USDC, trade ETH/USDC, and compete on USD profit while minimizing ETH exposure.">
+    <meta property="og:site_name" content="Aegis">
+    <meta property="og:title" content="Aegis Vault Challenge">
+    <meta property="og:description" content="Paste one Python strategy, control AEGIS vault borrow/repay plus CL/LO placement, and compete on USD profit without ETH direction risk.">
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #131313;
+        --panel: #1a1a1a;
+        --panel-2: #242424;
+        --line: #333333;
+        --text: #ffffff;
+        --muted: #b0b7c3;
+        --quiet: #8f98a8;
+        --accent: #ff8728;
+        --accent-2: #ffb547;
+        --teal: #19d3c5;
+        --green: #38d776;
+        --blue: #65a7ff;
+        --warn: #ffcc66;
+        --danger: #ff5c5c;
+        --radius: 8px;
+        font-family: "Open Sauce One", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      * { box-sizing: border-box; }
+      body { margin: 0; min-height: 100vh; background: var(--bg); }
+      body.modal-open { overflow: hidden; }
+      button, input, select, textarea { font: inherit; }
+      a:focus-visible,
+      button:focus-visible,
+      label.file-label:focus-visible,
+      select:focus-visible,
+      textarea:focus-visible,
+      input[type="range"]:focus-visible {
+        outline: 3px solid var(--teal);
+        outline-offset: 2px;
+      }
+      button, label.file-label {
+        min-height: 38px;
+        border: 1px solid rgba(255, 135, 40, .45);
+        border-radius: 6px;
+        background: #1f1f1f;
+        color: var(--text);
+        padding: 9px 12px;
+        cursor: pointer;
+      }
+      button.primary { background: linear-gradient(135deg, #ff6b35 0%, #ff8728 50%, #ffb547 100%); color: #111111; border: 0; font-weight: 800; }
+      button.ghost { border-color: var(--line); color: var(--muted); }
+      button:disabled { opacity: .46; cursor: not-allowed; }
+      select {
+        min-height: 38px;
+        color: var(--text);
+        background: #101010;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 8px 10px;
+      }
+      input[type="text"] {
+        min-height: 38px;
+        color: var(--text);
+        background: #101010;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 8px 10px;
+      }
+
+      .app { display: grid; grid-template-columns: 212px minmax(0, 1fr) 336px; min-height: 100vh; }
+      .rail, .side { background: var(--panel); border-color: var(--line); }
+      .rail { border-right: 1px solid var(--line); padding: 18px 14px; position: sticky; top: 0; height: 100vh; }
+      .side { border-left: 1px solid var(--line); padding: 18px; overflow: auto; max-height: 100vh; }
+      .main { min-width: 0; padding: 18px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+      .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; font-weight: 850; }
+      .brand-logo { width: 32px; height: 32px; display: block; filter: drop-shadow(0 0 14px rgba(255, 135, 40, .24)); }
+      .brand-word { letter-spacing: .08em; text-transform: uppercase; }
+      .nav { display: grid; gap: 4px; }
+      .nav a { color: var(--muted); text-decoration: none; padding: 9px 10px; border-radius: 6px; }
+      .nav a.active, .nav a:hover { background: var(--panel-2); color: var(--text); }
+      .rail-meta { position: absolute; left: 14px; right: 14px; bottom: 18px; color: var(--quiet); font-size: 12px; line-height: 1.5; }
+      .brand-kicker { color: var(--accent); font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 5px; }
+
+      .topbar { min-width: 0; display: grid; grid-template-columns: minmax(320px, 1fr) minmax(300px, .78fr); gap: 16px; align-items: stretch; }
+      .topbar > * { min-width: 0; }
+      h1, h2, h3 { margin: 0; }
+      h1 { font-size: 34px; line-height: 1.04; max-width: 780px; overflow-wrap: anywhere; }
+      h2 { font-size: 15px; line-height: 1.2; }
+      h3 { font-size: 13px; color: var(--muted); font-weight: 750; }
+      .subline { margin-top: 10px; color: #d3d8df; font-size: 15px; line-height: 1.45; max-width: 680px; }
+      .plain-note { color: var(--muted); font-size: 12px; line-height: 1.45; }
+      .why-panel { display: grid; gap: 10px; background: #171717; border: 1px solid var(--line); border-radius: 8px; padding: 14px; }
+      .why-panel h2 { font-size: 16px; }
+      .auth-card { display: grid; gap: 9px; background: #101010; border: 1px solid var(--line); border-radius: 7px; padding: 10px; }
+      .identity-row { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 9px; align-items: center; }
+      .avatar { width: 34px; height: 34px; border-radius: 999px; border: 1px solid rgba(255, 135, 40, .45); background: #0f0f0f; object-fit: cover; }
+      .identity-main { display: grid; gap: 2px; min-width: 0; }
+      .identity-main strong { overflow-wrap: anywhere; }
+      .identity-main span { color: var(--muted); font-size: 12px; }
+      .auth-actions { display: flex; flex-wrap: wrap; gap: 7px; }
+      .why-list { display: grid; gap: 8px; }
+      .why-item { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 9px; align-items: start; }
+      .why-icon { width: 28px; height: 28px; border-radius: 7px; display: grid; place-items: center; background: var(--accent-2); color: #111111; font-weight: 900; }
+      .why-item strong { display: block; font-size: 13px; margin-bottom: 2px; }
+      .why-item span { color: var(--muted); font-size: 12px; line-height: 1.4; }
+      .docs-inline { display: inline-flex; align-items: center; justify-content: center; min-height: 34px; border-radius: 6px; border: 1px solid rgba(255, 135, 40, .5); color: var(--text); text-decoration: none; font-weight: 800; font-size: 12px; padding: 7px 10px; background: #181818; }
+      .docs-inline:hover { border-color: var(--accent); color: var(--accent-2); }
+      .toolbar { display: grid; grid-template-columns: minmax(220px, 1.3fr) repeat(6, minmax(0, 1fr)); gap: 8px; }
+      .grid { display: grid; gap: 14px; }
+      .cols { grid-template-columns: minmax(380px, 1.15fr) minmax(360px, .85fr); align-items: start; }
+      .brief { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+      .brief-item { background: #171717; border: 1px solid var(--line); border-radius: 7px; padding: 12px; min-height: 82px; }
+      .brief-item strong { display: block; margin-bottom: 6px; }
+      .brief-item span { display: block; color: var(--muted); font-size: 12px; line-height: 1.45; }
+      .flow-strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+      .flow-step { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 8px; align-items: start; background: #141414; border: 1px solid var(--line); border-radius: 7px; padding: 10px; }
+      .flow-step b { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 999px; background: var(--accent-2); color: #111111; font-size: 12px; }
+      .flow-step strong { display: block; font-size: 12px; margin-bottom: 3px; }
+      .flow-step span { display: block; color: var(--muted); font-size: 11px; line-height: 1.35; }
+      .status-line { color: var(--muted); font-size: 12px; line-height: 1.45; background: #101010; border: 1px solid var(--line); border-radius: 7px; padding: 9px 10px; }
+      .cooldown-panel { display: none; color: #f7e8c7; background: rgba(255, 181, 71, .1); border: 1px solid rgba(255, 181, 71, .35); border-radius: 7px; padding: 10px; font-size: 12px; line-height: 1.45; }
+      .cooldown-panel.show { display: block; }
+      .progress-panel { display: grid; grid-template-columns: minmax(220px, 1fr) minmax(280px, 2fr) repeat(2, minmax(120px, .6fr)); gap: 10px; align-items: center; background: #101010; border: 1px solid var(--line); border-radius: 8px; padding: 12px; }
+      .progress-label { color: var(--quiet); font-size: 11px; text-transform: uppercase; font-weight: 800; letter-spacing: .08em; }
+      .progress-value { margin-top: 5px; font-size: 18px; font-weight: 850; }
+      .progress-track { height: 14px; background: #171717; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+      .progress-track i { display: block; height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--teal)); }
+      .panel { background: rgba(26, 26, 26, .94); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; }
+      .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+      .editor-wrap .panel-head { display: grid; grid-template-columns: 1fr; align-items: stretch; }
+      .editor-wrap .selector-row { width: 100%; justify-self: stretch; }
+      .tabs { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+      .tab { min-height: 32px; border: 0; border-radius: 0; padding: 6px 10px; background: transparent; color: var(--muted); }
+      .tab.active { background: var(--panel-2); color: var(--text); }
+
+      .metrics { display: grid; grid-template-columns: repeat(4, minmax(136px, 1fr)); gap: 10px; }
+      .metric { background: var(--panel-2); border: 1px solid var(--line); border-radius: 7px; padding: 12px; min-height: 112px; display: grid; align-content: start; gap: 7px; }
+      .metric span { display: block; color: var(--quiet); font-size: 12px; margin-bottom: 8px; }
+      .metric strong { display: block; font-size: 22px; line-height: 1.05; overflow-wrap: anywhere; }
+      .metric small { display: block; color: var(--muted); font-size: 11px; line-height: 1.35; }
+      .metric.safe strong { color: var(--green); }
+      .metric.warn strong { color: var(--warn); }
+      .metric.danger strong { color: var(--danger); }
+      .meter { width: 100%; height: 6px; background: #101010; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+      .meter i { display: block; height: 100%; width: 0%; background: var(--green); }
+      .meter.warn i { background: var(--warn); }
+      .meter.danger i { background: var(--danger); }
+
+      .editor-wrap { display: grid; grid-template-rows: auto auto minmax(420px, 1fr); gap: 10px; min-height: 520px; }
+      .editor-help { display: flex; align-items: center; justify-content: space-between; gap: 10px; border: 1px solid rgba(255, 135, 40, .28); background: rgba(255, 135, 40, .08); border-radius: 7px; padding: 9px 10px; color: #f0f3f7; font-size: 12px; line-height: 1.4; }
+      .editor-help span { min-width: 0; }
+      .editor-help a { flex: 0 0 auto; color: #111111; background: var(--accent-2); border-radius: 6px; padding: 7px 9px; font-weight: 850; text-decoration: none; }
+      .editor-help a:hover { background: var(--accent); }
+      textarea {
+        width: 100%;
+        min-height: 420px;
+        resize: vertical;
+        color: #f8fafc;
+        background: #0f0f0f;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        padding: 14px;
+        line-height: 1.45;
+        font-family: Menlo, Consolas, "SFMono-Regular", monospace;
+        font-size: 12px;
+      }
+      .selector-row { display: grid; grid-template-columns: 1fr 120px 120px; gap: 8px; }
+
+      .chart { height: 286px; border: 1px solid var(--line); border-radius: 7px; background: #101010; overflow: hidden; }
+      svg { display: block; width: 100%; height: 100%; }
+      .chart-line { fill: none; stroke: var(--accent); stroke-width: 2.8; stroke-linecap: round; stroke-linejoin: round; }
+      .chart-area { fill: rgba(255, 135, 40, .13); }
+      .chart-delta { fill: none; stroke: var(--teal); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+      .chart-ltv { fill: none; stroke: var(--blue); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+      .axis { stroke: #353535; stroke-width: 1; }
+      .grid-line { stroke: #262626; stroke-width: 1; }
+      .safe-band { fill: rgba(25, 211, 197, .08); stroke: rgba(25, 211, 197, .35); stroke-width: 1; }
+      .chart-label { fill: #d8dee9; font-size: 12px; font-weight: 800; }
+      .chart-caption { fill: #8f98a8; font-size: 11px; }
+      .chart-last { fill: #101010; stroke-width: 2; }
+      .fill-dot { fill: var(--green); stroke: #101010; stroke-width: 2; }
+      .regime-line { stroke: rgba(255, 255, 255, .16); stroke-width: 1; stroke-dasharray: 3 4; }
+      .drawdown-line { fill: none; stroke: var(--danger); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; opacity: .9; }
+      .chart-legend { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 0; color: var(--muted); font-size: 11px; }
+      .legend-dot { width: 8px; height: 8px; border-radius: 999px; display: inline-block; margin-right: 5px; background: var(--accent); }
+      .legend-dot.delta { background: var(--teal); }
+      .legend-dot.ltv { background: var(--blue); }
+      .chart-note { color: var(--muted); font-size: 12px; line-height: 1.45; margin-top: 10px; }
+
+      .scrubber { display: grid; grid-template-columns: 1fr 78px; gap: 10px; align-items: center; margin-top: 12px; }
+      input[type="range"] { width: 100%; accent-color: var(--accent); }
+      .step-box { color: var(--text); background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px; padding: 8px; text-align: center; font-family: Menlo, Consolas, monospace; }
+
+      .table { width: 100%; border-collapse: collapse; font-size: 12px; table-layout: fixed; }
+      .table th, .table td { padding: 8px 6px; border-bottom: 1px solid #2d2d2d; text-align: left; vertical-align: top; }
+      .table th { color: var(--quiet); font-weight: 700; }
+      .table td:last-child, .table th:last-child { text-align: right; }
+      .table td { overflow-wrap: anywhere; }
+      .leader-user { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 8px; align-items: center; }
+      .leader-user small { color: var(--muted); display: block; margin-top: 2px; }
+      .leaderboard-table { table-layout: auto; }
+      .leaderboard-table thead { display: none; }
+      .leaderboard-table td { padding: 8px 0; overflow-wrap: normal; }
+      .leader-card { display: grid; gap: 7px; border: 1px solid var(--line); background: #141414; border-radius: 7px; padding: 10px; }
+      .leader-card-top { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 8px; align-items: center; }
+      .leader-rank { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 999px; background: #101010; border: 1px solid var(--line); color: var(--muted); font-weight: 800; font-size: 12px; }
+      .leader-summary { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 9px; align-items: center; min-width: 0; }
+      .leader-title { min-width: 0; display: grid; gap: 3px; }
+      .leader-title strong { font-size: 14px; line-height: 1.1; overflow-wrap: anywhere; }
+      .leader-title small { color: var(--muted); font-size: 11px; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .leader-profit { text-align: right; white-space: nowrap; align-self: center; }
+      .leader-profit strong { display: block; font-size: 14px; }
+      .leader-profit small { color: var(--muted); }
+      .leader-identity { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 8px; align-items: center; }
+      .leader-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; color: var(--muted); font-size: 11px; line-height: 1.35; }
+      .leader-foot span:first-child { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .mono { font-family: Menlo, Consolas, "SFMono-Regular", monospace; overflow-wrap: anywhere; }
+      .pills { display: flex; flex-wrap: wrap; gap: 6px; }
+      .pill { color: var(--muted); border: 1px solid var(--line); background: #141414; border-radius: 999px; padding: 5px 8px; font-size: 12px; }
+      .pill.ok { color: var(--green); border-color: rgba(56, 215, 118, .42); }
+      .pill.hot { color: var(--accent-2); border-color: rgba(255, 181, 71, .42); }
+      .pill.bad { color: var(--danger); border-color: rgba(255, 92, 92, .42); }
+
+      .waterfall { display: grid; gap: 8px; }
+      .bar { display: grid; grid-template-columns: 156px minmax(0, 1fr) 104px; gap: 8px; align-items: center; font-size: 12px; }
+      .track { height: 10px; background: #101010; border-radius: 999px; overflow: hidden; border: 1px solid var(--line); }
+      .fill { height: 100%; background: var(--green); width: 0%; }
+      .fill.neg { background: var(--danger); }
+
+      .event-tape { display: grid; gap: 8px; max-height: 276px; overflow: auto; padding-right: 4px; }
+      .event { border: 1px solid var(--line); background: #141414; border-radius: 7px; padding: 9px; display: grid; gap: 5px; }
+      .event-top { display: flex; justify-content: space-between; color: var(--muted); font-size: 12px; }
+      .event-main { display: flex; gap: 8px; align-items: center; justify-content: space-between; font-size: 12px; }
+      .jsonbox { margin: 0; max-height: 240px; overflow: auto; white-space: pre-wrap; color: #d8dee9; background: #101010; border: 1px solid var(--line); border-radius: 7px; padding: 10px; font-family: Menlo, Consolas, monospace; font-size: 11px; line-height: 1.45; }
+
+      .concept-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .concept { border: 1px solid var(--line); border-radius: 7px; padding: 10px; background: #141414; min-height: 92px; }
+      .concept strong { display: block; margin-bottom: 6px; }
+      .concept span { color: var(--muted); font-size: 12px; line-height: 1.45; }
+      .attempt-list { display: grid; gap: 8px; }
+      .attempt-row { border: 1px solid var(--line); border-radius: 7px; background: #141414; padding: 10px; display: grid; gap: 8px; }
+      .attempt-top { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 7px; align-items: start; }
+      .attempt-top strong { font-size: 13px; line-height: 1.2; overflow-wrap: anywhere; }
+      .attempt-status { min-height: 26px; padding: 4px 8px; font-size: 11px; align-self: start; border-radius: 999px; }
+      .attempt-meta { display: flex; flex-wrap: wrap; gap: 4px 10px; color: var(--muted); font-size: 11px; line-height: 1.35; }
+      .attempt-meta span { white-space: nowrap; }
+      .attempt-menu { position: relative; }
+      .attempt-menu summary { list-style: none; display: grid; place-items: center; width: 28px; height: 26px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); cursor: pointer; user-select: none; }
+      .attempt-menu summary::-webkit-details-marker { display: none; }
+      .attempt-menu summary:hover { color: var(--text); border-color: rgba(255, 135, 40, .45); }
+      .attempt-menu-popover { position: absolute; right: 0; z-index: 4; width: min(260px, calc(100vw - 48px)); margin-top: 6px; padding: 9px; display: grid; gap: 7px; background: #101010; border: 1px solid var(--line); border-radius: 7px; box-shadow: 0 14px 36px rgba(0,0,0,.36); }
+      .attempt-menu-popover label { color: var(--quiet); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
+      .attempt-name { width: 100%; min-height: 34px; padding: 7px 9px; font-size: 12px; }
+      .attempt-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+      .attempt-actions button { min-height: 31px; padding: 6px 7px; font-size: 12px; white-space: nowrap; }
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 20;
+        display: grid;
+        place-items: center;
+        padding: 18px;
+        background: rgba(0, 0, 0, .72);
+        backdrop-filter: blur(8px);
+      }
+      .modal-backdrop[hidden] { display: none; }
+      .share-modal {
+        width: min(980px, 100%);
+        max-height: calc(100vh - 36px);
+        overflow: auto;
+        background: #151515;
+        border: 1px solid rgba(255, 135, 40, .38);
+        border-radius: 8px;
+        box-shadow: 0 24px 80px rgba(0,0,0,.55);
+        padding: 16px;
+      }
+      .share-modal-head { display: flex; align-items: start; justify-content: space-between; gap: 14px; margin-bottom: 14px; }
+      .share-modal-kicker { color: var(--accent-2); font-size: 11px; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 4px; }
+      .share-modal h2 { font-size: 24px; line-height: 1.05; }
+      .share-subtitle { color: var(--muted); font-size: 12px; margin-top: 6px; line-height: 1.35; }
+      .share-modal-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(280px, .85fr); gap: 14px; align-items: start; }
+      .share-card-frame { background: #0f0f0f; border: 1px solid var(--line); border-radius: 8px; padding: 10px; }
+      .share-card-frame canvas { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: 6px; background: #101010; }
+      .share-copy-panel { display: grid; gap: 9px; }
+      .share-copy-panel label { color: var(--quiet); font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+      .share-copy {
+        width: 100%;
+        min-height: 174px;
+        resize: vertical;
+        background: #101010;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        padding: 10px;
+        color: #e8edf5;
+        font-family: inherit;
+        font-size: 13px;
+        line-height: 1.45;
+      }
+      .share-warning { color: #f7e8c7; background: rgba(255, 181, 71, .1); border: 1px solid rgba(255, 181, 71, .36); border-radius: 7px; padding: 9px; font-size: 12px; line-height: 1.4; }
+      .share-warning[hidden] { display: none; }
+      .share-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+      .share-actions button { width: 100%; }
+
+      @media (max-width: 1180px) {
+        .app { grid-template-columns: 72px minmax(0, 1fr); }
+        .rail { padding: 12px 8px; }
+        .nav a span, .brand-word, .rail-meta { display: none; }
+        .side { grid-column: 2; border-left: 0; border-top: 1px solid var(--line); max-height: none; }
+        .topbar { grid-template-columns: 1fr; }
+        .toolbar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .progress-panel { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .cols { grid-template-columns: 1fr; }
+      }
+      @media (max-width: 720px) {
+        .app { display: block; }
+        .rail { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); }
+        .nav { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        .nav a span, .brand-word { display: inline; }
+        .nav a { text-align: center; font-size: 12px; padding: 8px 5px; }
+        h1 { font-size: 28px; }
+        .topbar, .selector-row, .metrics, .brief, .flow-strip, .concept-grid, .toolbar, .progress-panel { grid-template-columns: 1fr; }
+        .editor-help { align-items: stretch; flex-direction: column; }
+        .editor-help a { text-align: center; }
+        .toolbar { justify-content: stretch; }
+        .toolbar > * { flex: 1 1 auto; }
+        .main, .side { padding: 12px; }
+        .share-modal { padding: 12px; }
+        .share-modal-grid, .share-actions { grid-template-columns: 1fr; }
+        .share-modal h2 { font-size: 21px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <nav class="rail" aria-label="Primary">
+        <div class="brand">
+          <img class="brand-logo" src="assets/aegis-logo.svg" alt="Aegis logo">
+          <div class="brand-word">AEGIS</div>
+        </div>
+        <div class="nav">
+          <a class="active" href="#workspace" aria-label="Start"><span>Start</span></a>
+          <a href="#engine" aria-label="Engine"><span>Engine</span></a>
+          <a href="#positions" aria-label="Positions"><span>Positions</span></a>
+          <a href="#leaderboard" aria-label="Leaderboard"><span>Leaderboard</span></a>
+          <a href="docs.html" aria-label="Strategy Academy"><span>Academy</span></a>
+          <a href="#audits" aria-label="Checks"><span>Checks</span></a>
+          <a href="#legal" aria-label="Legal"><span>Legal</span></a>
+        </div>
+        <div class="rail-meta">AEGIS - Programmable Infrastructure for Uniswap v4 Pools</div>
+      </nav>
+
+      <main class="main" id="workspace">
+        <section class="topbar">
+          <div>
+            <div class="brand-kicker">AEGIS Engine</div>
+            <h1>Aegis Vault Challenge</h1>
+            <div class="subline">Start with 100,000 USDC. Trade the ETH/USDC pool. Make USD profit without taking ETH direction risk. Your strategy controls AEGIS vault liquidity, limit orders, and borrow/repay over 180 simulated days.</div>
+          </div>
+          <div class="why-panel" aria-label="Why participate">
+            <div class="auth-card" aria-label="X authentication">
+              <div class="identity-row">
+                <img class="avatar" id="authAvatar" alt="" src="assets/aegis-logo.svg">
+                <div class="identity-main">
+                  <strong id="authName">Anonymous trial</strong>
+                  <span id="authHelp">Run once, then Sign in with X to keep iterating.</span>
+                </div>
+              </div>
+              <div class="auth-actions">
+                <button id="loginButton">Sign in with X</button>
+                <button class="ghost" id="logoutButton" hidden>Logout</button>
+              </div>
+            </div>
+            <h2>Why participate?</h2>
+            <div class="why-list">
+              <div class="why-item"><div class="why-icon">1</div><div><strong>Prove USD strategy edge</strong><span>Leaderboard profit is USD equity above 100,000 USDC after costs, repairs, and delta penalties.</span></div></div>
+              <div class="why-item"><div class="why-icon">2</div><div><strong>Stay neutral to ETH</strong><span>ETH exposure shows how much your vault gains or loses when ETH moves. Keep it near zero.</span></div></div>
+              <div class="why-item"><div class="why-icon">3</div><div><strong>Learn AEGIS Engine by using it</strong><span>Borrow, repay, place ETH/USDC liquidity, and inspect every vault decision through replay.</span></div></div>
+            </div>
+            <a class="docs-inline" href="docs.html">Open Strategy Academy</a>
+          </div>
+        </section>
+
+        <section class="brief" aria-label="Challenge objective">
+          <div class="brief-item"><strong>Starting balance</strong><span>100,000 USDC and 0 ETH in an ETH/USDC pool priced as USDC per ETH.</span></div>
+          <div class="brief-item"><strong>Goal</strong><span>Maximize USD profit after borrow costs, repairs, liquidations, and delta penalties.</span></div>
+          <div class="brief-item"><strong>Main risk</strong><span>Minimize ETH exposure so gains come from liquidity and order flow, not ETH beta.</span></div>
+        </section>
+
+        <section class="flow-strip" aria-label="Contestant flow">
+          <div class="flow-step"><b>1</b><div><strong>Paste strategy</strong><span>One Python class controls the vault.</span></div></div>
+          <div class="flow-step"><b>2</b><div><strong>Run 6 months</strong><span>Watch real ETH/USDC results build over 30-120 seconds.</span></div></div>
+          <div class="flow-step"><b>3</b><div><strong>Diagnose edge</strong><span>See USD profit, ETH exposure, LTV, repairs, fills, and penalties.</span></div></div>
+          <div class="flow-step"><b>4</b><div><strong>Submit</strong><span>Rank by net USD profit after neutrality penalties.</span></div></div>
+        </section>
+
+        <div class="status-line" id="commandStatus" role="status" aria-live="polite">Ready: edit the strategy, run the 180-day ETH/USDC simulation, inspect USD profit and ETH exposure, then submit to the leaderboard.</div>
+        <div class="cooldown-panel" id="cooldownPanel">Cooldown ready.</div>
+
+        <section class="toolbar" aria-label="Run controls">
+          <input id="strategyNameInput" type="text" maxlength="80" value="Starter delta-neutral vault" aria-label="Strategy name">
+          <button class="primary" id="runButton">Run 6-month ETH/USDC simulation</button>
+          <button id="cancelButton" disabled>Cancel run</button>
+          <button id="submitButton" disabled>Publish latest try</button>
+          <button id="downloadDataButton" disabled>Download raw data</button>
+          <button id="starterButton">Restore starter</button>
+          <button id="leaderboardButton">Refresh leaderboard</button>
+          <span class="plain-note" id="flowMetric">0 CLI commands. 0 file loads. Real simulator output.</span>
+        </section>
+
+        <section class="progress-panel" aria-label="Long horizon simulation progress">
+          <div><div class="progress-label">Simulation horizon</div><div class="progress-value" id="horizonMetric">180 days</div></div>
+          <div><div class="progress-label" id="progressLabel">Day 0 of 180</div><div class="progress-track"><i id="horizonProgress"></i></div></div>
+          <div><div class="progress-label">Regime</div><div class="progress-value" id="regimeMetric">ready</div></div>
+          <div><div class="progress-label">Cadence</div><div class="progress-value" id="chunkMetric">15m steps</div></div>
+        </section>
+
+        <section class="metrics" aria-label="Run metrics">
+          <div class="metric safe"><span>USD profit</span><strong id="scoreMetric">+$0.00</strong><small id="scoreHelp">net over 100,000 USDC after penalties</small><div class="meter"><i id="scoreMeter"></i></div></div>
+          <div class="metric safe"><span>Current equity</span><strong id="equityMetric">$100,000</strong><small id="equityHelp">vault value after debt</small><div class="meter"><i id="equityMeter"></i></div></div>
+          <div class="metric safe"><span>APR</span><strong id="aprMetric">building</strong><small id="aprHelp">annualized net USD profit over elapsed simulated days</small><div class="meter"><i id="aprMeter"></i></div></div>
+          <div class="metric safe"><span>ETH exposure</span><strong id="exposureMetric">$0</strong><small id="exposureHelp">signed value of net ETH delta</small><div class="meter" id="exposureMeterTrack"><i id="exposureMeter"></i></div></div>
+          <div class="metric safe"><span>Delta band</span><strong id="deltaMetric">0.00%</strong><small id="deltaHelp">safe band: under 3%</small><div class="meter" id="deltaMeterTrack"><i id="deltaMeter"></i></div></div>
+          <div class="metric safe"><span>LTV used</span><strong id="ltvMetric">0.0%</strong><small id="ltvHelp">borrow room remaining</small><div class="meter" id="ltvMeterTrack"><i id="ltvMeter"></i></div></div>
+          <div class="metric warn"><span>Borrow cost</span><strong id="debtMetric">$0</strong><small id="debtHelp">interest and debt marked in USD</small><div class="meter warn"><i id="debtMeter"></i></div></div>
+          <div class="metric safe"><span>Fees + LO edge</span><strong id="feeMetric">$0</strong><small id="feeHelp">CL fees and order-flow fills</small><div class="meter"><i id="feeMeter"></i></div></div>
+        </section>
+
+        <section class="grid cols">
+          <div class="grid">
+            <section class="panel editor-wrap" id="engine">
+              <div class="panel-head">
+                <h2>Strategy Lab</h2>
+                <div class="selector-row">
+                  <select id="bundleSelect" aria-label="Scenario bundle">
+                    <option value="competition_6m" selected>6-month challenge</option>
+                    <option value="smoke">CI smoke</option>
+                    <option value="public_train">Public training</option>
+                    <option value="hidden_ranked">Ranked submission</option>
+                  </select>
+                  <select id="seedSelect" aria-label="Seed">
+                    <option value="1">Seed 1</option>
+                    <option value="2">Seed 2</option>
+                    <option value="11">Seed 11</option>
+                  </select>
+                  <button class="ghost" id="randomPathButton">Random path</button>
+                  <button class="ghost" id="resetButton">Reset</button>
+                </div>
+              </div>
+              <div class="editor-help">
+                <span>New to AEGIS strategies? The academy explains every action, public state field, delta-neutral repair pattern, and ranked-submission recipe.</span>
+                <a href="docs.html#actions">What can my strategy do?</a>
+              </div>
+              <textarea id="strategyEditor" spellcheck="false">from aegis_challenge.api import BorrowL, PlaceLimitOrder, WithdrawLimitOrder
+
+class Strategy:
+    def on_start(self, state):
+        self.bootstrapped = False
+
+    def on_step(self, state):
+        actions = [WithdrawLimitOrder(order_id=o.order_id) for o in state.limit_orders if o.status == "filled"]
+        if not self.bootstrapped:
+            actions.append(BorrowL(amount_l=3000))
+            actions.append(PlaceLimitOrder(side="sell0", tick=state.pool.tick + state.pool.tick_spacing, liquidity=500))
+            self.bootstrapped = True
+        return actions
+</textarea>
+            </section>
+
+            <section class="panel">
+              <div class="panel-head">
+                <h2>Six-month ETH/USDC replay: USD edge without ETH exposure</h2>
+                <div class="pills">
+                  <span class="pill ok" id="determinismPill">replay-deterministic</span>
+                  <span class="pill ok" id="deltaPill">delta-safe</span>
+                  <span class="pill ok" id="ltvPill">LTV-safe</span>
+                  <span class="pill hot" id="feePill">DFM static fee</span>
+                  <span class="pill" id="pathPill">seeded path</span>
+                </div>
+              </div>
+              <div class="chart">
+                <svg id="replayChart" viewBox="0 0 720 286" role="img" aria-label="USD profit, ETH price, ETH exposure, and LTV timeline"></svg>
+              </div>
+              <div class="chart-legend" aria-label="Chart legend">
+                <span><i class="legend-dot"></i>ETH/USDC price</span>
+                <span><i class="legend-dot delta"></i>USD profit + ETH exposure</span>
+                <span><i class="legend-dot ltv"></i>LTV</span>
+              </div>
+              <div class="chart-note">A strong 180-day run grows USD profit while ETH exposure stays near zero through changing price regimes.</div>
+              <div class="scrubber">
+                <input id="stepRange" type="range" min="0" max="59" value="59" aria-label="Replay step">
+                <div class="step-box" id="stepBox">day 0.6</div>
+              </div>
+            </section>
+          </div>
+
+          <div class="grid">
+            <section class="panel">
+              <div class="panel-head"><h2>Risk Panel</h2><span class="pill ok" id="riskState">locked</span></div>
+              <table class="table">
+                <tbody>
+                  <tr><th>Collateral floor</th><td class="mono" id="collateralCell">10074</td></tr>
+                  <tr><th>Debt principal rL</th><td class="mono" id="debtCell">3000</td></tr>
+                  <tr><th>Borrow index</th><td class="mono" id="borrowIndexCell">1000000001062000000</td></tr>
+                  <tr><th>Debt liability USD</th><td class="mono" id="liabilityCell">$0</td></tr>
+                  <tr><th>ETH price</th><td class="mono" id="ethPriceCell">$2,000 / ETH</td></tr>
+                  <tr><th>Net ETH delta</th><td class="mono" id="netEthCell">0 ETH</td></tr>
+                  <tr><th>Hard LTV</th><td class="mono" id="hardLtvCell">996000</td></tr>
+                  <tr><th>Public run</th><td class="mono" id="runCell">d6b0fef507e87283</td></tr>
+                </tbody>
+              </table>
+            </section>
+
+            <section class="panel">
+              <div class="panel-head"><h2>Market + DFM</h2><span class="pill" id="marketState">selected period</span></div>
+              <table class="table">
+                <tbody>
+                  <tr><th>Period volume</th><td class="mono" id="volumeCell">$0</td></tr>
+                  <tr><th>Trades</th><td class="mono" id="tradesCell">0</td></tr>
+                  <tr><th>Price move</th><td class="mono" id="priceMoveCell">0.00%</td></tr>
+                  <tr><th>Path signal</th><td class="mono" id="pathSignalCell">seeded V2 path</td></tr>
+                  <tr><th>LP/CL fee</th><td class="mono" id="lpFeeCell">$0</td></tr>
+                  <tr><th>DFM hook fee</th><td class="mono" id="hookFeeCell">$0</td></tr>
+                  <tr><th>DFM total fee</th><td class="mono" id="dfmFeeCell">30.00 bps</td></tr>
+                  <tr><th>Neutrality</th><td class="mono" id="neutralityCell">safe</td></tr>
+                  <tr><th>Range efficiency</th><td class="mono" id="rangeEffCell">0%</td></tr>
+                </tbody>
+              </table>
+            </section>
+
+            <section class="panel">
+              <div class="panel-head"><h2>Ranked Robustness</h2><span class="pill" id="robustnessState">practice run</span></div>
+              <table class="table">
+                <tbody>
+                  <tr><th>Hidden paths</th><td class="mono" id="rankPathCountCell">publish to score</td></tr>
+                  <tr><th>Median profit</th><td class="mono" id="rankMedianCell">-</td></tr>
+                  <tr><th>Worst decile</th><td class="mono" id="rankP10Cell">-</td></tr>
+                  <tr><th>Delta-band time</th><td class="mono" id="rankDeltaBandCell">-</td></tr>
+                  <tr><th>Max drawdown</th><td class="mono" id="rankDrawdownCell">-</td></tr>
+                  <tr><th>Score variance</th><td class="mono" id="rankVarianceCell">-</td></tr>
+                </tbody>
+              </table>
+            </section>
+
+            <section class="panel">
+              <div class="panel-head">
+                <h2>Score Waterfall</h2>
+                <div class="tabs" role="tablist" aria-label="Score view">
+                  <button class="tab active" role="tab" aria-selected="true" data-tab="score">Score</button>
+                  <button class="tab" role="tab" aria-selected="false" data-tab="risk">Risk</button>
+                  <button class="tab" role="tab" aria-selected="false" data-tab="fees">Fees</button>
+                </div>
+              </div>
+              <div class="waterfall" id="waterfall"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-head"><h2>Plain-English Mechanics</h2><span class="pill hot">AEGIS Engine</span></div>
+              <div class="concept-grid">
+                <div class="concept"><strong>Liquidity earns USDC</strong><span id="rangeWidget">Choose where the vault provides ETH/USDC liquidity. Tighter ranges can earn more but need repair over 180 days.</span></div>
+                <div class="concept"><strong>Limit orders catch ETH flow</strong><span id="borrowWidget">Use order placement to capture fills as six months of ETH/USDC market flow crosses your prices.</span></div>
+                <div class="concept"><strong>Borrow offsets ETH delta</strong><span id="floorWidget">Use AEGIS borrow and repay to keep ETH exposure near zero while debt cost and LTV evolve.</span></div>
+                <div class="concept"><strong>Delta is the referee</strong><span id="deltaWidget">If USD profit comes from ETH direction instead of liquidity or order flow, the runner penalizes it.</span></div>
+              </div>
+            </section>
+
+            <section class="panel" id="audits">
+              <div class="panel-head"><h2>Run Checks</h2><span class="pill ok">public-safe</span></div>
+              <div class="concept-grid">
+                <div class="concept"><strong>No future data</strong><span>Strategies see public state only: no fair price, future flow, ranked-only parameters, or runner-only internals.</span></div>
+                <div class="concept"><strong>Fail-closed sandbox</strong><span>Invalid actions, unsafe imports, timeouts, liquidation, or broken output become explicit penalties or disqualification.</span></div>
+              </div>
+            </section>
+          </div>
+        </section>
+      </main>
+
+      <aside class="side" aria-label="Run details">
+        <section class="panel" id="attempts">
+          <div class="panel-head"><h2>Saved Tries</h2><span class="pill" id="attemptCount">0 saved</span></div>
+          <div class="attempt-list" id="attemptRows"></div>
+        </section>
+
+        <section class="panel" id="leaderboard">
+          <div class="panel-head"><h2>Leaderboard</h2><span class="pill ok" id="rankBand">public</span></div>
+          <table class="table leaderboard-table">
+            <thead><tr><th>Rank</th><th>Strategy</th><th>Profit</th><th>Risk</th></tr></thead>
+            <tbody id="leaderboardRows"></tbody>
+          </table>
+        </section>
+
+        <section class="panel" id="positions">
+          <div class="panel-head"><h2>Positions</h2><span class="pill" id="positionCount">0 NFTs</span></div>
+          <table class="table">
+            <thead><tr><th>Type</th><th>Tick</th><th>Status</th></tr></thead>
+            <tbody id="positionRows"></tbody>
+          </table>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><h2>Sampled Event Tape</h2><span class="pill" id="eventCount">0 / 17,280 steps</span></div>
+          <div class="event-tape" id="eventTape"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><h2>Public Replay Event</h2><span class="pill" id="rawStep">day 0.6</span></div>
+          <pre class="jsonbox" id="rawEvent"></pre>
+        </section>
+
+        <section class="panel" id="legal">
+          <h2>Risk</h2>
+          <p class="subline">Past performance does not indicate future results. Smart contracts may contain bugs or vulnerabilities. Not financial advice.</p>
+        </section>
+      </aside>
+    </div>
+
+    <div class="modal-backdrop" id="shareModal" hidden role="dialog" aria-modal="true" aria-labelledby="shareModalTitle">
+      <section class="share-modal" aria-label="Share your Aegis result">
+        <div class="share-modal-head">
+          <div>
+            <div class="share-modal-kicker">AEGIS result card</div>
+            <h2 id="shareModalTitle">You're ranked</h2>
+            <div class="share-subtitle" id="shareModalSubtitle">@handle · strategy</div>
+          </div>
+          <button class="ghost" id="closeShareModalButton">Close</button>
+        </div>
+        <div class="share-modal-grid">
+          <div class="share-card-frame">
+            <canvas id="shareCardCanvas" width="1200" height="675" aria-label="Attempt-specific AEGIS share card"></canvas>
+          </div>
+          <div class="share-copy-panel">
+            <label for="shareCopy">Post copy</label>
+            <textarea id="shareCopy" class="share-copy" spellcheck="true" aria-label="Editable X post copy"></textarea>
+            <div class="share-warning" id="shareWarning" hidden></div>
+            <div class="share-actions">
+              <button class="primary" id="shareButton">Share on X</button>
+              <button id="copyShareButton">Copy text</button>
+              <button id="downloadShareCardButton">Download card</button>
+              <button class="ghost" id="closeShareModalBottomButton">Close</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      const sampleReplay = [
+        {"step":0,"timestamp":0,"simulated_day":"0.0000","elapsed_simulated_days":"0.0000","regime":"calm","public_run_id":"preview","price":"2000","eth_price_usdc":"2000","score":"0","initial_balance_usdc":"100000","equity_usd":"100000","profit_usd":"0","profit_pct":"0","net_profit_usd_after_penalties":"0","net_eth_delta":"0","eth_exposure_usd":"0","fees_earned_usd":"0","lo_edge_usd":"0","borrow_cost_usd":"0","delta_penalty_usd":"0","recent_swaps":[],"recent_fills":[],"recent_repairs":[],"errors":[],"vault":{"delta_normalized":"0","delta":"0","net_eth_delta":"0","eth_exposure_usd":"0","ltv_pips":0,"max_ltv_pips":993000,"hard_ltv_pips":996000,"collateral_floor_l":0,"debt_l":0,"borrow_index":1000000000000000000,"debt_liability_value":"0","equity":"100000","equity_usd":"100000","cash_usdc":"100000","eth_inventory":"0","idle0":"0","idle1":"100000"}},
+        {"step":4320,"timestamp":3888000,"simulated_day":"45.0000","elapsed_simulated_days":"45.0000","regime":"volatile","public_run_id":"preview","price":"2140","eth_price_usdc":"2140","score":"310","initial_balance_usdc":"100000","equity_usd":"100340","profit_usd":"340","profit_pct":"0.31","apr_pct":"2.5144","net_profit_usd_after_penalties":"310","net_eth_delta":"0.12","eth_exposure_usd":"256.8","fees_earned_usd":"510","lo_edge_usd":"80","borrow_cost_usd":"42","delta_penalty_usd":"18","recent_swaps":[{"actor":"retail","token_in":"token1","amount_in":"5200","amount_out":"2.42","lp_fee_paid":"15.6","protocol_fee_paid":"0","hook_fee_paid":"2.1","ticks_crossed":[]}],"recent_fills":[],"recent_repairs":[],"errors":[],"vault":{"delta_normalized":"0.0026","delta":"0.12","net_eth_delta":"0.12","eth_exposure_usd":"256.8","ltv_pips":312000,"max_ltv_pips":993000,"hard_ltv_pips":996000,"collateral_floor_l":38200,"debt_l":12000,"borrow_index":1000002100000000000,"debt_liability_value":"12024","equity":"100340","equity_usd":"100340","cash_usdc":"86600","eth_inventory":"6.3","idle0":"6.3","idle1":"86600"}},
+        {"step":8640,"timestamp":7776000,"simulated_day":"90.0000","elapsed_simulated_days":"90.0000","regime":"trend_down","public_run_id":"preview","price":"1885","eth_price_usdc":"1885","score":"570","initial_balance_usdc":"100000","equity_usd":"100655","profit_usd":"655","profit_pct":"0.57","apr_pct":"2.3117","net_profit_usd_after_penalties":"570","net_eth_delta":"-0.18","eth_exposure_usd":"-339.3","fees_earned_usd":"910","lo_edge_usd":"145","borrow_cost_usd":"88","delta_penalty_usd":"34","recent_swaps":[{"actor":"arbitrage","token_in":"token0","amount_in":"3.1","amount_out":"5830","lp_fee_paid":"0.009","protocol_fee_paid":"0","hook_fee_paid":"0.001","ticks_crossed":[]}],"recent_fills":[{"tick":76080,"side":"sell0","amount_in":"1.2","amount_out":"2320"}],"recent_repairs":[],"errors":[],"vault":{"delta_normalized":"0.0034","delta":"-0.18","net_eth_delta":"-0.18","eth_exposure_usd":"-339.3","ltv_pips":355000,"max_ltv_pips":993000,"hard_ltv_pips":996000,"collateral_floor_l":40500,"debt_l":12000,"borrow_index":1000004200000000000,"debt_liability_value":"12051","equity":"100655","equity_usd":"100655","cash_usdc":"91020","eth_inventory":"5.1","idle0":"5.1","idle1":"91020"}},
+        {"step":12960,"timestamp":11664000,"simulated_day":"135.0000","elapsed_simulated_days":"135.0000","regime":"borrow_stress","public_run_id":"preview","price":"2065","eth_price_usdc":"2065","score":"820","initial_balance_usdc":"100000","equity_usd":"100930","profit_usd":"930","profit_pct":"0.82","apr_pct":"2.2170","net_profit_usd_after_penalties":"820","net_eth_delta":"0.08","eth_exposure_usd":"165.2","fees_earned_usd":"1325","lo_edge_usd":"210","borrow_cost_usd":"136","delta_penalty_usd":"12","recent_swaps":[{"actor":"retail","token_in":"token1","amount_in":"7800","amount_out":"3.76","lp_fee_paid":"23.4","protocol_fee_paid":"0","hook_fee_paid":"3.2","ticks_crossed":[]}],"recent_fills":[],"recent_repairs":[{"kind":"peel","keeper_fee1":"12","ltv_pips_after":410000}],"errors":[],"vault":{"delta_normalized":"0.0016","delta":"0.08","net_eth_delta":"0.08","eth_exposure_usd":"165.2","ltv_pips":410000,"max_ltv_pips":993000,"hard_ltv_pips":996000,"collateral_floor_l":47000,"debt_l":10000,"borrow_index":1000006400000000000,"debt_liability_value":"10064","equity":"100930","equity_usd":"100930","cash_usdc":"95400","eth_inventory":"2.7","idle0":"2.7","idle1":"95400"}},
+        {"step":17279,"timestamp":15551100,"simulated_day":"180.0000","elapsed_simulated_days":"180.0000","regime":"volatile","public_run_id":"preview","price":"2035","eth_price_usdc":"2035","score":"1040","initial_balance_usdc":"100000","equity_usd":"101185","profit_usd":"1185","profit_pct":"1.04","apr_pct":"2.1089","net_profit_usd_after_penalties":"1040","net_eth_delta":"0.04","eth_exposure_usd":"81.4","fees_earned_usd":"1690","lo_edge_usd":"315","borrow_cost_usd":"188","delta_penalty_usd":"6","recent_swaps":[{"actor":"retail","token_in":"token0","amount_in":"1.8","amount_out":"3650","lp_fee_paid":"0.005","protocol_fee_paid":"0","hook_fee_paid":"0.001","ticks_crossed":[]}],"recent_fills":[],"recent_repairs":[],"errors":[],"vault":{"delta_normalized":"0.0008","delta":"0.04","net_eth_delta":"0.04","eth_exposure_usd":"81.4","ltv_pips":286000,"max_ltv_pips":993000,"hard_ltv_pips":996000,"collateral_floor_l":36000,"debt_l":8000,"borrow_index":1000008500000000000,"debt_liability_value":"8068","equity":"101185","equity_usd":"101185","cash_usdc":"97600","eth_inventory":"1.8","idle0":"1.8","idle1":"97600"}}
+      ];
+
+      const sampleScore = {"initial_balance_usdc":"100000","equity_usd":"101185","profit_usd":"1185","profit_pct":"1.04","apr_pct":"2.1089","elapsed_simulated_days":"180.0000","net_profit_usd_after_penalties":"1040","avg_eth_exposure_usd":"210","max_eth_exposure_usd":"339.3","eth_price_usdc":"2035","net_eth_delta":"0.04","eth_exposure_usd":"81.4","fees_earned_usd":"1690","lo_edge_usd":"315","borrow_cost_usd":"188","delta_penalty_usd":"6","exposure_penalty_usd":"12","score_breakdown":{"raw_pnl":"1185","cl_fee_pnl":"1690","lo_edge_pnl":"315","inventory_mark_pnl":"101185","borrow_interest_attribution":"188","action_costs":"28","delta_penalty":"6","liquidation_penalty":"0","invalid_action_penalty":"0","scenario_score":"1040","net_profit_usd_after_penalties":"1040","fees_earned_usd":"1690","lo_edge_usd":"315","borrow_cost_usd":"188","delta_penalty_usd":"6","exposure_penalty_usd":"12","profit_pct":"1.04","apr_pct":"2.1089","elapsed_simulated_days":"180.0000","loss_explanations":["borrow interest increased debt liability"]}};
+      const sampleLeaderboard = {"leaderboard":[{"rank":1,"run_id":"preview","strategy":"starter_strategy.py","strategy_name":"Starter delta-neutral vault","score":"1040","profit_usd":"1040","net_profit_usd_after_penalties":"1040","apr_pct":"2.1089","avg_eth_exposure_usd":"210","max_eth_exposure_usd":"339.3","bundle":"competition_6m","disqualified":false,"user":{"handle":"aegis_builder","name":"Aegis Builder","avatar_url":"assets/aegis-logo.svg"},"risk_badges":["delta-safe","profitable"]}]};
+      const sampleCalibration = {"bundle":"competition_6m","steps":17280,"step_length_seconds":900,"simulated_days":180,"regime_schedule":["calm","volatile","trend_up","mean_reversion","trend_down","jump","borrow_stress","low_liquidity","volatile"],"market":{"base_token":"USDC","risk_token":"ETH","quote_token":"USDC","pool_pair":"ETH/USDC","price_convention":"USDC per ETH","initial_price":"2000","initial_price_usdc_per_eth":"2000","initial_balance_usdc":"100000","initial_cash_usdc":"100000","initial_eth":"0"}};
+      let replay = sampleReplay;
+      let score = sampleScore;
+      let calibration = sampleCalibration;
+      let leaderboard = sampleLeaderboard;
+      let authState = { authenticated: false, anonymous_run_used: false, can_start_run: true };
+      let attempts = [];
+      let latestShare = null;
+      let pendingShareCard = null;
+      let waterfallMode = "score";
+      let lastRun = null;
+      let starterSource = null;
+      let activeJobId = null;
+      let pollTimer = null;
+      let runStartedAt = 0;
+
+      const $ = (id) => document.getElementById(id);
+      const fmt = (value, digits = 6) => Number(value || 0).toLocaleString(undefined, { maximumFractionDigits: digits });
+      const compact = (value, digits = 1) => Number(value || 0).toLocaleString(undefined, { notation: "compact", maximumFractionDigits: digits });
+      const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+      const fmtUsd = (value, digits = 0) => Number(value || 0).toLocaleString(undefined, { style: "currency", currency: "USD", maximumFractionDigits: digits });
+      const signedUsd = (value, digits = 0) => {
+        const n = Number(value || 0);
+        return `${n >= 0 ? "+" : ""}${fmtUsd(n, digits)}`;
+      };
+      const signedNumber = (value, digits = 4) => {
+        const n = Number(value || 0);
+        return `${n >= 0 ? "+" : ""}${n.toFixed(digits)}`;
+      };
+      const esc = (value) => String(value ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+      const remaining = (seconds) => {
+        const s = Math.max(0, Number(seconds || 0));
+        const minutes = Math.floor(s / 60);
+        const rest = Math.floor(s % 60);
+        return `${minutes}:${String(rest).padStart(2, "0")}`;
+      };
+      const formatApr = (value) => {
+        const n = Number(value);
+        if (!Number.isFinite(n)) return "building";
+        return `${n >= 0 ? "+" : ""}${n.toFixed(2)}%`;
+      };
+      const trimMiddle = (value, max = 54) => {
+        const text = String(value || "");
+        if (text.length <= max) return text;
+        const half = Math.floor((max - 3) / 2);
+        return `${text.slice(0, half)}...${text.slice(-half)}`;
+      };
+      const escapeRegExp = (value) => String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+      const shareLogo = new Image();
+      shareLogo.onload = () => {
+        if (pendingShareCard) drawShareCard(pendingShareCard);
+      };
+      shareLogo.src = "assets/aegis-logo.svg";
+
+      function marketInfo() {
+        return calibration.market || { pool_pair: "ETH/USDC", initial_balance_usdc: "100000", initial_price: "2000" };
+      }
+
+      function runMoney(event = {}) {
+        const b = score.score_breakdown || {};
+        const initial = Number(event.initial_balance_usdc || score.initial_balance_usdc || marketInfo().initial_balance_usdc || 100000);
+        const netProfit = Number(event.net_profit_usd_after_penalties ?? event.score ?? score.net_profit_usd_after_penalties ?? b.net_profit_usd_after_penalties ?? b.scenario_score ?? 0);
+        const equity = Number(event.equity_usd ?? event.vault?.equity_usd ?? event.vault?.equity ?? score.equity_usd ?? initial + netProfit);
+        const rawProfit = Number(event.profit_usd ?? score.profit_usd ?? equity - initial);
+        const hasLiveEventMoney = event.net_profit_usd_after_penalties !== undefined || event.score !== undefined || event.elapsed_simulated_days !== undefined || event.simulated_day !== undefined;
+        const eventElapsedDays = event.elapsed_simulated_days ?? event.simulated_day ?? (event.timestamp !== undefined ? Number(event.timestamp) / 86400 : undefined);
+        const scoreElapsedDays = score.elapsed_simulated_days ?? b.elapsed_simulated_days ?? totalDays();
+        const elapsedDays = Number(hasLiveEventMoney ? eventElapsedDays : scoreElapsedDays);
+        const computedApr = initial > 0 && elapsedDays > 0 ? (netProfit / initial) * (365 / elapsedDays) * 100 : NaN;
+        const scoreApr = score.apr_pct ?? b.apr_pct;
+        const aprPct = hasLiveEventMoney && Number.isFinite(computedApr)
+          ? computedApr
+          : event.apr_pct !== undefined && event.apr_pct !== null
+            ? Number(event.apr_pct)
+            : scoreApr !== undefined && scoreApr !== null
+              ? Number(scoreApr)
+              : computedApr;
+        const ethPrice = Number(event.eth_price_usdc ?? event.price ?? score.eth_price_usdc ?? marketInfo().initial_price_usdc_per_eth ?? marketInfo().initial_price ?? 2000);
+        const netEth = Number(event.net_eth_delta ?? event.vault?.net_eth_delta ?? event.vault?.delta ?? 0);
+        const exposureUsd = Number(event.eth_exposure_usd ?? event.vault?.eth_exposure_usd ?? netEth * ethPrice);
+        return { initial, netProfit, equity, rawProfit, aprPct, elapsedDays, ethPrice, netEth, exposureUsd };
+      }
+
+      function tokenName(token) {
+        if (token === "token0") return "ETH";
+        if (token === "token1") return "USDC";
+        return token || "";
+      }
+
+      function totalDays() {
+        return Number(calibration.simulated_days || (Number(calibration.steps || 0) * Number(calibration.step_length_seconds || 0) / 86400) || 180);
+      }
+
+      function simDay(event) {
+        if (event.simulated_day !== undefined) return Number(event.simulated_day);
+        return Number(event.timestamp || event.step * Number(calibration.step_length_seconds || 60)) / 86400;
+      }
+
+      function stepLabel(event) {
+        return `day ${simDay(event).toFixed(1)}`;
+      }
+
+      function latestRegime() {
+        return replay.length ? (replay[replay.length - 1].regime || "calm") : "ready";
+      }
+
+      function updateProgress(progress = null) {
+        const event = replay[Math.max(0, replay.length - 1)] || {};
+        const days = progress ? Number(progress.completed_days || 0) : simDay(event);
+        const total = progress ? Number(progress.total_days || totalDays()) : totalDays();
+        const percent = clamp(progress ? Number(progress.percent || 0) : (days * 100 / Math.max(1, total)), 0, 100);
+        $("horizonMetric").textContent = `${Math.round(total)} days ETH/USDC`;
+        $("progressLabel").textContent = `Day ${days.toFixed(1)} of ${Math.round(total)}`;
+        $("horizonProgress").style.width = `${percent}%`;
+        $("regimeMetric").textContent = latestRegime().replaceAll("_", " ");
+        $("chunkMetric").textContent = `${Math.round(Number(calibration.step_length_seconds || 900) / 60)}m steps`;
+      }
+
+      function parseJsonl(text) {
+        return text.split(/\n+/).map(line => line.trim()).filter(Boolean).map(line => JSON.parse(line));
+      }
+
+      async function apiGet(path) {
+        const response = await fetch(path);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return response.json();
+      }
+
+      async function apiPost(path, body) {
+        const response = await fetch(path, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body)
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          const error = new Error(data.message || `HTTP ${response.status}`);
+          error.payload = data;
+          throw error;
+        }
+        if (data.status === "error") {
+          const error = new Error(data.message || "Request failed");
+          error.payload = data;
+          throw error;
+        }
+        return data;
+      }
+
+      function liveCooldownSeconds() {
+        const cooldown = authState.cooldown || {};
+        if (cooldown.next_run_at) {
+          return Math.max(0, Math.ceil(Number(cooldown.next_run_at) - Date.now() / 1000));
+        }
+        return Math.max(0, Number(cooldown.remaining_seconds || 0));
+      }
+
+      function syncCooldownState() {
+        const seconds = liveCooldownSeconds();
+        if (authState.cooldown) {
+          authState.cooldown.remaining_seconds = seconds;
+          if (seconds <= 0) {
+            authState.cooldown.remaining_seconds = 0;
+            authState.block_reason = null;
+            authState.can_start_run = true;
+          }
+        }
+        return seconds;
+      }
+
+      function setBusy(isBusy) {
+        const cooldownActive = syncCooldownState() > 0;
+        $("runButton").disabled = isBusy || cooldownActive;
+        $("starterButton").disabled = isBusy;
+        $("leaderboardButton").disabled = isBusy;
+        $("resetButton").disabled = isBusy;
+        $("randomPathButton").disabled = isBusy;
+        $("cancelButton").disabled = !isBusy || !activeJobId;
+        $("submitButton").disabled = isBusy || !lastRun;
+        $("downloadDataButton").disabled = isBusy || !lastRun?.run_id;
+      }
+
+      function setStatus(message, tone = "neutral") {
+        $("commandStatus").textContent = message;
+        $("commandStatus").style.borderColor = tone === "error" ? "rgba(255, 92, 92, .7)" : tone === "ok" ? "rgba(56, 215, 118, .55)" : "var(--line)";
+      }
+
+      function applySocialState(data = {}) {
+        if (data.auth) authState = data.auth;
+        if (data.attempts) attempts = data.attempts;
+        if (data.leaderboard) leaderboard = data.leaderboard;
+        renderAuth();
+        renderCooldown();
+        renderAttempts();
+        renderLeaderboard();
+      }
+
+      function renderAuth() {
+        const user = authState.user;
+        $("authAvatar").src = user?.avatar_url || "assets/aegis-logo.svg";
+        $("authName").textContent = user ? `@${user.handle}` : "Anonymous trial";
+        const cooldownSeconds = syncCooldownState();
+        if (user && cooldownSeconds > 0) {
+          $("authHelp").textContent = `Signed in. Next run in ${remaining(cooldownSeconds)}.`;
+        } else if (user) {
+          $("authHelp").textContent = "Signed in. Ready to run now.";
+        } else {
+          $("authHelp").textContent = authState.anonymous_run_used ? "Sign in with X to try again." : "Run once free. Sign in to keep iterating.";
+        }
+        $("loginButton").hidden = Boolean(user);
+        $("logoutButton").hidden = !user;
+      }
+
+      function renderCooldown() {
+        const cooldown = authState.cooldown || {};
+        const seconds = syncCooldownState();
+        const active = seconds > 0;
+        $("cooldownPanel").className = active ? "cooldown-panel show" : "cooldown-panel";
+        if (active) {
+          const next = cooldown.next_run_at ? new Date(Number(cooldown.next_run_at) * 1000).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) : "soon";
+          $("cooldownPanel").textContent = `Next simulation in ${remaining(seconds)} (${next}). While you wait: edit strategy, inspect replay, rename tries, publish, or share.`;
+        }
+        if (!active) $("cooldownPanel").textContent = "";
+      }
+
+      function tickCooldown() {
+        const before = Number(authState.cooldown?.remaining_seconds || 0);
+        const after = syncCooldownState();
+        if (before > 0 || after > 0) {
+          renderAuth();
+          renderCooldown();
+          setBusy(Boolean(activeJobId));
+        }
+      }
+
+      function renderAttempts() {
+        $("attemptCount").textContent = `${attempts.length} saved`;
+        if (!attempts.length) {
+          $("attemptRows").innerHTML = '<div class="plain-note">Completed runs auto-save here. Name a try, then publish only the ones you want on the leaderboard.</div>';
+          return;
+        }
+        $("attemptRows").innerHTML = attempts.map(attempt => {
+          const user = attempt.user || {};
+          const published = attempt.published
+            ? `<button class="pill ok attempt-status" onclick="unpublishAttempt('${esc(attempt.attempt_id)}')" title="Remove from leaderboard">Published</button>`
+            : `<button class="pill attempt-status" onclick="publishAttempt('${esc(attempt.attempt_id)}')" title="Publish to leaderboard">Publish</button>`;
+          const publishAction = attempt.published ? "unpublishAttempt" : "publishAttempt";
+          return `<div class="attempt-row">
+            <div class="attempt-top">
+              <strong>${esc(attempt.strategy_name)}</strong>
+              ${published}
+              <details class="attempt-menu">
+                <summary aria-label="Actions for ${esc(attempt.strategy_name)}">...</summary>
+                <div class="attempt-menu-popover">
+                  <label for="attempt-name-${esc(attempt.attempt_id)}">Name</label>
+                  <input id="attempt-name-${esc(attempt.attempt_id)}" class="attempt-name" type="text" value="${esc(attempt.strategy_name)}" aria-label="Rename ${esc(attempt.strategy_name)}" data-attempt-name="${esc(attempt.attempt_id)}">
+                  <div class="attempt-actions">
+                    <button onclick="renameAttempt('${esc(attempt.attempt_id)}')">Save</button>
+                    <button onclick="cloneAttempt('${esc(attempt.attempt_id)}')">Clone</button>
+                    ${attempt.share ? `<button onclick="showShare('${esc(attempt.attempt_id)}')">Share</button>` : `<button onclick="${publishAction}('${esc(attempt.attempt_id)}')">Publish</button>`}
+                  </div>
+                </div>
+              </details>
+            </div>
+            <div class="attempt-meta"><span>@${esc(user.handle || "anonymous")}</span><span>APR ${formatApr(attempt.apr_pct)}</span><span>${signedUsd(attempt.profit_usd, Math.abs(Number(attempt.profit_usd || 0)) < 100 ? 2 : 0)}</span></div>
+          </div>`;
+        }).join("");
+      }
+
+      function points(values, width, height, pad) {
+        const nums = values.map(Number);
+        const min = Math.min(...nums);
+        const max = Math.max(...nums);
+        const span = max - min || 1;
+        return nums.map((value, index) => {
+          const x = pad + (index * (width - pad * 2) / Math.max(1, nums.length - 1));
+          const y = height - pad - ((value - min) * (height - pad * 2) / span);
+          return `${x.toFixed(1)},${y.toFixed(1)}`;
+        }).join(" ");
+      }
+
+      function laneSeries(values, width, xPad, yTop, yBottom, minValue = null, maxValue = null) {
+        const nums = values.map(Number);
+        const min = minValue === null ? Math.min(...nums) : minValue;
+        const max = maxValue === null ? Math.max(...nums) : maxValue;
+        const span = max - min || 1;
+        return nums.map((value, index) => {
+          const x = xPad + (index * (width - xPad * 2) / Math.max(1, nums.length - 1));
+          const y = yBottom - ((value - min) * (yBottom - yTop) / span);
+          return { x, y, value };
+        });
+      }
+
+      function polyline(series) {
+        return series.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
+      }
+
+      function areaPath(series, baseline) {
+        const first = series[0];
+        const last = series[series.length - 1];
+        return `M ${first.x.toFixed(1)} ${baseline} L ${polyline(series).replaceAll(" ", " L ")} L ${last.x.toFixed(1)} ${baseline} Z`;
+      }
+
+      function renderChart(selected) {
+        const chart = $("replayChart");
+        const width = 720;
+        const pad = 54;
+        const index = clamp(selected, 0, replay.length - 1);
+        const total = totalDays();
+        const moneySeries = replay.map(e => runMoney(e));
+        const prices = laneSeries(moneySeries.map(m => m.ethPrice), width, pad, 42, 94);
+        const profits = moneySeries.map(m => m.netProfit);
+        const maxScores = profits.map((_, i) => Math.max(...profits.slice(0, i + 1)));
+        const drawdowns = profits.map((value, i) => maxScores[i] - value);
+        const profitMaxAbs = Math.max(100, ...profits.map(v => Math.abs(v)));
+        const exposureValues = moneySeries.map(m => m.exposureUsd);
+        const exposureMaxAbs = Math.max(500, ...exposureValues.map(v => Math.abs(v)));
+        const scoreLine = laneSeries(profits, width, pad, 98, 126, -profitMaxAbs, profitMaxAbs);
+        const drawdownLine = laneSeries(drawdowns, width, pad, 126, 148, 0, Math.max(1, ...drawdowns));
+        const exposureLine = laneSeries(exposureValues, width, pad, 122, 168, -exposureMaxAbs, exposureMaxAbs);
+        const ltvs = laneSeries(replay.map(e => Number(e.vault.ltv_pips || 0) / 1000000), width, pad, 206, 246, 0, 1);
+        const activeX = prices[index].x.toFixed(1);
+        const priceDot = prices[index];
+        const exposureDot = exposureLine[index];
+        const ltvDot = ltvs[index];
+        const fillDots = replay.flatMap((e, i) => (e.recent_fills || []).map(() => `<circle class="fill-dot" cx="${prices[i].x.toFixed(1)}" cy="112" r="5"></circle>`)).join("");
+        const repairDots = replay.flatMap((e, i) => (e.recent_repairs || []).map(() => `<circle class="fill-dot" cx="${prices[i].x.toFixed(1)}" cy="190" r="5" fill="#ff5c5c"></circle>`)).join("");
+        const surgeBands = replay.map((e, i) => ({ e, i })).filter(({ e }) => e.dfm?.dfm_surge_triggered === true || e.dfm?.dfm_surge_triggered === "true").map(({ i }) => {
+          const x = prices[i].x.toFixed(1);
+          const next = prices[Math.min(prices.length - 1, i + 1)] || prices[i];
+          const width = Math.max(2, next.x - prices[i].x).toFixed(1);
+          return `<rect x="${x}" y="34" width="${width}" height="220" fill="rgba(255, 181, 71, .09)"></rect>`;
+        }).join("");
+        const regimeMarks = replay.map((e, i) => ({ e, i })).filter(({ e, i }) => i === 0 || e.regime !== replay[i - 1].regime).map(({ e, i }) => {
+          const x = prices[i].x.toFixed(1);
+          return `<line class="regime-line" x1="${x}" y1="34" x2="${x}" y2="254"></line><text class="chart-caption" x="${Number(x) + 4}" y="268">${(e.regime || "").replaceAll("_", " ")}</text>`;
+        }).join("");
+        chart.innerHTML = `
+          <line class="grid-line" x1="54" y1="98" x2="690" y2="98"></line>
+          <line class="grid-line" x1="54" y1="176" x2="690" y2="176"></line>
+          <line class="grid-line" x1="54" y1="252" x2="690" y2="252"></line>
+          <text class="chart-label" x="18" y="48">ETH</text>
+          <text class="chart-caption" x="18" y="64">USDC</text>
+          <text class="chart-label" x="18" y="112">Profit</text>
+          <text class="chart-caption" x="18" y="128">USD</text>
+          <text class="chart-label" x="18" y="154">Exposure</text>
+          <text class="chart-caption" x="18" y="170">USD</text>
+          <text class="chart-label" x="18" y="212">LTV</text>
+          <text class="chart-caption" x="18" y="228">used</text>
+          ${surgeBands}
+          ${regimeMarks}
+          <rect class="safe-band" x="54" y="133" width="636" height="35" rx="6"></rect>
+          <path class="chart-area" d="${areaPath(prices, 98)}"></path>
+          <polyline class="chart-line" points="${polyline(prices)}"></polyline>
+          <polyline class="chart-delta" points="${polyline(scoreLine)}"></polyline>
+          <polyline class="drawdown-line" points="${polyline(drawdownLine)}"></polyline>
+          <polyline class="chart-delta" points="${polyline(exposureLine)}"></polyline>
+          <polyline class="chart-ltv" points="${polyline(ltvs)}"></polyline>
+          <line class="axis" x1="${activeX}" y1="34" x2="${activeX}" y2="254"></line>
+          <circle class="chart-last" cx="${priceDot.x.toFixed(1)}" cy="${priceDot.y.toFixed(1)}" r="5" fill="#ff8728"></circle>
+          <circle class="chart-last" cx="${exposureDot.x.toFixed(1)}" cy="${exposureDot.y.toFixed(1)}" r="5" fill="#19d3c5"></circle>
+          <circle class="chart-last" cx="${ltvDot.x.toFixed(1)}" cy="${ltvDot.y.toFixed(1)}" r="5" fill="#65a7ff"></circle>
+          <text class="chart-caption" x="574" y="32">${stepLabel(replay[index])} / ${Math.round(total)}</text>
+          <text class="chart-caption" x="574" y="52">ETH ${fmtUsd(runMoney(replay[index]).ethPrice, 0)}</text>
+          <text class="chart-caption" x="574" y="72">profit ${signedUsd(runMoney(replay[index]).netProfit, 0)}</text>
+          <text class="chart-caption" x="574" y="92">ETH exp ${signedUsd(runMoney(replay[index]).exposureUsd, 0)}</text>
+          <text class="chart-caption" x="574" y="112">LTV ${(Number(replay[index].vault.ltv_pips) / 10000).toFixed(1)}%</text>
+          ${fillDots}
+          ${repairDots}
+        `;
+      }
+
+      function stepFees(event) {
+        const ethPrice = runMoney(event).ethPrice;
+        return (event.recent_swaps || []).reduce((sum, s) => {
+          const rawFee = Number(s.lp_fee_paid || 0) + Number(s.protocol_fee_paid || 0) + Number(s.hook_fee_paid || 0);
+          return sum + (s.token_in === "token0" ? rawFee * ethPrice : rawFee);
+        }, 0);
+      }
+
+      function renderMetrics(event) {
+        const money = runMoney(event);
+        const scoreValue = money.netProfit;
+        const deltaAbs = Math.abs(Number(event.vault.delta_normalized || 0));
+        const ltvUsed = Number(event.vault.ltv_pips || 0) / 1000000;
+        const maxLtv = Number(event.vault.max_ltv_pips || 0) / 1000000;
+        const debt = Number(event.vault.debt_l || 0);
+        const b = score.score_breakdown || {};
+        const fees = Number(event.fees_earned_usd ?? score.fees_earned_usd ?? b.fees_earned_usd ?? b.cl_fee_pnl ?? 0) + Number(event.lo_edge_usd ?? score.lo_edge_usd ?? b.lo_edge_usd ?? b.lo_edge_pnl ?? 0);
+        const borrowCost = Number(event.borrow_cost_usd ?? score.borrow_cost_usd ?? b.borrow_cost_usd ?? b.borrow_interest_attribution ?? 0);
+        $("scoreMetric").textContent = signedUsd(scoreValue, Math.abs(scoreValue) < 100 ? 2 : 0);
+        $("equityMetric").textContent = fmtUsd(money.equity, 0);
+        $("aprMetric").textContent = formatApr(money.aprPct);
+        $("exposureMetric").textContent = signedUsd(money.exposureUsd, Math.abs(money.exposureUsd) < 100 ? 2 : 0);
+        $("deltaMetric").textContent = `${(deltaAbs * 100).toFixed(2)}%`;
+        $("ltvMetric").textContent = `${(ltvUsed * 100).toFixed(1)}%`;
+        $("debtMetric").textContent = fmtUsd(borrowCost, Math.abs(borrowCost) < 100 ? 2 : 0);
+        $("feeMetric").textContent = fmtUsd(fees, Math.abs(fees) < 100 ? 2 : 0);
+        $("scoreMeter").style.width = `${clamp(Math.abs(scoreValue) / 20, 6, 100)}%`;
+        $("equityMeter").style.width = `${clamp(money.equity * 100 / Math.max(1, money.initial * 1.05), 4, 100)}%`;
+        $("aprMeter").style.width = `${clamp(Math.abs(Number.isFinite(money.aprPct) ? money.aprPct : 0) * 10, 4, 100)}%`;
+        $("exposureMeter").style.width = `${clamp(Math.abs(money.exposureUsd) * 100 / Math.max(1, money.initial * .03), 4, 100)}%`;
+        $("deltaMeter").style.width = `${clamp(deltaAbs * 100 / .03, 4, 100)}%`;
+        $("ltvMeter").style.width = `${clamp(ltvUsed * 100 / Math.max(.01, maxLtv), 4, 100)}%`;
+        $("debtMeter").style.width = `${clamp(borrowCost / 2, 4, 100)}%`;
+        $("feeMeter").style.width = `${clamp(fees / 20, 4, 100)}%`;
+        $("exposureMeterTrack").className = Math.abs(money.exposureUsd) <= money.initial * .03 ? "meter" : "meter danger";
+        $("deltaMeterTrack").className = deltaAbs <= .03 ? "meter" : "meter danger";
+        $("ltvMeterTrack").className = ltvUsed <= maxLtv ? "meter" : "meter danger";
+        $("collateralCell").textContent = `${compact(event.vault.collateral_floor_l)} L`;
+        $("debtCell").textContent = `${compact(debt)} rL`;
+        $("borrowIndexCell").textContent = (Number(event.vault.borrow_index || 0) / 1e18).toFixed(12);
+        $("liabilityCell").textContent = fmtUsd(event.vault.debt_liability_value || 0, 0);
+        $("ethPriceCell").textContent = `${fmtUsd(money.ethPrice, 0)} / ETH`;
+        $("netEthCell").textContent = `${signedNumber(money.netEth, 4)} ETH`;
+        $("hardLtvCell").textContent = `${(Number(event.vault.hard_ltv_pips || 0) / 10000).toFixed(1)}%`;
+        $("runCell").textContent = event.public_run_id || "local";
+        $("riskState").textContent = event.vault.ltv_pips <= event.vault.max_ltv_pips ? "locked" : "repair";
+        $("riskState").className = event.vault.ltv_pips <= event.vault.max_ltv_pips ? "pill ok" : "pill bad";
+        $("deltaPill").className = Math.abs(Number(event.vault.delta_normalized)) <= .03 ? "pill ok" : "pill bad";
+        $("ltvPill").className = event.vault.ltv_pips <= event.vault.max_ltv_pips ? "pill ok" : "pill bad";
+        renderMarketStats(event);
+        updateProgress();
+      }
+
+      function renderMarketStats(event) {
+        const market = event.market_stats || {};
+        const path = event.market_path || {};
+        const strategy = event.strategy_stats || {};
+        const dfm = event.dfm || event.pool || {};
+        const totalFeeBps = Number(dfm.dfm_total_fee_bps ?? (Number(dfm.dfm_total_fee_pips_estimate || dfm.all_in_input_fee_pips_estimate || 3000) / 100));
+        const lpFeeBps = Number(dfm.dfm_lp_fee_bps ?? (Number(dfm.dfm_lp_fee_pips || dfm.lp_fee_pips || 3000) / 100));
+        const surge = dfm.dfm_surge_triggered === true || dfm.dfm_surge_triggered === "true" || event.pool?.fee_surge_active === true;
+        const reason = dfm.dfm_surge_reason || "normal";
+        const dfmLpLift = Number(market.dfm_lp_fee_lift_usd || 0);
+        $("volumeCell").textContent = fmtUsd(market.volume_usd || 0, Math.abs(Number(market.volume_usd || 0)) < 100 ? 2 : 0);
+        $("tradesCell").textContent = `${Number(market.trade_count || 0).toLocaleString()} trades · ${Number(market.execution_swap_count || 0).toLocaleString()} executions`;
+        $("priceMoveCell").textContent = `${signedNumber(market.price_change_pct || 0, 3)}%`;
+        const intensity = Number(path.trade_intensity ?? market.trade_intensity ?? 0);
+        const jump = path.jump_event === true || path.jump_event === "true" || market.jump_event === true || market.jump_event === "true";
+        $("pathSignalCell").textContent = `${(path.regime || event.regime || "market").replaceAll("_", " ")} · ${intensity.toFixed(2)} intensity${jump ? " · jump" : ""}`;
+        $("lpFeeCell").textContent = `${fmtUsd(market.lp_fees_usd || 0, 2)}${dfmLpLift > 0 ? ` · +${fmtUsd(dfmLpLift, 2)} DFM lift` : ""} · ${lpFeeBps.toFixed(2)} bps to CL`;
+        $("hookFeeCell").textContent = fmtUsd(market.dfm_hook_fees_usd || 0, 2);
+        $("dfmFeeCell").textContent = `${totalFeeBps.toFixed(2)} bps${surge ? ` · ${reason}` : ""}`;
+        $("neutralityCell").textContent = strategy.delta_band_safe === false ? "outside band" : "safe";
+        $("rangeEffCell").textContent = `${(Number(strategy.active_cl_liquidity_share || 0) * 100).toFixed(1)}% active CL`;
+        $("marketState").textContent = surge ? "DFM fee surge" : "normal DFM fee";
+        $("marketState").className = surge ? "pill hot" : "pill ok";
+        $("feePill").textContent = surge ? "DFM fee surge" : "DFM normal fee";
+        $("feePill").className = surge ? "pill hot" : "pill ok";
+        $("pathPill").textContent = `${calibration.market_engine?.engine_version || path.engine_version || "market v2"} · seed ${calibration.seed ?? $("seedSelect").value}`;
+      }
+
+      function renderRobustness() {
+        const summary = score.ranked_summary || lastRun?.score?.ranked_summary || {};
+        const ok = summary.status === "ok";
+        $("robustnessState").textContent = ok ? summary.robustness_rank || "ranked" : "practice run";
+        $("robustnessState").className = ok ? "pill ok" : "pill";
+        $("rankPathCountCell").textContent = ok ? `${summary.path_count} hidden paths` : "publish to score";
+        $("rankMedianCell").textContent = ok ? signedUsd(summary.median_profit_usd || summary.median_score || 0, 0) : "-";
+        $("rankP10Cell").textContent = ok ? signedUsd(summary.p10_profit_usd || summary.p10_score || 0, 0) : "-";
+        $("rankDeltaBandCell").textContent = ok ? `${(Number(summary.worst_decile_delta_band_time || summary.median_delta_band_time || 0) * 100).toFixed(1)}%` : "-";
+        $("rankDrawdownCell").textContent = ok ? fmtUsd(summary.max_drawdown_usd || 0, 0) : "-";
+        $("rankVarianceCell").textContent = ok ? compact(summary.score_variance || 0, 2) : "-";
+      }
+
+      function renderWaterfall(event) {
+        const b = score.score_breakdown || {};
+        const money = runMoney(event);
+        const fees = Number(score.fees_earned_usd ?? b.fees_earned_usd ?? b.cl_fee_pnl ?? 0);
+        const loEdge = Number(score.lo_edge_usd ?? b.lo_edge_usd ?? b.lo_edge_pnl ?? 0);
+        const inventory = Number(score.inventory_pnl_usd ?? b.inventory_pnl_usd ?? b.raw_pnl ?? 0);
+        const borrowCost = Number(score.borrow_cost_usd ?? b.borrow_cost_usd ?? b.borrow_interest_attribution ?? 0);
+        const repairCost = Number(score.repair_cost_usd ?? b.repair_cost_usd ?? b.liquidation_penalty ?? 0);
+        const deltaPenalty = Number(score.delta_penalty_usd ?? b.delta_penalty_usd ?? b.delta_penalty ?? 0);
+        const rowsByMode = {
+          score: [
+            ["USD profit before costs", money.rawProfit],
+            ["CL fees", fees],
+            ["LO edge", loEdge],
+            ["Inventory PnL", inventory],
+            ["Borrow cost", -borrowCost],
+            ["Action costs", -Number(b.action_costs || 0)],
+            ["Delta penalty", -deltaPenalty],
+            ["Net USD profit", money.netProfit]
+          ],
+          risk: [
+            ["ETH exposure USD", money.exposureUsd],
+            ["Net ETH delta", money.netEth],
+            ["Delta norm", Number(event.vault.delta_normalized || 0) * 100],
+            ["LTV used", Number(event.vault.ltv_pips || 0) / 10000],
+            ["LTV headroom", (Number(event.vault.max_ltv_pips || 0) - Number(event.vault.ltv_pips || 0)) / 10000],
+            ["Repairs/liquidations", -repairCost]
+          ],
+          fees: [
+            ["Latest swap fees", stepFees(event)],
+            ["CL fee USD", fees],
+            ["LO edge USD", loEdge],
+            ["Borrow cost USD", -borrowCost],
+            ["Action costs", -Number(b.action_costs || 0)],
+            ["Net USD profit", money.netProfit]
+          ]
+        };
+        const rows = rowsByMode[waterfallMode] || rowsByMode.score;
+        const scale = Math.max(1, ...rows.map(r => Math.abs(r[1])));
+        $("waterfall").innerHTML = rows.map(([label, value]) => {
+          const width = clamp(Math.abs(value) * 100 / scale, 2, 100);
+          const neg = value < 0 ? " neg" : "";
+          const formatted = label.includes("Delta norm") || label.includes("LTV") ? `${fmt(value, 2)}%` : label.includes("Net ETH") ? `${signedNumber(value, 4)} ETH` : signedUsd(value, Math.abs(value) < 100 ? 2 : 0);
+          return `<div class="bar"><span>${label}</span><div class="track"><div class="fill${neg}" style="width:${width}%"></div></div><strong class="mono">${formatted}</strong></div>`;
+        }).join("");
+      }
+
+      function renderTape(selected) {
+        const fullSteps = Number(calibration.steps || replay.length);
+        $("eventCount").textContent = `${replay.length} samples / ${fullSteps.toLocaleString()} steps`;
+        const tail = replay.slice(Math.max(0, selected - 8), selected + 1).reverse();
+        $("eventTape").innerHTML = tail.map(e => {
+          const swap = (e.recent_swaps || [])[0] || {};
+          const fills = (e.recent_fills || []).length;
+          const errors = (e.errors || []).length;
+          const repairs = (e.recent_repairs || []).length;
+          const money = runMoney(e);
+          return `<div class="event">
+            <div class="event-top"><span>${stepLabel(e)} · ETH ${fmtUsd(money.ethPrice, 0)}</span><span class="mono">${e.regime || "calm"} · tick ${e.tick}</span></div>
+            <div class="event-main"><span>${swap.actor || "strategy"} ${tokenName(swap.token_in)}</span><span>${signedUsd(money.netProfit, 0)} · exp ${signedUsd(money.exposureUsd, 0)}</span></div>
+            <div class="event-main"><span>${fmt(swap.amount_in || 0, 3)} ${tokenName(swap.token_in)}</span><span>${fmt(swap.amount_out || 0, 3)} out</span></div>
+            <div class="pills"><span class="pill ${fills ? "ok" : ""}">${fills} fills</span><span class="pill ${repairs ? "bad" : ""}">${repairs} repairs</span><span class="pill ${errors ? "bad" : ""}">${errors} errors</span></div>
+          </div>`;
+        }).join("");
+      }
+
+      function renderLeaderboard() {
+        const rows = leaderboard.leaderboard || [];
+        if (!rows.length) {
+          $("leaderboardRows").innerHTML = '<tr><td colspan="4">No submissions yet</td></tr>';
+          return;
+        }
+        $("leaderboardRows").innerHTML = rows.map(row => {
+          const rowProfit = row.net_profit_usd_after_penalties || row.profit_usd || row.score || row.public_score || row.ranked_score || 0;
+          const rowApr = row.apr_pct ?? row.return_pct ?? row.profit_pct ?? 0;
+          const avgExposure = row.avg_eth_exposure_usd || row.max_delta || 0;
+          const maxExposure = row.max_eth_exposure_usd || row.max_delta || 0;
+          const repairs = row.repairs_liquidations || row.liquidation_count || 0;
+          const runId = String(row.run_id || "").slice(0, 8);
+          const user = row.user || {};
+          const badgeList = row.risk_badges || [];
+          const heroBadge = badgeList.includes("current leader") ? "current leader" : badgeList.includes("profitable") ? "profitable" : badgeList.includes("delta-safe") ? "delta-safe" : "";
+          const strategy = row.strategy_name || row.strategy || "strategy";
+          return `<tr>
+            <td colspan="4">
+              <div class="leader-card">
+                <div class="leader-card-top">
+                  <span class="leader-rank">${row.rank}</span>
+                  <div class="leader-summary">
+                    <div class="leader-identity"><img class="avatar" alt="" src="${esc(user.avatar_url || "assets/aegis-logo.svg")}"><div class="leader-title"><strong>@${esc(user.handle || "anonymous")}</strong><small>${esc(strategy)}</small></div></div>
+                    <div class="leader-profit mono"><strong>${signedUsd(rowProfit, Math.abs(Number(rowProfit)) < 100 ? 2 : 0)}</strong><small>APR ${formatApr(rowApr)}</small></div>
+                  </div>
+                </div>
+                <div class="leader-foot"><span>ETH risk avg ${fmtUsd(avgExposure, 0)} · run ${esc(runId)}</span>${heroBadge ? `<span class="pill ok">${esc(heroBadge)}</span>` : ""}</div>
+              </div>
+            </td>
+          </tr>`;
+        }).join("");
+      }
+
+      function renderPositions(event) {
+        const fills = event.recent_fills || [];
+        const orders = fills.map(fill => `<tr><td>LO</td><td class="mono">${fill.tick}</td><td>${fill.side}</td></tr>`);
+        if (!orders.length) orders.push('<tr><td>LO</td><td class="mono">+60</td><td>open</td></tr>');
+        $("positionRows").innerHTML = orders.join("");
+        $("positionCount").textContent = `${orders.length} NFTs`;
+      }
+
+      function render() {
+        $("stepRange").max = String(Math.max(0, replay.length - 1));
+        const selected = clamp(Number($("stepRange").value), 0, replay.length - 1);
+        $("stepRange").value = String(selected);
+        $("stepBox").textContent = stepLabel(replay[selected]);
+        $("rawStep").textContent = `${stepLabel(replay[selected])}`;
+        $("rawEvent").textContent = JSON.stringify(replay[selected], null, 2);
+        renderChart(selected);
+        renderMetrics(replay[selected]);
+        renderWaterfall(replay[selected]);
+        renderTape(selected);
+        renderRobustness();
+        renderLeaderboard();
+        renderPositions(replay[selected]);
+      }
+
+      $("stepRange").addEventListener("input", render);
+      $("resetButton").addEventListener("click", () => {
+        restoreStarter();
+      });
+      $("starterButton").addEventListener("click", () => {
+        restoreStarter();
+      });
+      $("leaderboardButton").addEventListener("click", () => {
+        refreshLeaderboard();
+      });
+      $("randomPathButton").addEventListener("click", randomPracticePath);
+      $("loginButton").addEventListener("click", signInWithX);
+      $("logoutButton").addEventListener("click", logout);
+      $("copyShareButton").addEventListener("click", copyShare);
+      $("shareButton").addEventListener("click", openShareOnX);
+      $("downloadShareCardButton").addEventListener("click", downloadShareCard);
+      $("closeShareModalButton").addEventListener("click", closeShareModal);
+      $("closeShareModalBottomButton").addEventListener("click", closeShareModal);
+      $("shareModal").addEventListener("click", event => {
+        if (event.target === $("shareModal")) closeShareModal();
+      });
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape" && !$("shareModal").hidden) closeShareModal();
+      });
+      $("runButton").addEventListener("click", runFromBrowser);
+      $("cancelButton").addEventListener("click", cancelRun);
+      $("submitButton").addEventListener("click", submitFromBrowser);
+      $("downloadDataButton").addEventListener("click", downloadRawData);
+
+      document.querySelectorAll(".tab").forEach(button => {
+        button.addEventListener("click", () => {
+          waterfallMode = button.dataset.tab || "score";
+          document.querySelectorAll(".tab").forEach(tab => {
+            tab.classList.remove("active");
+            tab.setAttribute("aria-selected", "false");
+          });
+          button.classList.add("active");
+          button.setAttribute("aria-selected", "true");
+          render();
+        });
+      });
+
+      async function loadStarter() {
+        try {
+          const data = await apiGet("/api/starter");
+          starterSource = data.strategy;
+          $("strategyEditor").value = starterSource;
+          $("strategyEditor").defaultValue = starterSource;
+          setStatus("Starter strategy loaded. Click Run 6-month ETH/USDC simulation to generate real USD profit and exposure results.", "ok");
+        } catch (error) {
+          setStatus("Start the local Aegis web server to run simulations from the browser.", "error");
+        }
+      }
+
+      function restoreStarter() {
+        if (starterSource) {
+          $("strategyEditor").value = starterSource;
+          $("strategyEditor").defaultValue = starterSource;
+        } else {
+          $("strategyEditor").value = $("strategyEditor").defaultValue;
+        }
+        setStatus("Starter strategy restored.", "ok");
+      }
+
+      async function refreshLeaderboard() {
+        try {
+          leaderboard = await apiGet("/api/leaderboard");
+          renderLeaderboard();
+          setStatus("Leaderboard refreshed.", "ok");
+        } catch (error) {
+          setStatus("Could not refresh leaderboard. Check that the local server is running.", "error");
+        }
+      }
+
+      async function randomPracticePath() {
+        try {
+          const data = await apiGet("/api/practice/random-seed");
+          $("bundleSelect").value = data.bundle || "public_train";
+          const seed = String(data.seed);
+          let option = Array.from($("seedSelect").options).find(item => item.value === seed);
+          if (!option) {
+            option = document.createElement("option");
+            option.value = seed;
+            option.textContent = `Random ${seed}`;
+            $("seedSelect").appendChild(option);
+          }
+          $("seedSelect").value = seed;
+          $("pathPill").textContent = `random public path · seed ${seed}`;
+          setStatus(`Loaded ${data.label || `random public practice path ${seed}`}. Run it to test robustness before publishing.`, "ok");
+        } catch (error) {
+          setStatus("Could not create a random practice path. Check that the local server is running.", "error");
+        }
+      }
+
+      async function refreshAuth() {
+        try {
+          const data = await apiGet("/api/auth/status");
+          applySocialState(data);
+          setBusy(Boolean(activeJobId));
+        } catch (error) {
+          setStatus("Could not load auth state. Local mock sign-in may need the server.", "error");
+        }
+      }
+
+      async function signInWithX() {
+        try {
+          const data = await apiPost("/api/auth/login", {});
+          if (data.auth_url) {
+            window.location.href = data.auth_url;
+            return;
+          }
+          applySocialState(data);
+          setStatus("Signed in with mock X. You can keep iterating.", "ok");
+          setBusy(false);
+        } catch (error) {
+          setStatus(error.payload?.message || "Sign in failed.", "error");
+        }
+      }
+
+      async function logout() {
+        try {
+          const data = await apiPost("/api/auth/logout", {});
+          authState = data.auth || { authenticated: false };
+          attempts = [];
+          renderAuth();
+          renderCooldown();
+          renderAttempts();
+          setStatus("Logged out. Anonymous trial reset for this browser session.", "ok");
+          setBusy(false);
+        } catch (error) {
+          setStatus(error.payload?.message || "Logout failed.", "error");
+        }
+      }
+
+      async function renameAttempt(attemptId) {
+        const input = document.querySelector(`[data-attempt-name="${attemptId}"]`);
+        try {
+          const data = await apiPost("/api/attempts/rename", { attempt_id: attemptId, strategy_name: input?.value || "" });
+          applySocialState(data);
+          setStatus("Try renamed.", "ok");
+        } catch (error) {
+          setStatus(error.payload?.message || "Could not rename try.", "error");
+        }
+      }
+
+      async function cloneAttempt(attemptId) {
+        try {
+          const data = await apiPost("/api/attempts/clone", { attempt_id: attemptId });
+          applySocialState(data);
+          if (data.attempt?.strategy_source) $("strategyEditor").value = data.attempt.strategy_source;
+          if (data.attempt?.strategy_name) $("strategyNameInput").value = data.attempt.strategy_name;
+          setStatus("Try cloned into the editor.", "ok");
+        } catch (error) {
+          setStatus(error.payload?.message || "Could not clone try.", "error");
+        }
+      }
+
+      async function publishAttempt(attemptId) {
+        try {
+          const data = await apiPost("/api/attempts/publish", { attempt_id: attemptId });
+          applySocialState(data);
+          showShare(attemptId, data.attempt);
+          setStatus("Published to the leaderboard. Share it on X when ready.", "ok");
+        } catch (error) {
+          setStatus(error.payload?.message || "Could not publish try.", "error");
+        }
+      }
+
+      async function unpublishAttempt(attemptId) {
+        try {
+          const data = await apiPost("/api/attempts/unpublish", { attempt_id: attemptId });
+          applySocialState(data);
+          closeShareModal();
+          setStatus("Try unpublished.", "ok");
+        } catch (error) {
+          setStatus(error.payload?.message || "Could not unpublish try.", "error");
+        }
+      }
+
+      function showShare(attemptId, attempt = null) {
+        const ranked = (leaderboard.leaderboard || []).find(item => item.attempt_id === attemptId);
+        const saved = attempts.find(item => item.attempt_id === attemptId);
+        const found = attempt || ranked || saved;
+        const share = ranked?.share || found?.share || saved?.share;
+        if (!share) return;
+        latestShare = share;
+        pendingShareCard = share;
+        const title = share.rank_label && share.rank_label !== "published" ? `You're ranked ${share.rank_label}` : "You're on the leaderboard";
+        $("shareModalTitle").textContent = title;
+        $("shareModalSubtitle").textContent = `@${share.handle || found?.user?.handle || "anonymous"} · ${share.strategy_name || found?.strategy_name || "Aegis strategy"}`;
+        $("shareCopy").value = share.text || "";
+        $("shareWarning").hidden = !share.local_warning;
+        $("shareWarning").textContent = share.local_warning || "";
+        $("shareModal").hidden = false;
+        document.body.classList.add("modal-open");
+        drawShareCard(share);
+        setTimeout(() => $("shareButton").focus(), 0);
+      }
+
+      function closeShareModal() {
+        $("shareModal").hidden = true;
+        document.body.classList.remove("modal-open");
+      }
+
+      async function copyShare() {
+        if (!latestShare) return;
+        await navigator.clipboard.writeText($("shareCopy").value.trim());
+        setStatus("Share text copied.", "ok");
+      }
+
+      function currentIntentUrl() {
+        if (!latestShare) return "";
+        const params = new URLSearchParams();
+        let text = $("shareCopy").value.trim();
+        const url = latestShare.url || "";
+        if (url) {
+          const pattern = new RegExp(`\\n?\\s*(Local dev link:\\s*|Challenge:\\s*)?${escapeRegExp(url)}\\s*$`);
+          text = text.replace(pattern, "").trim();
+        }
+        params.set("text", text || latestShare.intent_text || latestShare.text || "Aegis Vault Challenge");
+        if (url) params.set("url", url);
+        return `https://twitter.com/intent/tweet?${params.toString()}`;
+      }
+
+      function openShareOnX() {
+        const intent = currentIntentUrl();
+        if (!intent) return;
+        window.open(intent, "_blank", "noopener,noreferrer");
+      }
+
+      function downloadShareCard() {
+        const canvas = $("shareCardCanvas");
+        const strategy = (latestShare?.strategy_name || "aegis-vault").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 36) || "aegis-vault";
+        const rank = String(latestShare?.rank_label || "published").replace(/[^a-z0-9]+/gi, "");
+        const link = document.createElement("a");
+        link.href = canvas.toDataURL("image/png");
+        link.download = `aegis-vault-${rank || "result"}-${strategy}.png`;
+        link.click();
+        setStatus("Share card downloaded.", "ok");
+      }
+
+      function drawShareCard(share) {
+        const canvas = $("shareCardCanvas");
+        if (!canvas) return;
+        pendingShareCard = share;
+        const ctx = canvas.getContext("2d");
+        const w = canvas.width;
+        const h = canvas.height;
+        ctx.clearRect(0, 0, w, h);
+        const bg = ctx.createLinearGradient(0, 0, w, h);
+        bg.addColorStop(0, "#101010");
+        bg.addColorStop(.56, "#171717");
+        bg.addColorStop(1, "#241407");
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, w, h);
+        ctx.strokeStyle = "rgba(255, 135, 40, .65)";
+        ctx.lineWidth = 3;
+        ctx.strokeRect(28, 28, w - 56, h - 56);
+        ctx.fillStyle = "rgba(255, 135, 40, .10)";
+        ctx.beginPath();
+        ctx.arc(1010, -80, 360, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = "rgba(25, 211, 197, .20)";
+        ctx.lineWidth = 2;
+        for (let i = 0; i < 8; i += 1) {
+          ctx.beginPath();
+          ctx.moveTo(660 + i * 44, 80);
+          ctx.lineTo(500 + i * 48, 610);
+          ctx.stroke();
+        }
+        if (shareLogo.complete && shareLogo.naturalWidth) {
+          ctx.drawImage(shareLogo, 70, 58, 58, 58);
+        } else {
+          drawAegisMark(ctx, 99, 87, 29);
+        }
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "900 30px Inter, Arial, sans-serif";
+        ctx.fillText("AEGIS", 144, 86);
+        ctx.fillStyle = "#b0b7c3";
+        ctx.font = "700 20px Inter, Arial, sans-serif";
+        ctx.fillText("Vault Challenge · ETH/USDC · $100K start", 144, 114);
+        ctx.fillStyle = "#ffb547";
+        ctx.font = "900 64px Inter, Arial, sans-serif";
+        const rankText = share.rank_label && share.rank_label !== "published" ? `Rank ${share.rank_label}` : "Published result";
+        ctx.fillText(rankText, 70, 208);
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "900 78px Inter, Arial, sans-serif";
+        ctx.fillText(share.profit_label || "+$0", 70, 306);
+        ctx.fillStyle = "#b0b7c3";
+        ctx.font = "800 34px Inter, Arial, sans-serif";
+        ctx.fillText(`${share.apr_label || "+0.00%"} APR`, 72, 356);
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "850 34px Inter, Arial, sans-serif";
+        wrapCanvasText(ctx, trimMiddle(share.strategy_name || "Aegis vault strategy", 62), 70, 444, 670, 40);
+        ctx.fillStyle = "#b0b7c3";
+        ctx.font = "700 26px Inter, Arial, sans-serif";
+        ctx.fillText(`@${share.handle || "aegis_builder"}`, 70, 545);
+        drawPill(ctx, share.risk_badge || "Delta-aware", 70, 575, "#19d3c5");
+        drawPill(ctx, "ETH risk checked", 318, 575, "#38d776");
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "900 40px Inter, Arial, sans-serif";
+        ctx.fillText("Build neutral liquidity edge.", 676, 462);
+        ctx.fillStyle = "#b0b7c3";
+        ctx.font = "700 24px Inter, Arial, sans-serif";
+        wrapCanvasText(ctx, "Make USD profit in ETH/USDC while staying delta-neutral.", 678, 510, 430, 32);
+      }
+
+      function drawAegisMark(ctx, x, y, r) {
+        ctx.strokeStyle = "#ff8728";
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.fillStyle = "#ff8728";
+        ctx.font = "900 32px Inter, Arial, sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("A", x, y + 11);
+        ctx.textAlign = "left";
+      }
+
+      function drawPill(ctx, text, x, y, color) {
+        ctx.font = "850 22px Inter, Arial, sans-serif";
+        const width = Math.min(300, ctx.measureText(text).width + 36);
+        ctx.fillStyle = "rgba(16, 16, 16, .72)";
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.roundRect(x, y, width, 42, 21);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = color;
+        ctx.fillText(text, x + 18, y + 28);
+      }
+
+      function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight) {
+        const words = String(text || "").split(/\s+/);
+        let line = "";
+        let lineY = y;
+        for (const word of words) {
+          const test = line ? `${line} ${word}` : word;
+          if (ctx.measureText(test).width > maxWidth && line) {
+            ctx.fillText(line, x, lineY);
+            line = word;
+            lineY += lineHeight;
+          } else {
+            line = test;
+          }
+        }
+        if (line) ctx.fillText(line, x, lineY);
+      }
+
+      async function runFromBrowser() {
+        if (!authState.user && authState.anonymous_run_used) {
+          renderAuth();
+          renderCooldown();
+          setStatus("Sign in with X to try again.", "error");
+          setBusy(false);
+          return;
+        }
+        clearPoll();
+        runStartedAt = performance.now();
+        activeJobId = null;
+        setBusy(true);
+        setStatus("Starting real 180-day ETH/USDC simulation in the AEGIS sandbox...");
+        try {
+          const data = await apiPost("/api/run/start", {
+            strategy: $("strategyEditor").value,
+            bundle: $("bundleSelect").value,
+            seed: Number($("seedSelect").value),
+            strategy_name: $("strategyNameInput").value
+          });
+          activeJobId = data.job_id;
+          applyProgressResult(data);
+          setBusy(true);
+          pollTimer = setTimeout(pollRun, 1000);
+        } catch (error) {
+          if (error.payload) applyErrorResult(error.payload);
+          if (error.payload) applySocialState(error.payload);
+          setStatus(error.payload?.message || "Simulation failed. Review the strategy and try again.", "error");
+          activeJobId = null;
+          setBusy(false);
+        }
+      }
+
+      function clearPoll() {
+        if (pollTimer) clearTimeout(pollTimer);
+        pollTimer = null;
+      }
+
+      async function pollRun() {
+        if (!activeJobId) return;
+        try {
+          const data = await apiGet(`/api/run/progress?job_id=${encodeURIComponent(activeJobId)}`);
+          applyProgressResult(data);
+          if (data.status === "running") {
+            pollTimer = setTimeout(pollRun, 1000);
+          } else if (data.status === "complete") {
+            const seconds = ((performance.now() - runStartedAt) / 1000).toFixed(1);
+            activeJobId = null;
+            clearPoll();
+            setStatus(`Run complete in ${seconds}s after ${Number(data.progress.total_days).toFixed(0)} simulated ETH/USDC days. Inspect USD profit and ETH exposure, then publish when ready.`, "ok");
+            setBusy(false);
+          } else if (data.status === "cancelled") {
+            activeJobId = null;
+            clearPoll();
+            setStatus(data.message || "Simulation cancelled.", "error");
+            setBusy(false);
+          } else {
+            activeJobId = null;
+            clearPoll();
+            applyErrorResult(data);
+            setStatus(data.message || "Simulation failed. Review the strategy and try again.", "error");
+            setBusy(false);
+          }
+        } catch (error) {
+          activeJobId = null;
+          clearPoll();
+          setStatus(error.payload?.message || error.message || "Simulation polling failed.", "error");
+          setBusy(false);
+        }
+      }
+
+      async function cancelRun() {
+        if (!activeJobId) return;
+        try {
+          const data = await apiPost("/api/run/cancel", { job_id: activeJobId });
+          applyProgressResult(data);
+          setStatus(data.message || "Cancelling simulation...", "error");
+        } catch (error) {
+          setStatus(error.payload?.message || "Could not cancel simulation.", "error");
+        }
+      }
+
+      async function submitFromBrowser() {
+        if (!lastRun?.attempt_id) {
+          setStatus("Run a successful simulation before submitting.", "error");
+          return;
+        }
+        const started = performance.now();
+        setBusy(true);
+        setStatus("Publishing selected try to the leaderboard...");
+        try {
+          const data = await apiPost("/api/attempts/publish", { attempt_id: lastRun.attempt_id });
+          applySocialState(data);
+          if (data.attempt?.ranked_summary) {
+            score = { ...score, ranked_summary: data.attempt.ranked_summary, ranked_score: data.attempt.ranked_summary.ranked_score };
+            renderRobustness();
+          }
+          showShare(lastRun.attempt_id, data.attempt);
+          $("rankBand").textContent = "updated";
+          const seconds = ((performance.now() - started) / 1000).toFixed(2);
+          setStatus(`Published in ${seconds}s. Leaderboard updated.`, "ok");
+        } catch (error) {
+          setStatus(error.payload?.message || "Publish failed. Run again and retry.", "error");
+        } finally {
+          setBusy(false);
+        }
+      }
+
+      function downloadRawData() {
+        if (!lastRun?.run_id) {
+          setStatus("Run a simulation before downloading raw data.", "error");
+          return;
+        }
+        const link = document.createElement("a");
+        link.href = `/api/run/export?run_id=${encodeURIComponent(lastRun.run_id)}`;
+        link.download = `aegis-vault-${lastRun.run_id}-raw.zip`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setStatus("Downloading raw simulation data for manual validation.", "ok");
+      }
+
+      function applyRunResult(data) {
+        replay = data.replay || replay;
+        score = data.score || score;
+        calibration = data.calibration || calibration;
+        leaderboard = data.leaderboard || leaderboard;
+        applySocialState(data);
+        lastRun = { run_id: data.run_id, score: data.score, attempt_id: data.attempt?.attempt_id };
+        $("stepRange").max = String(Math.max(0, replay.length - 1));
+        $("stepRange").value = String(Math.max(0, replay.length - 1));
+        $("determinismPill").textContent = "real replay";
+        $("rankBand").textContent = "ready";
+        $("downloadDataButton").disabled = !lastRun.run_id;
+        render();
+      }
+
+      function applyProgressResult(data) {
+        replay = data.replay?.length ? data.replay : replay;
+        score = data.score || score;
+        calibration = data.calibration || calibration;
+        leaderboard = data.leaderboard || leaderboard;
+        applySocialState(data);
+        if (data.status === "complete") {
+          lastRun = { run_id: data.run_id, score: data.score, attempt_id: data.attempt?.attempt_id };
+          $("determinismPill").textContent = "final replay";
+          $("rankBand").textContent = "ready";
+          $("downloadDataButton").disabled = !lastRun.run_id;
+        } else if (data.status === "running") {
+          lastRun = null;
+          $("determinismPill").textContent = "building replay";
+          $("rankBand").textContent = "running";
+          $("downloadDataButton").disabled = true;
+        } else {
+          lastRun = null;
+          $("downloadDataButton").disabled = true;
+        }
+        $("stepRange").max = String(Math.max(0, replay.length - 1));
+        $("stepRange").value = String(Math.max(0, replay.length - 1));
+        render();
+        updateProgress(data.progress);
+        setBusy(data.status === "running");
+      }
+
+      function applyErrorResult(data) {
+        if (data.kind === "auth_required" || data.kind === "cooldown_active") {
+          $("submitButton").disabled = !lastRun;
+          return;
+        }
+        lastRun = null;
+        $("submitButton").disabled = true;
+        $("downloadDataButton").disabled = true;
+        if (data.kind === "invalid_python") $("determinismPill").textContent = "invalid Python";
+        else if (data.kind === "unsafe_strategy") $("determinismPill").textContent = "unsafe blocked";
+        else if (data.kind === "timeout") $("determinismPill").textContent = "timeout blocked";
+        else $("determinismPill").textContent = "run failed";
+      }
+
+      render();
+      loadStarter();
+      refreshAuth();
+      refreshLeaderboard();
+      setInterval(tickCooldown, 1000);
+    </script>
+  </body>
+</html>

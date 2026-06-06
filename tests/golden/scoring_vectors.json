@@ -1,0 +1,87 @@
+{
+  "fixture_version": "aegis-vault-challenge-v1",
+  "generator": {
+    "name": "aegis_challenge.reports.generate_scoring_vectors",
+    "rounding_policy": "python-decimal-reference-subset"
+  },
+  "vectors": [
+    {
+      "expected": {
+        "median": "70.00",
+        "percentile_05": "-76.00",
+        "percentile_25": "20.00",
+        "ranked_score": "28.3000"
+      },
+      "id": "SCORE-AGG-001",
+      "input": {
+        "hidden_scores": [
+          "100",
+          "80",
+          "60",
+          "-100"
+        ]
+      },
+      "source": "aegis_challenge.leaderboard.ranked_score robust aggregation"
+    },
+    {
+      "expected": {
+        "delta_penalty": "0"
+      },
+      "id": "SCORE-DELTA-001",
+      "input": {
+        "delta_normalized": "0.03",
+        "initial_equity": "100000"
+      },
+      "source": "aegis_challenge.scoring.delta_penalty neutral band"
+    },
+    {
+      "expected": {
+        "delta_penalty": "6250.0000"
+      },
+      "id": "SCORE-DELTA-002",
+      "input": {
+        "delta_normalized": "0.08",
+        "initial_equity": "100000"
+      },
+      "source": "aegis_challenge.scoring.delta_penalty quadratic excess"
+    },
+    {
+      "expected": {
+        "action_cost": "0.00468000"
+      },
+      "id": "SCORE-COST-001",
+      "input": {
+        "action_name": "SwapExactIn",
+        "ticks_crossed": 3
+      },
+      "source": "aegis_challenge.scoring.action_cost tick crossing"
+    },
+    {
+      "expected": {
+        "action_cost": "0.00680000"
+      },
+      "id": "SCORE-COST-002",
+      "input": {
+        "action_name": "PlaceLimitOrder",
+        "ticks_crossed": 0
+      },
+      "source": "aegis_challenge.scoring.action_cost limit order"
+    },
+    {
+      "expected": {
+        "action_costs": "0",
+        "delta_penalty": "1104.5000",
+        "raw_pnl": "0",
+        "scenario_score": "-1104.5000"
+      },
+      "id": "SCORE-UNHEDGED-001",
+      "input": {
+        "idle0": "100",
+        "idle1": "100",
+        "initial_equity": "200",
+        "price": "1"
+      },
+      "source": "aegis_challenge.scoring.score idle inventory delta penalty"
+    }
+  ]
+}
