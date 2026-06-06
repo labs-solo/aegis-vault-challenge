@@ -63,6 +63,8 @@ def test_web_shell_has_aegis_console_surfaces():
         "Risk Panel",
         "Score Waterfall",
         "Leaderboard score",
+        "Neutrality gate cap",
+        "score capped",
         "Plain-English Mechanics",
         "Run Checks",
         "Sampled Event Tape",

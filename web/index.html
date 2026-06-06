@@ -1051,7 +1051,10 @@ class Strategy:
         const b = score.score_breakdown || {};
         const fees = Number(event.fees_earned_usd ?? score.fees_earned_usd ?? b.fees_earned_usd ?? b.cl_fee_pnl ?? 0) + Number(event.lo_edge_usd ?? score.lo_edge_usd ?? b.lo_edge_usd ?? b.lo_edge_pnl ?? 0);
         const borrowCost = Number(event.borrow_cost_usd ?? score.borrow_cost_usd ?? b.borrow_cost_usd ?? b.borrow_interest_attribution ?? 0);
+        const gateStatus = score.neutrality_gate_status || b.neutrality_gate_status || event.neutrality_gate_status || "pass";
+        const gateReason = score.neutrality_gate_reason || b.neutrality_gate_reason || event.neutrality_gate_reason || "";
         $("scoreMetric").textContent = signedUsd(scoreValue, Math.abs(scoreValue) < 100 ? 2 : 0);
+        $("scoreHelp").textContent = gateStatus === "fail" && gateReason ? `capped: ${gateReason}` : "CL/LO edge after costs and gates";
         $("equityMetric").textContent = fmtUsd(money.equity, 0);
         $("aprMetric").textContent = formatApr(money.aprPct);
         $("exposureMetric").textContent = signedUsd(money.exposureUsd, Math.abs(money.exposureUsd) < 100 ? 2 : 0);
@@ -1078,8 +1081,8 @@ class Strategy:
         $("netEthCell").textContent = `${signedNumber(money.netEth, 4)} ETH`;
         $("hardLtvCell").textContent = `${(Number(event.vault.hard_ltv_pips || 0) / 10000).toFixed(1)}%`;
         $("runCell").textContent = event.public_run_id || "local";
-        $("riskState").textContent = event.vault.ltv_pips <= event.vault.max_ltv_pips ? "locked" : "repair";
-        $("riskState").className = event.vault.ltv_pips <= event.vault.max_ltv_pips ? "pill ok" : "pill bad";
+        $("riskState").textContent = gateStatus === "fail" ? "score capped" : event.vault.ltv_pips <= event.vault.max_ltv_pips ? "locked" : "repair";
+        $("riskState").className = gateStatus === "fail" ? "pill bad" : event.vault.ltv_pips <= event.vault.max_ltv_pips ? "pill ok" : "pill bad";
         $("deltaPill").className = Math.abs(Number(event.vault.delta_normalized)) <= .03 ? "pill ok" : "pill bad";
         $("ltvPill").className = event.vault.ltv_pips <= event.vault.max_ltv_pips ? "pill ok" : "pill bad";
         renderMarketStats(event);
@@ -1105,7 +1108,9 @@ class Strategy:
         $("lpFeeCell").textContent = `${fmtUsd(market.lp_fees_usd || 0, 2)}${dfmLpLift > 0 ? ` · +${fmtUsd(dfmLpLift, 2)} DFM lift` : ""} · ${lpFeeBps.toFixed(2)} bps to CL`;
         $("hookFeeCell").textContent = fmtUsd(market.dfm_hook_fees_usd || 0, 2);
         $("dfmFeeCell").textContent = `${totalFeeBps.toFixed(2)} bps${surge ? ` · ${reason}` : ""}`;
-        $("neutralityCell").textContent = strategy.delta_band_safe === false ? "outside band" : "safe";
+        const gateStatus = score.neutrality_gate_status || score.score_breakdown?.neutrality_gate_status || event.neutrality_gate_status || "pass";
+        const gateReason = score.neutrality_gate_reason || score.score_breakdown?.neutrality_gate_reason || event.neutrality_gate_reason || "";
+        $("neutralityCell").textContent = gateStatus === "fail" ? `capped: ${gateReason || "neutrality gate failed"}` : strategy.delta_band_safe === false ? "outside band" : "safe";
         $("rangeEffCell").textContent = `${(Number(strategy.active_cl_liquidity_share || 0) * 100).toFixed(1)}% active CL`;
         $("marketState").textContent = surge ? "DFM fee surge" : "normal DFM fee";
         $("marketState").className = surge ? "pill hot" : "pill ok";
@@ -1138,18 +1143,23 @@ class Strategy:
         const repairCost = Number(score.repair_cost_usd ?? b.repair_cost_usd ?? b.liquidation_penalty ?? 0);
         const deltaPenalty = Number(score.delta_penalty_usd ?? b.delta_penalty_usd ?? b.delta_penalty ?? 0);
         const exposurePenalty = Number(score.exposure_penalty_usd ?? b.exposure_penalty_usd ?? 0);
+        const gateStatus = score.neutrality_gate_status || b.neutrality_gate_status || event.neutrality_gate_status || "pass";
+        const preGateScore = edgeProfit - deltaPenalty - exposurePenalty;
+        const gateCap = gateStatus === "fail" || Math.abs(money.netProfit - preGateScore) > 0.01 ? money.netProfit - preGateScore : 0;
+        const scoreRows = [
+          ["CL fees", fees],
+          ["LO edge", loEdge],
+          ["Borrow cost", -borrowCost],
+          ["Action costs", -Number(b.action_costs || 0)],
+          ["Repair/liquidation", -repairCost],
+          ["Edge profit", edgeProfit],
+          ["Delta penalty", -deltaPenalty],
+          ["Exposure penalty", -exposurePenalty],
+          ...(Math.abs(gateCap) > 0.01 ? [["Neutrality gate cap", gateCap]] : []),
+          ["Leaderboard score", money.netProfit]
+        ];
         const rowsByMode = {
-          score: [
-            ["CL fees", fees],
-            ["LO edge", loEdge],
-            ["Borrow cost", -borrowCost],
-            ["Action costs", -Number(b.action_costs || 0)],
-            ["Repair/liquidation", -repairCost],
-            ["Edge profit", edgeProfit],
-            ["Delta penalty", -deltaPenalty],
-            ["Exposure penalty", -exposurePenalty],
-            ["Leaderboard score", money.netProfit]
-          ],
+          score: scoreRows,
           risk: [
             ["ETH exposure USD", money.exposureUsd],
             ["Net ETH delta", money.netEth],
