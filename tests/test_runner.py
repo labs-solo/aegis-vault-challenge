@@ -43,6 +43,19 @@ def test_all_examples_run_smoke(tmp_path):
         assert (run_dir / "calibration.json").exists()
 
 
+def test_starter_competition_6m_passes_hardened_gates(tmp_path):
+    result = run_strategy("examples/starter_strategy.py", "competition_6m", 1, tmp_path)
+    score = json.loads((Path(result["run_dir"]) / "score.json").read_text())
+
+    assert score["disqualified"] is False
+    assert score["neutrality_gate_status"] == "pass"
+    assert Decimal(score["net_profit_usd_after_penalties"]) > 0
+    assert Decimal(score["max_eth_exposure_usd"]) < Decimal("8000")
+    assert Decimal(score["avg_eth_exposure_usd"]) < Decimal("3000")
+    assert score["score_breakdown"]["terminal_flattened"] is True
+    assert int(score["score_breakdown"]["terminal_ltv_pips"]) == 0
+
+
 def test_replay_is_deterministic(tmp_path):
     first = run_strategy("examples/00_hold_idle.py", "smoke", 1, tmp_path / "a")
     second = run_strategy("examples/00_hold_idle.py", "smoke", 1, tmp_path / "b")

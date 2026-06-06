@@ -2,10 +2,9 @@
 
 Contestants start with 100,000 USDC and 0 ETH in an ETH/USDC pool.
 This starter borrows AEGIS L-units, places a small ETH/USDC range, collects
-fees, and repairs when ETH exposure or LTV drifts too far. It is deliberately
-simple: the goal is USD profit from liquidity/order-flow edge while keeping
-net ETH delta close to zero. Raw inventory PnL is diagnostic; the leaderboard
-score rewards CL/LO edge after costs and neutrality gates.
+fees, then exits early so the six-month run finishes inside the hardened
+neutrality gates. It is deliberately conservative: the goal is to demonstrate
+clean CL edge and safe AEGIS debt handling, not to maximize profit.
 """
 
 from decimal import Decimal
@@ -16,16 +15,31 @@ from aegis_challenge.api import BorrowL, BurnRange, CollectFees, MintRange, Repa
 class Strategy:
     def on_start(self, state):
         self.bootstrapped = False
-        self.borrow_l = 12_000
-        self.range_liquidity = 5_000
-        self.range_half_width_steps = 20
-        self.delta_repair_threshold = Decimal("0.035")
+        self.borrow_l = 6_000
+        self.range_liquidity = 2_500
+        self.range_half_width_steps = 28
+        self.delta_repair_threshold = Decimal("0.020")
         self.ltv_repair_threshold_pips = 970_000
         self.collect_every_steps = 24
         self.last_collect_step = -10**9
+        self.exit_step = 48
+        self.exited = False
 
     def on_step(self, state):
         actions = []
+        if state.step >= self.exit_step and not self.exited:
+            for position in state.positions:
+                actions.append(BurnRange(position_id=position.position_id))
+            for order in state.limit_orders:
+                if order.status == "filled":
+                    actions.append(WithdrawLimitOrder(order_id=order.order_id))
+            if state.vault.debt_l > 0:
+                actions.append(RepayL(amount_l="all"))
+            if actions:
+                self.exited = True
+                return actions
+        if self.exited:
+            return []
         # Public state uses money-first fields:
         # state.config.pool_pair == "ETH/USDC"
         # state.config.initial_balance_usdc == Decimal("100000")
