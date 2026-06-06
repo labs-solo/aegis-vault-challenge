@@ -164,7 +164,7 @@
               <div class="fact"><strong>Capital</strong><span>100,000 USDC starting balance, 0 ETH inventory, price shown as USDC per ETH.</span></div>
               <div class="fact"><strong>Pool</strong><span>ETH/USDC concentrated liquidity with AEGIS vault borrow/repay and limit-order attachment.</span></div>
               <div class="fact"><strong>Horizon</strong><span>180 simulated days. Practice paths are reproducible; ranked submissions use hidden seeded paths.</span></div>
-              <div class="fact"><strong>Score</strong><span>Net USD profit after borrow costs, action costs, repairs, liquidation costs, and delta penalties.</span></div>
+              <div class="fact"><strong>Score</strong><span>CL fees and LO edge after borrow, action, repair, liquidation, and neutrality costs. Raw inventory PnL is diagnostic.</span></div>
             </div>
           </div>
         </section>
@@ -176,7 +176,7 @@
           </div>
           <div class="quick-grid">
             <div class="quick-card"><b>1</b><strong>AEGIS gives vault control</strong><span>Your script can borrow L-units, repay debt, attach CL ranges, place limit orders, swap for repair, and detach positions.</span></div>
-            <div class="quick-card"><b>2</b><strong>ETH exposure is the constraint</strong><span>Profit should come from fees and fills. If the vault wins only because ETH moved, scoring penalizes the run.</span></div>
+            <div class="quick-card"><b>2</b><strong>ETH exposure is the constraint</strong><span>Score should come from fees and fills. Crash-only or rally-only inventory wins are capped or disqualified.</span></div>
             <div class="quick-card"><b>3</b><strong>Risk evolves every step</strong><span>LTV, debt liability, collateral floor, DFM fees, repairs, fills, and APR update as simulated market activity arrives.</span></div>
             <div class="quick-card"><b>4</b><strong>Robustness wins ranked play</strong><span>Public runs teach patterns. Ranked submissions must work across many hidden seeded price and flow paths.</span></div>
           </div>
@@ -411,7 +411,7 @@ if state.positions and state.vault.unlocked:
             <div class="state-card"><strong>Delta and money</strong><p>Use this to keep profit source honest and neutral.</p><div class="state-fields">state.vault.delta, state.vault.delta_normalized, state.net_eth_delta, state.eth_exposure_usd, state.cash_usdc, state.eth_inventory, state.equity_usd, state.profit_usd, state.apr_pct, state.borrow_cost_usd, state.fees_earned_usd</div></div>
             <div class="state-card"><strong>Positions and orders</strong><p>Use this to collect, resize, cancel, withdraw, or repair.</p><div class="state-fields">state.positions, ClPosition.position_id, lower_tick, upper_tick, liquidity, amount0_current, amount1_current, uncollected_fees0, uncollected_fees1, state.limit_orders, LimitOrder.order_id, side, tick, status, deposited0, deposited1, claimable0, claimable1, filled_step</div></div>
             <div class="state-card"><strong>Recent market events</strong><p>Use this for local flow detection without peeking into the future.</p><div class="state-fields">state.recent_swaps, SwapEvent.actor, token_in, amount_in, amount_out, pre_tick, post_tick, ticks_crossed, lp_fee_paid, protocol_fee_paid, hook_fee_paid, state.recent_fills, state.recent_repairs</div></div>
-            <div class="state-card"><strong>Score breakdown</strong><p>Use this to diagnose whether gains come from fees, LO edge, inventory, or penalties.</p><div class="state-fields">state.score_so_far, state.score_breakdown.raw_pnl, cl_fee_pnl, lo_edge_pnl, inventory_mark_pnl, borrow_interest_attribution, action_costs, delta_penalty, liquidation_penalty, invalid_action_penalty, equity_usd, profit_usd, apr_pct, net_profit_usd_after_penalties, delta_penalty_usd, exposure_penalty_usd, fees_earned_usd, lo_edge_usd, borrow_cost_usd, repair_cost_usd</div></div>
+            <div class="state-card"><strong>Score breakdown</strong><p>Use this to diagnose whether score comes from CL/LO edge or unsafe inventory beta.</p><div class="state-fields">state.score_so_far, state.score_breakdown.edge_profit_usd, raw_pnl, cl_fee_pnl, collected_cl_fees_usd, uncollected_cl_fees_usd, lo_edge_pnl, realized_lo_edge_usd, unrealized_lo_edge_usd, inventory_mark_pnl, borrow_interest_attribution, action_costs, delta_penalty, liquidation_penalty, invalid_action_penalty, net_profit_usd_after_penalties, directional_profit_share, edge_profit_share, delta_band_time_pct, neutrality_gate_status, neutrality_gate_reason, fees_earned_usd, lo_edge_usd, borrow_cost_usd, repair_cost_usd</div></div>
           </div>
         </section>
 
@@ -444,14 +444,14 @@ if state.positions and state.vault.unlocked:
         <section class="panel" id="scoring">
           <div class="section-head">
             <h2>Scoring and robustness</h2>
-            <span class="pill hot">USD first</span>
+            <span class="pill hot">edge first</span>
           </div>
-          <p>Leaderboard score is net USD profit above the 100,000 USDC start, after costs and penalties. APR is annualized from elapsed simulated days as the run progresses, not fixed at the final 180-day horizon.</p>
+          <p>Leaderboard score is edge-first: collected and uncollected CL fees plus realized and unrealized LO edge, minus borrow/action/repair/liquidation costs and neutrality penalties. Raw equity PnL is shown for diagnosis, but inventory beta cannot dominate a valid score. APR is annualized from elapsed simulated days as the run progresses.</p>
           <div class="quick-grid">
-            <div class="quick-card"><b>$</b><strong>Profit</strong><span>Equity after debt minus the 100,000 USDC start, including fees, LO edge, inventory mark, borrow cost, repairs, and action costs.</span></div>
-            <div class="quick-card"><b>D</b><strong>Delta</strong><span>ETH exposure is `d(vault_equity_after_debt) / d(price)`. Too much exposure means your run is betting on ETH.</span></div>
+            <div class="quick-card"><b>$</b><strong>Edge score</strong><span>Fees and LO edge after AEGIS costs. This is the leaderboard basis.</span></div>
+            <div class="quick-card"><b>D</b><strong>Neutrality gates</strong><span>Average ETH exposure above 3%, max exposure above 8%, unsafe terminal exposure, unsafe LTV, or excess directional share can cap or disqualify.</span></div>
             <div class="quick-card"><b>F</b><strong>Fees</strong><span>DFM BaseHook fee logic affects swap costs and CL fees earned. Surge windows can make fee capture attractive but repairs more expensive.</span></div>
-            <div class="quick-card"><b>R</b><strong>Ranked robustness</strong><span>Ranked submissions should report median profit, worst decile, drawdown, delta-band time, and score variance across hidden seeded paths.</span></div>
+            <div class="quick-card"><b>R</b><strong>Ranked robustness</strong><span>Ranked submissions should report median edge score, worst decile, drawdown, delta-band time, beta metrics, and score variance across hidden seeded paths.</span></div>
           </div>
         </section>
 

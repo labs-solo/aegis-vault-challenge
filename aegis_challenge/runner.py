@@ -91,6 +91,9 @@ def run_strategy(
     recent_repairs = ()
     breakdown = ScoreBreakdown()
     liquidation_penalty = Decimal("0")
+    collected_cl_fees_usd = Decimal("0")
+    realized_lo_edge_usd = Decimal("0")
+    delta_band_safe_steps = 0
     worker = None if errors else StrategyWorker(path)
     events: list[dict[str, Any]] = []
     state = make_state(0, scen, run_id, pool, vault, recent_swaps, recent_fills, breakdown, recent_repairs, market_path[0].regime if market_path else regime_at_step(scen, 0))
@@ -138,6 +141,8 @@ def run_strategy(
                     vault_before = deepcopy(vault)
                     pool_before = deepcopy(pool)
                     market_before = deepcopy(market)
+                    uncollected_fees_before = uncollected_cl_fee_value(vault, pool)
+                    lo_edge_before = unrealized_limit_order_edge(vault, pool)
                     action_record: dict[str, Any] = {
                         "step": step,
                         "action_index": index,
@@ -150,6 +155,12 @@ def run_strategy(
                     }
                     try:
                         action_cost_delta, swaps, fills = apply_action(action, vault, pool, market, step)
+                        uncollected_fees_after = uncollected_cl_fee_value(vault, pool)
+                        lo_edge_after = unrealized_limit_order_edge(vault, pool)
+                        collected_fee_delta = max(Decimal("0"), uncollected_fees_before - uncollected_fees_after)
+                        realized_lo_delta = lo_edge_before - lo_edge_after if isinstance(action, (CancelLimitOrder, WithdrawLimitOrder)) else Decimal("0")
+                        collected_cl_fees_usd += collected_fee_delta
+                        realized_lo_edge_usd += realized_lo_delta
                         costs += action_cost_delta
                         step_swaps.extend(swaps)
                         step_fills.extend(fills)
@@ -157,6 +168,8 @@ def run_strategy(
                             {
                                 "status": "executed",
                                 "action_cost_usd": str(action_cost_delta),
+                                "collected_cl_fee_usd": str(collected_fee_delta),
+                                "realized_lo_edge_usd": str(realized_lo_delta),
                                 "swap_event_indices": [swap.event_index for swap in swaps],
                                 "fill_event_indices": [fill.event_index for fill in fills],
                             }
@@ -188,17 +201,23 @@ def run_strategy(
                     step_swaps.append(swap)
                     step_fills.extend(fills)
                 settle_position_fees(vault, pool)
+                repair_fee_before = uncollected_cl_fee_value(vault, pool)
                 repair = repair_vault(vault, pool, market, step)
                 if repair is not None:
                     step_repairs.append(repair)
                     liquidation_penalty += repair.keeper_fee0 * pool.price + repair.keeper_fee1
+                    repair_fee_after = uncollected_cl_fee_value(vault, pool)
+                    collected_cl_fees_usd += max(Decimal("0"), repair_fee_before - repair_fee_after)
                 recent_swaps = tuple(step_swaps)
                 recent_fills = tuple(step_fills)
                 recent_repairs = tuple(step_repairs)
                 instant_state = vault.state(pool.price, pool.amount_scale)
                 exposure_abs_usd_values.append(abs(instant_state.eth_exposure_usd))
+                if abs(instant_state.eth_exposure_usd) <= initial_equity * Decimal("0.03"):
+                    delta_band_safe_steps += 1
                 avg_abs_exposure = sum(exposure_abs_usd_values, Decimal("0")) / Decimal(len(exposure_abs_usd_values))
                 max_abs_exposure = max(exposure_abs_usd_values)
+                delta_band_time_pct = Decimal(delta_band_safe_steps) / Decimal(len(exposure_abs_usd_values))
                 breakdown = score(
                     vault,
                     pool.price,
@@ -210,6 +229,10 @@ def run_strategy(
                     pool.amount_scale,
                     avg_abs_exposure,
                     max_abs_exposure,
+                    collected_cl_fees_usd,
+                    realized_lo_edge_usd,
+                    delta_band_time_pct,
+                    step == scen.steps - 1,
                 )
                 elapsed_days = simulated_days_for_steps(step + 1, scen.step_length_seconds)
                 money = money_metrics(
@@ -235,6 +258,9 @@ def run_strategy(
                     "eth_price_usdc": str(pool.price),
                     "tick": pool.tick,
                     "score": str(breakdown.scenario_score),
+                    "disqualified": breakdown.disqualified,
+                    "neutrality_gate_status": breakdown.neutrality_gate_status,
+                    "neutrality_gate_reason": breakdown.neutrality_gate_reason,
                     "avg_eth_exposure_usd": str(avg_abs_exposure),
                     "max_eth_exposure_usd": str(max_abs_exposure),
                     **to_jsonable(money),  # type: ignore[arg-type]
@@ -259,6 +285,24 @@ def run_strategy(
             worker.close()
     avg_exposure = sum(exposure_abs_usd_values, Decimal("0")) / Decimal(len(exposure_abs_usd_values)) if exposure_abs_usd_values else Decimal("0")
     max_exposure = max(exposure_abs_usd_values) if exposure_abs_usd_values else Decimal("0")
+    delta_band_time_pct = Decimal(delta_band_safe_steps) / Decimal(len(exposure_abs_usd_values)) if exposure_abs_usd_values else Decimal("0")
+    breakdown = score(
+        vault,
+        pool.price,
+        initial_equity,
+        costs,
+        invalid_penalty,
+        borrow_interest,
+        liquidation_penalty,
+        pool.amount_scale,
+        avg_exposure,
+        max_exposure,
+        collected_cl_fees_usd,
+        realized_lo_edge_usd,
+        delta_band_time_pct,
+        True,
+    )
+    breakdown = attach_beta_metrics(breakdown, events)
     final_elapsed_days = simulated_days_for_steps(scen.steps, scen.step_length_seconds)
     final_money = money_metrics(
         scen,
@@ -281,8 +325,11 @@ def run_strategy(
         **to_jsonable(final_money),  # type: ignore[arg-type]
         "avg_eth_exposure_usd": str(avg_exposure),
         "max_eth_exposure_usd": str(max_exposure),
-        "disqualified": bool(errors),
-        "errors": errors,
+        "delta_band_time_pct": str(delta_band_time_pct),
+        "neutrality_gate_status": breakdown.neutrality_gate_status,
+        "neutrality_gate_reason": breakdown.neutrality_gate_reason,
+        "disqualified": bool(errors) or breakdown.disqualified,
+        "errors": errors + ([breakdown.disqualification_reason] if breakdown.disqualification_reason else []),
         "market": market_metadata(scen, initial_equity),
         "market_engine": to_jsonable(market_summary),
     }
@@ -423,7 +470,7 @@ def money_metrics(
     avg_abs_exposure_usd: Decimal = Decimal("0"),
     max_abs_exposure_usd: Decimal = Decimal("0"),
     elapsed_simulated_days: Decimal | None = None,
-) -> dict[str, Decimal | None]:
+) -> dict[str, Any]:
     vstate = vault.state(pool.price, pool.amount_scale)
     net_profit = breakdown.net_profit_usd_after_penalties or breakdown.scenario_score
     raw_profit = breakdown.profit_usd or breakdown.raw_pnl
@@ -446,10 +493,71 @@ def money_metrics(
         "fees_earned_usd": breakdown.fees_earned_usd,
         "lo_edge_usd": breakdown.lo_edge_usd,
         "inventory_pnl_usd": breakdown.inventory_pnl_usd,
+        "edge_profit_usd": breakdown.edge_profit_usd,
+        "collected_cl_fees_usd": breakdown.collected_cl_fees_usd,
+        "uncollected_cl_fees_usd": breakdown.uncollected_cl_fees_usd,
+        "realized_lo_edge_usd": breakdown.realized_lo_edge_usd,
+        "unrealized_lo_edge_usd": breakdown.unrealized_lo_edge_usd,
+        "directional_profit_share": breakdown.directional_profit_share,
+        "edge_profit_share": breakdown.edge_profit_share,
+        "delta_band_time_pct": breakdown.delta_band_time_pct,
+        "neutrality_gate_status": breakdown.neutrality_gate_status,
+        "neutrality_gate_reason": breakdown.neutrality_gate_reason,
+        "beta_to_eth": breakdown.beta_to_eth,
+        "mirrored_score_gap_usd": breakdown.mirrored_score_gap_usd,
+        "terminal_eth_exposure_usd": breakdown.terminal_eth_exposure_usd,
+        "terminal_ltv_pips": breakdown.terminal_ltv_pips,
+        "terminal_flattened": breakdown.terminal_flattened,
         "borrow_cost_usd": borrow_interest,
         "repair_cost_usd": liquidation_penalty,
         "liquidation_cost_usd": liquidation_penalty,
     }
+
+
+def uncollected_cl_fee_value(vault: Vault, pool: Pool) -> Decimal:
+    return sum((position.uncollected_fees0 * pool.price + position.uncollected_fees1 for position in vault.positions), Decimal("0"))
+
+
+def unrealized_limit_order_edge(vault: Vault, pool: Pool) -> Decimal:
+    edge = Decimal("0")
+    for order in vault.limit_orders:
+        if order.status != "filled":
+            continue
+        claimable_value = order.claimable0 * pool.price + order.claimable1
+        deposited_value = order.deposited0 * pool.price + order.deposited1
+        edge += claimable_value - deposited_value
+    return edge
+
+
+def attach_beta_metrics(breakdown: ScoreBreakdown, events: list[dict[str, Any]]) -> ScoreBreakdown:
+    beta = price_score_beta(events)
+    return replace(breakdown, beta_to_eth=beta, mirrored_score_gap_usd=abs(breakdown.inventory_pnl_usd))
+
+
+def price_score_beta(events: list[dict[str, Any]]) -> Decimal:
+    if len(events) < 3:
+        return Decimal("0")
+    price_returns: list[Decimal] = []
+    score_changes: list[Decimal] = []
+    previous_price = Decimal(str(events[0].get("price", "0") or "0"))
+    previous_score = Decimal(str(events[0].get("score", "0") or "0"))
+    for event in events[1:]:
+        price = Decimal(str(event.get("price", "0") or "0"))
+        score_value = Decimal(str(event.get("score", "0") or "0"))
+        if previous_price > 0:
+            price_returns.append((price - previous_price) / previous_price)
+            score_changes.append(score_value - previous_score)
+        previous_price = price
+        previous_score = score_value
+    if len(price_returns) < 2:
+        return Decimal("0")
+    mean_price = sum(price_returns, Decimal("0")) / Decimal(len(price_returns))
+    mean_score = sum(score_changes, Decimal("0")) / Decimal(len(score_changes))
+    variance = sum((item - mean_price) * (item - mean_price) for item in price_returns)
+    if variance == 0:
+        return Decimal("0")
+    covariance = sum((price_returns[index] - mean_price) * (score_changes[index] - mean_score) for index in range(len(price_returns)))
+    return covariance / variance
 
 
 def market_stats_for_step(
@@ -707,6 +815,16 @@ def period_rows(events: list[dict[str, Any]]) -> list[dict[str, Any]]:
             "net_profit_usd_after_penalties": event.get("net_profit_usd_after_penalties"),
             "apr_pct": event.get("apr_pct"),
             "eth_exposure_usd": event.get("eth_exposure_usd"),
+            "edge_profit_usd": event.get("edge_profit_usd"),
+            "collected_cl_fees_usd": event.get("collected_cl_fees_usd"),
+            "uncollected_cl_fees_usd": event.get("uncollected_cl_fees_usd"),
+            "realized_lo_edge_usd": event.get("realized_lo_edge_usd"),
+            "unrealized_lo_edge_usd": event.get("unrealized_lo_edge_usd"),
+            "directional_profit_share": event.get("directional_profit_share"),
+            "edge_profit_share": event.get("edge_profit_share"),
+            "delta_band_time_pct": event.get("delta_band_time_pct"),
+            "neutrality_gate_status": event.get("neutrality_gate_status"),
+            "neutrality_gate_reason": event.get("neutrality_gate_reason"),
             **(event.get("market_stats") or {}),
             **(event.get("strategy_stats") or {}),
             **(event.get("dfm") or {}),

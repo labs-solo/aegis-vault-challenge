@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Aegis Vault Challenge - USDC/ETH Delta-Neutral Vault Competition</title>
     <link rel="icon" type="image/svg+xml" href="assets/aegis-logo.svg">
-    <meta name="description" content="Aegis Vault Challenge: start with 100,000 USDC, trade ETH/USDC, and compete on USD profit while minimizing ETH exposure.">
+    <meta name="description" content="Aegis Vault Challenge: start with 100,000 USDC, trade ETH/USDC, and compete on edge-first USD score while minimizing ETH exposure.">
     <meta property="og:site_name" content="Aegis">
     <meta property="og:title" content="Aegis Vault Challenge">
-    <meta property="og:description" content="Paste one Python strategy, control AEGIS vault borrow/repay plus CL/LO placement, and compete on USD profit without ETH direction risk.">
+    <meta property="og:description" content="Paste one Python strategy, control AEGIS vault borrow/repay plus CL/LO placement, and compete on CL/LO edge without ETH direction risk.">
     <style>
       :root {
         color-scheme: dark;
@@ -362,7 +362,7 @@
           <div>
             <div class="brand-kicker">AEGIS Engine</div>
             <h1>Aegis Vault Challenge</h1>
-            <div class="subline">Start with 100,000 USDC. Trade the ETH/USDC pool. Make USD profit without taking ETH direction risk. Your strategy controls AEGIS vault liquidity, limit orders, and borrow/repay over 180 simulated days.</div>
+            <div class="subline">Start with 100,000 USDC. Trade the ETH/USDC pool. Win on CL/LO edge without taking ETH direction risk. Your strategy controls AEGIS vault liquidity, limit orders, and borrow/repay over 180 simulated days.</div>
           </div>
           <div class="why-panel" aria-label="Why participate">
             <div class="auth-card" aria-label="X authentication">
@@ -380,7 +380,7 @@
             </div>
             <h2>Why participate?</h2>
             <div class="why-list">
-              <div class="why-item"><div class="why-icon">1</div><div><strong>Prove USD strategy edge</strong><span>Leaderboard profit is USD equity above 100,000 USDC after costs, repairs, and delta penalties.</span></div></div>
+              <div class="why-item"><div class="why-icon">1</div><div><strong>Prove USD strategy edge</strong><span>Leaderboard score is CL fees and LO edge after costs, repairs, and neutrality gates.</span></div></div>
               <div class="why-item"><div class="why-icon">2</div><div><strong>Stay neutral to ETH</strong><span>ETH exposure shows how much your vault gains or loses when ETH moves. Keep it near zero.</span></div></div>
               <div class="why-item"><div class="why-icon">3</div><div><strong>Learn AEGIS Engine by using it</strong><span>Borrow, repay, place ETH/USDC liquidity, and inspect every vault decision through replay.</span></div></div>
             </div>
@@ -390,18 +390,18 @@
 
         <section class="brief" aria-label="Challenge objective">
           <div class="brief-item"><strong>Starting balance</strong><span>100,000 USDC and 0 ETH in an ETH/USDC pool priced as USDC per ETH.</span></div>
-          <div class="brief-item"><strong>Goal</strong><span>Maximize USD profit after borrow costs, repairs, liquidations, and delta penalties.</span></div>
+          <div class="brief-item"><strong>Goal</strong><span>Maximize edge-first USD score from CL fees and LO fills after AEGIS costs.</span></div>
           <div class="brief-item"><strong>Main risk</strong><span>Minimize ETH exposure so gains come from liquidity and order flow, not ETH beta.</span></div>
         </section>
 
         <section class="flow-strip" aria-label="Contestant flow">
           <div class="flow-step"><b>1</b><div><strong>Paste strategy</strong><span>One Python class controls the vault.</span></div></div>
           <div class="flow-step"><b>2</b><div><strong>Run 6 months</strong><span>Watch real ETH/USDC results build over 30-120 seconds.</span></div></div>
-          <div class="flow-step"><b>3</b><div><strong>Diagnose edge</strong><span>See USD profit, ETH exposure, LTV, repairs, fills, and penalties.</span></div></div>
-          <div class="flow-step"><b>4</b><div><strong>Submit</strong><span>Rank by net USD profit after neutrality penalties.</span></div></div>
+          <div class="flow-step"><b>3</b><div><strong>Diagnose edge</strong><span>See edge score, raw PnL, ETH exposure, LTV, repairs, fills, and gates.</span></div></div>
+          <div class="flow-step"><b>4</b><div><strong>Submit</strong><span>Rank by neutral CL/LO edge after costs and gates.</span></div></div>
         </section>
 
-        <div class="status-line" id="commandStatus" role="status" aria-live="polite">Ready: edit the strategy, run the 180-day ETH/USDC simulation, inspect USD profit and ETH exposure, then submit to the leaderboard.</div>
+        <div class="status-line" id="commandStatus" role="status" aria-live="polite">Ready: edit the strategy, run the 180-day ETH/USDC simulation, inspect edge score and ETH exposure, then submit to the leaderboard.</div>
         <div class="cooldown-panel" id="cooldownPanel">Cooldown ready.</div>
 
         <section class="toolbar" aria-label="Run controls">
@@ -423,7 +423,7 @@
         </section>
 
         <section class="metrics" aria-label="Run metrics">
-          <div class="metric safe"><span>USD profit</span><strong id="scoreMetric">+$0.00</strong><small id="scoreHelp">net over 100,000 USDC after penalties</small><div class="meter"><i id="scoreMeter"></i></div></div>
+          <div class="metric safe"><span>Edge score</span><strong id="scoreMetric">+$0.00</strong><small id="scoreHelp">CL/LO edge after costs and gates</small><div class="meter"><i id="scoreMeter"></i></div></div>
           <div class="metric safe"><span>Current equity</span><strong id="equityMetric">$100,000</strong><small id="equityHelp">vault value after debt</small><div class="meter"><i id="equityMeter"></i></div></div>
           <div class="metric safe"><span>APR</span><strong id="aprMetric">building</strong><small id="aprHelp">annualized net USD profit over elapsed simulated days</small><div class="meter"><i id="aprMeter"></i></div></div>
           <div class="metric safe"><span>ETH exposure</span><strong id="exposureMetric">$0</strong><small id="exposureHelp">signed value of net ETH delta</small><div class="meter" id="exposureMeterTrack"><i id="exposureMeter"></i></div></div>
@@ -490,10 +490,10 @@ class Strategy:
               </div>
               <div class="chart-legend" aria-label="Chart legend">
                 <span><i class="legend-dot"></i>ETH/USDC price</span>
-                <span><i class="legend-dot delta"></i>USD profit + ETH exposure</span>
+                <span><i class="legend-dot delta"></i>Edge score + ETH exposure</span>
                 <span><i class="legend-dot ltv"></i>LTV</span>
               </div>
-              <div class="chart-note">A strong 180-day run grows USD profit while ETH exposure stays near zero through changing price regimes.</div>
+              <div class="chart-note">A strong 180-day run grows edge score while ETH exposure stays near zero through changing price regimes.</div>
               <div class="scrubber">
                 <input id="stepRange" type="range" min="0" max="59" value="59" aria-label="Replay step">
                 <div class="step-box" id="stepBox">day 0.6</div>
@@ -567,7 +567,7 @@ class Strategy:
                 <div class="concept"><strong>Liquidity earns USDC</strong><span id="rangeWidget">Choose where the vault provides ETH/USDC liquidity. Tighter ranges can earn more but need repair over 180 days.</span></div>
                 <div class="concept"><strong>Limit orders catch ETH flow</strong><span id="borrowWidget">Use order placement to capture fills as six months of ETH/USDC market flow crosses your prices.</span></div>
                 <div class="concept"><strong>Borrow offsets ETH delta</strong><span id="floorWidget">Use AEGIS borrow and repay to keep ETH exposure near zero while debt cost and LTV evolve.</span></div>
-                <div class="concept"><strong>Delta is the referee</strong><span id="deltaWidget">If USD profit comes from ETH direction instead of liquidity or order flow, the runner penalizes it.</span></div>
+                <div class="concept"><strong>Delta is the referee</strong><span id="deltaWidget">If score comes from ETH direction instead of liquidity or order flow, the runner caps or disqualifies it.</span></div>
               </div>
             </section>
 
@@ -1132,20 +1132,23 @@ class Strategy:
         const money = runMoney(event);
         const fees = Number(score.fees_earned_usd ?? b.fees_earned_usd ?? b.cl_fee_pnl ?? 0);
         const loEdge = Number(score.lo_edge_usd ?? b.lo_edge_usd ?? b.lo_edge_pnl ?? 0);
+        const edgeProfit = Number(score.edge_profit_usd ?? b.edge_profit_usd ?? money.netProfit ?? 0);
         const inventory = Number(score.inventory_pnl_usd ?? b.inventory_pnl_usd ?? b.raw_pnl ?? 0);
         const borrowCost = Number(score.borrow_cost_usd ?? b.borrow_cost_usd ?? b.borrow_interest_attribution ?? 0);
         const repairCost = Number(score.repair_cost_usd ?? b.repair_cost_usd ?? b.liquidation_penalty ?? 0);
         const deltaPenalty = Number(score.delta_penalty_usd ?? b.delta_penalty_usd ?? b.delta_penalty ?? 0);
+        const exposurePenalty = Number(score.exposure_penalty_usd ?? b.exposure_penalty_usd ?? 0);
         const rowsByMode = {
           score: [
-            ["USD profit before costs", money.rawProfit],
             ["CL fees", fees],
             ["LO edge", loEdge],
-            ["Inventory PnL", inventory],
             ["Borrow cost", -borrowCost],
             ["Action costs", -Number(b.action_costs || 0)],
+            ["Repair/liquidation", -repairCost],
+            ["Edge profit", edgeProfit],
             ["Delta penalty", -deltaPenalty],
-            ["Net USD profit", money.netProfit]
+            ["Exposure penalty", -exposurePenalty],
+            ["Leaderboard score", money.netProfit]
           ],
           risk: [
             ["ETH exposure USD", money.exposureUsd],
@@ -1153,6 +1156,8 @@ class Strategy:
             ["Delta norm", Number(event.vault.delta_normalized || 0) * 100],
             ["LTV used", Number(event.vault.ltv_pips || 0) / 10000],
             ["LTV headroom", (Number(event.vault.max_ltv_pips || 0) - Number(event.vault.ltv_pips || 0)) / 10000],
+            ["Directional PnL share", Number(score.directional_profit_share ?? b.directional_profit_share ?? 0) * 100],
+            ["Raw inventory PnL", inventory],
             ["Repairs/liquidations", -repairCost]
           ],
           fees: [
@@ -1161,7 +1166,7 @@ class Strategy:
             ["LO edge USD", loEdge],
             ["Borrow cost USD", -borrowCost],
             ["Action costs", -Number(b.action_costs || 0)],
-            ["Net USD profit", money.netProfit]
+            ["Edge score", money.netProfit]
           ]
         };
         const rows = rowsByMode[waterfallMode] || rowsByMode.score;

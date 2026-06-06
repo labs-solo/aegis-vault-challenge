@@ -147,15 +147,27 @@ state.recent_repairs
 ```text
 state.score_so_far
 state.score_breakdown.raw_pnl
+state.score_breakdown.edge_profit_usd
 state.score_breakdown.cl_fee_pnl
+state.score_breakdown.collected_cl_fees_usd
+state.score_breakdown.uncollected_cl_fees_usd
 state.score_breakdown.lo_edge_pnl
+state.score_breakdown.realized_lo_edge_usd
+state.score_breakdown.unrealized_lo_edge_usd
 state.score_breakdown.inventory_mark_pnl
 state.score_breakdown.borrow_interest_attribution
 state.score_breakdown.action_costs
 state.score_breakdown.delta_penalty
 state.score_breakdown.liquidation_penalty
 state.score_breakdown.net_profit_usd_after_penalties
+state.score_breakdown.directional_profit_share
+state.score_breakdown.edge_profit_share
+state.score_breakdown.delta_band_time_pct
+state.score_breakdown.neutrality_gate_status
+state.score_breakdown.neutrality_gate_reason
 ```
+
+`net_profit_usd_after_penalties` is the edge-first score basis. `raw_pnl` and `inventory_mark_pnl` are diagnostics so you can see whether a run depended on ETH direction.
 
 ## Sandbox And Hidden Information
 

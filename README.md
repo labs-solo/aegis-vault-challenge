@@ -4,7 +4,7 @@
 
 Programmable infrastructure for Uniswap v4 pools.
 
-AEGIS Vault Challenge is a delta-neutral strategy competition. Contestants paste one Python strategy, control an AEGIS vault in an ETH/USDC pool, and compete to turn a `100,000 USDC` starting balance into the most net USD profit while keeping ETH exposure near zero.
+AEGIS Vault Challenge is a delta-neutral strategy competition. Contestants paste one Python strategy, control an AEGIS vault in an ETH/USDC pool, and compete on edge-first USD score: concentrated-liquidity fees and limit-order edge after costs, while keeping ETH exposure near zero.
 
 The challenge is designed to teach AEGIS Engine by using it: borrow and repay AEGIS L-units, place concentrated liquidity, use limit orders, react to DFM BaseHook fees, inspect six months of simulated market activity, and publish only the attempts you choose.
 
@@ -53,7 +53,7 @@ http://127.0.0.1:4173/web/docs.html
 2. Read the first screen and Strategy Academy enough to understand the goal.
 3. Paste or edit one Python `Strategy` class.
 4. Run the 180-day ETH/USDC simulation.
-5. Watch APR, USD profit, ETH exposure, LTV, market stats, DFM fees, repairs, fills, and replay data update.
+5. Watch APR, edge score, raw USD equity PnL, ETH exposure, LTV, market stats, DFM fees, repairs, fills, and replay data update.
 6. Download raw data if you want to audit every strategy action, trade, fill, debt snapshot, and period statistic.
 7. Sign in with X to iterate after the anonymous trial.
 8. Name saved tries, publish the try you want ranked, and share the result card if you choose.
@@ -63,8 +63,8 @@ http://127.0.0.1:4173/web/docs.html
 - Start: `100,000 USDC`, `0 ETH`.
 - Pool: `ETH/USDC`, price shown as `USDC per ETH`.
 - Horizon: 180 simulated days with 15-minute simulation steps.
-- Goal: maximize net USD profit after borrow costs, action costs, repairs, liquidation costs, and delta penalties.
-- Constraint: minimize ETH exposure so gains come from liquidity and order-flow edge rather than ETH beta.
+- Goal: maximize edge-first USD score from CL fees and LO edge after borrow costs, action costs, repairs, liquidation costs, and neutrality gates.
+- Constraint: minimize ETH exposure so leaderboard gains cannot come from ETH beta or unresolved terminal inventory/debt.
 - Practice: public seeded paths are reproducible for debugging.
 - Ranking: serious submissions should be robust across hidden seeded paths.
 - Data boundary: strategies never see hidden fair price, hidden seeds, future flow, private runner state, local files, or external network data.

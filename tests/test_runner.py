@@ -120,3 +120,36 @@ def test_replay_apr_annualizes_by_elapsed_days_not_full_horizon(tmp_path):
     )
     assert abs(Decimal(event["apr_pct"]) - expected_apr) < Decimal("0.000000000001")
     assert abs(Decimal(event["apr_pct"]) - fixed_horizon_apr) > Decimal("1")
+
+
+def test_edge_first_score_attribution_and_gates_are_exported(tmp_path):
+    result = run_strategy("examples/starter_strategy.py", "smoke", 1, tmp_path)
+    score = json.loads((Path(result["run_dir"]) / "score.json").read_text())
+    breakdown = score["score_breakdown"]
+    periods = json.loads((Path(result["run_dir"]) / "period_stats.json").read_text())
+
+    assert Decimal(score["net_profit_usd_after_penalties"]) == Decimal(breakdown["edge_profit_usd"])
+    assert Decimal(breakdown["edge_profit_usd"]) > 0
+    assert Decimal(breakdown["fees_earned_usd"]) > 0
+    assert breakdown["neutrality_gate_status"] == "pass"
+    assert "edge_profit_usd" in periods[-1]
+    assert "directional_profit_share" in periods[-1]
+    assert "neutrality_gate_status" in periods[-1]
+
+
+def test_directional_baselines_fail_or_cap_score(tmp_path):
+    for strategy in ["benchmarks/01_directional_long_eth.py", "benchmarks/02_directional_short_eth.py"]:
+        result = run_strategy(strategy, "smoke", 1, tmp_path)
+        score = json.loads((Path(result["run_dir"]) / "score.json").read_text())
+        assert score["disqualified"] is True
+        assert score["neutrality_gate_status"] == "fail"
+        assert Decimal(score["net_profit_usd_after_penalties"]) <= 0
+
+
+def test_neutral_fee_baseline_can_remain_positive(tmp_path):
+    result = run_strategy("benchmarks/07_delta_neutral_heuristic.py", "smoke", 1, tmp_path)
+    score = json.loads((Path(result["run_dir"]) / "score.json").read_text())
+    assert score["disqualified"] is False
+    assert score["neutrality_gate_status"] == "pass"
+    assert Decimal(score["score_breakdown"]["edge_profit_usd"]) > 0
+    assert Decimal(score["net_profit_usd_after_penalties"]) > 0
