@@ -1,15 +1,13 @@
 {
   "branch": "codex/delta-neutral-hardening-1",
-  "blockers": [
-    "GitHub PR/merge/delete remains to complete the process gate."
-  ],
+  "blockers": [],
   "completion_threshold": {
-    "branch_deleted": false,
+    "branch_deleted": true,
     "edge_first_scoring_proven": true,
     "issue_linked": true,
     "no_stale_guidance": true,
-    "pr_merged": false,
-    "readiness": "implementation_verified",
+    "pr_merged": true,
+    "readiness": "world_class_ready",
     "tests_pass": true,
     "ui_docs_examples_match": true
   },
@@ -19,7 +17,12 @@
   },
   "github": {
     "issue": "https://github.com/labs-solo/aegis-vault-challenge/issues/1",
-    "merge": null,
+    "branch_deleted": true,
+    "merge": {
+      "commit": "0b693d17f62b1821d1c6cac100156ddd29950d47",
+      "merged_at": "2026-06-06T03:55:27Z",
+      "state": "MERGED"
+    },
     "pr": "https://github.com/labs-solo/aegis-vault-challenge/pull/2"
   },
   "gates": {
@@ -29,7 +32,7 @@
     "terminal_eth_exposure_equity": "3%",
     "terminal_ltv": "safe threshold"
   },
-  "readiness": "implementation_verified",
+  "readiness": "world_class_ready",
   "review_path": "reports/delta-neutral-hardening-review.md",
   "runs": [
     {
@@ -63,7 +66,7 @@
       "strategy": "benchmarks/07_delta_neutral_heuristic.py"
     }
   ],
-  "status": "pending_pr_merge",
+  "status": "complete",
   "verification": {
     "npm_run_ui_docs_academy": "pass",
     "npm_run_ui_smoke": "pass",
