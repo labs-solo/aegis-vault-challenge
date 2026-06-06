@@ -132,7 +132,8 @@ def test_replay_apr_annualizes_by_elapsed_days_not_full_horizon(tmp_path):
         * Decimal("100")
     )
     assert abs(Decimal(event["apr_pct"]) - expected_apr) < Decimal("0.000000000001")
-    assert abs(Decimal(event["apr_pct"]) - fixed_horizon_apr) > Decimal("1")
+    assert fixed_horizon_apr > 0
+    assert Decimal(event["apr_pct"]) / fixed_horizon_apr > Decimal("100")
 
 
 def test_edge_first_score_attribution_and_gates_are_exported(tmp_path):

@@ -22,3 +22,10 @@ reports/base-realism/full-run/
 reports/benchmarks/
 reports/leaderboard/server-fixture/
 reports/scenarios/
+
+# Private local strategy research. Do not publish tuned competition strategies
+# or offline play harnesses that could spoil the public challenge.
+examples/codex_*_strategy.py
+scripts/play_*_challenge.py
+reports/play-*-challenge.md
+reports/play-*-challenge.json

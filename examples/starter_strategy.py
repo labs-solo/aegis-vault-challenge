@@ -15,14 +15,14 @@ from aegis_challenge.api import BorrowL, BurnRange, CollectFees, MintRange, Repa
 class Strategy:
     def on_start(self, state):
         self.bootstrapped = False
-        self.borrow_l = 6_000
-        self.range_liquidity = 2_500
+        self.borrow_l = 1_000
+        self.range_liquidity = 400
         self.range_half_width_steps = 28
         self.delta_repair_threshold = Decimal("0.020")
         self.ltv_repair_threshold_pips = 970_000
         self.collect_every_steps = 24
         self.last_collect_step = -10**9
-        self.exit_step = 48
+        self.exit_step = 12
         self.exited = False
 
     def on_step(self, state):
