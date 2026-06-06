@@ -134,6 +134,21 @@ class ScoreBreakdown:
     borrow_cost_usd: Decimal = Decimal("0")
     repair_cost_usd: Decimal = Decimal("0")
     liquidation_cost_usd: Decimal = Decimal("0")
+    edge_profit_usd: Decimal = Decimal("0")
+    collected_cl_fees_usd: Decimal = Decimal("0")
+    uncollected_cl_fees_usd: Decimal = Decimal("0")
+    realized_lo_edge_usd: Decimal = Decimal("0")
+    unrealized_lo_edge_usd: Decimal = Decimal("0")
+    directional_profit_share: Decimal = Decimal("0")
+    edge_profit_share: Decimal = Decimal("0")
+    delta_band_time_pct: Decimal = Decimal("0")
+    neutrality_gate_status: str = "pass"
+    neutrality_gate_reason: str | None = None
+    beta_to_eth: Decimal = Decimal("0")
+    mirrored_score_gap_usd: Decimal = Decimal("0")
+    terminal_eth_exposure_usd: Decimal = Decimal("0")
+    terminal_ltv_pips: int = 0
+    terminal_flattened: bool = True
 
 
 @dataclass(frozen=True)

@@ -4,7 +4,8 @@ Contestants start with 100,000 USDC and 0 ETH in an ETH/USDC pool.
 This starter borrows AEGIS L-units, places a small ETH/USDC range, collects
 fees, and repairs when ETH exposure or LTV drifts too far. It is deliberately
 simple: the goal is USD profit from liquidity/order-flow edge while keeping
-net ETH delta close to zero.
+net ETH delta close to zero. Raw inventory PnL is diagnostic; the leaderboard
+score rewards CL/LO edge after costs and neutrality gates.
 """
 
 from decimal import Decimal
@@ -29,7 +30,8 @@ class Strategy:
         # state.config.pool_pair == "ETH/USDC"
         # state.config.initial_balance_usdc == Decimal("100000")
         # state.eth_price is USDC per ETH
-        # state.profit_usd is net USD profit after penalties so far
+        # state.profit_usd is edge-first score after penalties so far
+        # state.score_breakdown.raw_pnl is raw equity PnL for diagnosis
         # state.eth_exposure_usd is signed ETH exposure marked in USD
         for order in state.limit_orders:
             if order.status == "filled":

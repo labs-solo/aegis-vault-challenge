@@ -1,0 +1,72 @@
+{
+  "branch": "codex/delta-neutral-hardening-1",
+  "blockers": [
+    "GitHub PR/merge/delete remains to complete the process gate."
+  ],
+  "completion_threshold": {
+    "branch_deleted": false,
+    "edge_first_scoring_proven": true,
+    "issue_linked": true,
+    "no_stale_guidance": true,
+    "pr_merged": false,
+    "readiness": "implementation_verified",
+    "tests_pass": true,
+    "ui_docs_examples_match": true
+  },
+  "formula": {
+    "basis": "edge_profit_usd after neutrality penalties and gates",
+    "expression": "collected_cl_fees_usd + uncollected_cl_fees_usd + realized_lo_edge_usd + unrealized_lo_edge_usd - borrow_cost_usd - action_costs - repair_cost_usd - liquidation_cost_usd - invalid_action_penalty"
+  },
+  "github": {
+    "issue": "https://github.com/labs-solo/aegis-vault-challenge/issues/1",
+    "merge": null,
+    "pr": "https://github.com/labs-solo/aegis-vault-challenge/pull/2"
+  },
+  "gates": {
+    "avg_abs_eth_exposure_initial_equity": "3%",
+    "max_abs_eth_exposure_initial_equity": "8%",
+    "terminal_directional_profit_share": "25%",
+    "terminal_eth_exposure_equity": "3%",
+    "terminal_ltv": "safe threshold"
+  },
+  "readiness": "implementation_verified",
+  "review_path": "reports/delta-neutral-hardening-review.md",
+  "runs": [
+    {
+      "bundle": "competition_6m",
+      "gate": "fail",
+      "gate_reason": "average ETH exposure exceeded 3% of initial equity",
+      "raw_profit_usd": "-65199.7869873369531702059878667538985640113365842533433207858",
+      "run_id": "5d2fb273c92e4586",
+      "score": "-2661957.06226421217829438188140373788029711213238873173069842",
+      "seed": 1,
+      "strategy": "benchmarks/01_directional_long_eth.py"
+    },
+    {
+      "bundle": "competition_6m",
+      "gate": "fail",
+      "gate_reason": "max ETH exposure exceeded 8% of initial equity",
+      "raw_profit_usd": "49195.060621688513939958845512122247741323237183227881545815",
+      "run_id": "3d5b74375f50dd0c",
+      "score": "0",
+      "seed": 1,
+      "strategy": "benchmarks/07_delta_neutral_heuristic.py"
+    },
+    {
+      "bundle": "smoke",
+      "gate": "pass",
+      "gate_reason": null,
+      "raw_profit_usd": "diagnostic",
+      "run_id": "a6f9d939611d7a92",
+      "score": "7.08866719188068644363583641314873007144048602975825217850899",
+      "seed": 1,
+      "strategy": "benchmarks/07_delta_neutral_heuristic.py"
+    }
+  ],
+  "status": "pending_pr_merge",
+  "verification": {
+    "npm_run_ui_docs_academy": "pass",
+    "npm_run_ui_smoke": "pass",
+    "pytest": "113 passed in 29.01s"
+  }
+}

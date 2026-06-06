@@ -50,20 +50,25 @@ The UI highlights fee surge state when it triggers. Strategies can inspect publi
 
 ## Scoring
 
-The score rewards neutral liquidity/order-flow edge, not ETH beta.
+The leaderboard score rewards neutral liquidity/order-flow edge, not ETH beta. Raw equity PnL remains visible, but it is diagnostic.
 
 Main components:
 
-- `profit_usd`: equity after debt minus the `100,000 USDC` start.
-- `apr_pct`: annualized net USD profit based on elapsed simulated time.
-- `fees_earned_usd`: concentrated-liquidity fees.
-- `lo_edge_usd`: limit-order edge.
-- `inventory_pnl_usd`: inventory mark-to-market.
+- `edge_profit_usd`: collected/uncollected CL fees plus realized/unrealized LO edge minus borrow, action, repair, liquidation, and invalid-action costs.
+- `net_profit_usd_after_penalties`: ranked-score basis after beta/neutrality penalties and gates.
+- `apr_pct`: annualized edge score based on elapsed simulated time.
+- `profit_usd`: raw equity after debt minus the `100,000 USDC` start.
+- `fees_earned_usd`: total concentrated-liquidity fees.
+- `collected_cl_fees_usd` and `uncollected_cl_fees_usd`.
+- `lo_edge_usd`, `realized_lo_edge_usd`, and `unrealized_lo_edge_usd`.
+- `inventory_pnl_usd`: diagnostic inventory/debt mark-to-market contribution.
 - `borrow_cost_usd`: AEGIS borrow cost.
 - `action_costs`: strategy action costs.
 - `repair_cost_usd` and `liquidation_cost_usd`.
 - `delta_penalty_usd` and `exposure_penalty_usd`.
-- `net_profit_usd_after_penalties`: ranked-score basis.
+- `directional_profit_share`, `edge_profit_share`, `beta_to_eth`, and `mirrored_score_gap_usd`.
+
+Hard neutrality gates cap or disqualify runs when average absolute ETH exposure exceeds `3%` of initial equity, max absolute exposure exceeds `8%`, terminal ETH exposure exceeds `3%` of equity, terminal LTV is above the safe threshold, or terminal directional profit share exceeds `25%`.
 
 ## Robustness Metrics
 
@@ -76,6 +81,7 @@ World-class ranked evaluation should report:
 - Score variance.
 - Forced repairs and liquidations.
 - Profit source split: CL fees, LO edge, inventory, borrow cost, action cost, penalties.
+- Neutrality gate status, failure reason, beta metrics, and terminal flattening status.
 
 ## Raw Data Export
 

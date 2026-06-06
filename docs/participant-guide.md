@@ -1,6 +1,6 @@
 # Participant Guide
 
-The AEGIS Vault Challenge is a Python strategy competition. You start with `100,000 USDC`, hold `0 ETH`, and control an AEGIS vault in an `ETH/USDC` pool. Your goal is to make the most net USD profit while keeping ETH exposure near zero.
+The AEGIS Vault Challenge is a Python strategy competition. You start with `100,000 USDC`, hold `0 ETH`, and control an AEGIS vault in an `ETH/USDC` pool. Your goal is to maximize edge-first USD score from liquidity fees and limit-order edge while keeping ETH exposure near zero.
 
 ## The Short Version
 
@@ -8,7 +8,7 @@ The AEGIS Vault Challenge is a Python strategy competition. You start with `100,
 2. Read the objective and Strategy Academy.
 3. Paste one Python `Strategy` class.
 4. Run the six-month ETH/USDC simulation.
-5. Inspect profit, APR, ETH exposure, LTV, fees, repairs, fills, replay, and raw data.
+5. Inspect edge score, raw equity PnL, APR, ETH exposure, LTV, fees, repairs, fills, replay, and raw data.
 6. Sign in with X to keep iterating after the anonymous trial.
 7. Name saved tries and publish only the try you want on the leaderboard.
 
@@ -32,16 +32,20 @@ http://127.0.0.1:4173/web/docs.html
 
 ## What You Are Optimizing
 
-Leaderboard profit is USD equity above the `100,000 USDC` start after:
+Leaderboard score is not raw equity PnL. It starts with neutral strategy edge:
 
 - Concentrated-liquidity fees.
 - Limit-order edge.
-- Inventory mark-to-market.
+
+Then it subtracts:
+
 - Borrow interest.
 - Action costs.
 - DFM hook fees and swap costs.
 - Repairs and liquidation costs.
-- Delta/exposure penalties.
+- Delta/exposure penalties and hard neutrality gates.
+
+Inventory mark-to-market is still shown for diagnosis, but ETH beta and unresolved terminal inventory/debt cannot dominate a valid score.
 
 APR updates during the run from elapsed simulated days. It is not just a final 180-day calculation.
 
@@ -81,12 +85,14 @@ Start simple:
 
 ## What To Watch In The UI
 
-- `USD profit`: whether you are actually making money after costs.
+- `Edge score`: whether you are making money from fees and order-flow edge after costs.
+- `Raw USD PnL`: diagnostic equity movement after debt, including inventory mark-to-market.
 - `APR`: annualized return based on elapsed simulated time.
 - `ETH exposure`: signed value of net ETH delta.
 - `Delta band`: whether the strategy is staying neutral enough.
 - `LTV used`: how close the vault is to debt trouble.
 - `Fees + LO edge`: whether the strategy has a real order-flow edge.
+- `Gate status`: whether average exposure, max exposure, terminal exposure, LTV, and directional share remain inside competition limits.
 - `Market + DFM`: volume, trades, price move, DFM fee surge, and fee split.
 - `Sampled Event Tape`: what your strategy and the market just did.
 - `Raw data export`: exact trades, actions, fills, repairs, debt snapshots, period stats, and score files.

@@ -43,6 +43,8 @@ def test_docs_academy_exists_and_is_linked_from_app():
         "ranked submissions",
         "hidden seeded paths",
         "What can my strategy do?",
+        "edge-first",
+        "Neutrality gates",
     ]
     for text in required_docs_text:
         assert text in docs
@@ -112,6 +114,9 @@ def test_public_state_coverage_is_complete():
         "state.recent_repairs",
         "state.score_so_far",
         "state.score_breakdown",
+        "edge_profit_usd",
+        "directional_profit_share",
+        "neutrality_gate_status",
         "fees_earned_usd",
         "lo_edge_usd",
         "borrow_cost_usd",

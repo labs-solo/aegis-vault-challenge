@@ -179,7 +179,7 @@ async function checkDocsViewport(browser, name, viewport) {
   const answerEvidence = await page.evaluate(() => {
     const text = document.body.innerText;
     return {
-      objective: text.includes("100,000 USDC") && text.includes("ETH/USDC") && text.includes("USD profit"),
+      objective: text.includes("100,000 USDC") && text.includes("ETH/USDC") && text.includes("edge-first"),
       actions: text.includes("BorrowL") && text.includes("MintRange") && text.includes("PlaceLimitOrder"),
       improvement: text.includes("Strategy recipes") && text.includes("Robustness-first ranked strategy"),
       hiddenInfo: text.includes("No hidden fair price") && text.includes("future flow"),

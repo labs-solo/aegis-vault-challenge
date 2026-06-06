@@ -41,6 +41,20 @@ def verify_run_export(run_dir: str | Path) -> dict[str, Any]:
 
     if replay:
         final = replay[-1]
+        required_final_fields = [
+            "edge_profit_usd",
+            "collected_cl_fees_usd",
+            "uncollected_cl_fees_usd",
+            "realized_lo_edge_usd",
+            "unrealized_lo_edge_usd",
+            "directional_profit_share",
+            "edge_profit_share",
+            "delta_band_time_pct",
+            "neutrality_gate_status",
+        ]
+        for field in required_final_fields:
+            if field not in score or field not in final:
+                failures.append(f"missing hardened scoring field {field}")
         expected_days = Decimal(str(calibration.get("steps", 0))) * Decimal(str(calibration.get("step_length_seconds", 0))) / Decimal(86400)
         assert_close(Decimal(str(final.get("elapsed_simulated_days", "0"))), expected_days, Decimal("0.0001"), "final elapsed days", failures)
         assert_close(Decimal(str(score.get("elapsed_simulated_days", "0"))), expected_days, Decimal("0.0001"), "score elapsed days", failures)
@@ -116,6 +130,10 @@ def verify_run_export(run_dir: str | Path) -> dict[str, Any]:
     for required in ["public_replay.jsonl", "score.json", "calibration.json", "trades.jsonl", "period_stats.jsonl", "period_stats.json", "period_stats.csv", "market_path_stats.jsonl", "market_path_stats.json", "debt_snapshots.jsonl"]:
         if required not in manifest.get("files", {}):
             failures.append(f"manifest missing {required}")
+    if periods:
+        for field in ["edge_profit_usd", "directional_profit_share", "neutrality_gate_status"]:
+            if field not in periods[-1]:
+                failures.append(f"period export missing {field}")
     public_text = "\n".join(
         [
             json.dumps(score).lower(),

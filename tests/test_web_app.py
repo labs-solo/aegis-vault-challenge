@@ -151,10 +151,11 @@ def test_noop_strategy_does_not_create_unexplained_usd_profit(tmp_path):
 def test_directional_eth_exposure_is_penalized(tmp_path):
     source = "from decimal import Decimal\nfrom aegis_challenge.api import SwapExactIn\nclass Strategy:\n    def on_start(self, state):\n        self.done = False\n    def on_step(self, state):\n        if self.done:\n            return []\n        self.done = True\n        return [SwapExactIn(token_in='token1', amount_in=Decimal('50000'), max_slippage_pips=500000)]\n"
     run = run_web_strategy(source, "smoke", 1, tmp_path)
-    assert run["status"] == "ok"
+    assert run["status"] == "error"
     assert Decimal(run["score"]["max_eth_exposure_usd"]) > Decimal("3000")
     assert Decimal(run["score"]["score_breakdown"]["delta_penalty_usd"]) > 0
-    assert Decimal(run["score"]["net_profit_usd_after_penalties"]) < Decimal(run["score"]["profit_usd"])
+    assert run["score"]["neutrality_gate_status"] == "fail"
+    assert Decimal(run["score"]["net_profit_usd_after_penalties"]) <= 0
 
 
 def test_late_flatten_eth_beta_still_pays_exposure_history_penalty(tmp_path):
@@ -176,11 +177,12 @@ class Strategy:
         return []
 """
     run = run_web_strategy(source, "smoke", 1, tmp_path)
-    assert run["status"] == "ok"
+    assert run["status"] == "error"
     score = run["score"]
     assert Decimal(score["avg_eth_exposure_usd"]) > Decimal("3000")
     assert Decimal(score["score_breakdown"]["exposure_penalty_usd"]) > 0
-    assert Decimal(score["net_profit_usd_after_penalties"]) < Decimal(score["profit_usd"])
+    assert score["neutrality_gate_status"] == "fail"
+    assert Decimal(score["net_profit_usd_after_penalties"]) <= 0
 
 
 def test_progressive_smoke_run_matches_final_runner_semantics(tmp_path):
